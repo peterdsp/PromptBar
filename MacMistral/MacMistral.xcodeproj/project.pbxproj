@@ -18,7 +18,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C0BA4D12BA6055E0050C66B /* MacMistral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMistral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C0BA4D42BA6055E0050C66B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		2C0BA4D62BA6055E0050C66B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -27,6 +26,7 @@
 		2C0BA4E72BA6083C0050C66B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMistralPopup.swift; sourceTree = "<group>"; };
+		2C89B5E42BA64E3200B1F18A /* MacMistral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMistral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D6FAB5DEB41BDBBA5C52BF /* Pods-MacMistral.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.debug.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.debug.xcconfig"; sourceTree = "<group>"; };
 		8F0ADF4E3968B97C11770276 /* Pods-MacMistral.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.release.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.release.xcconfig"; sourceTree = "<group>"; };
 		98F2D8E172B49EF6BAD51AE0 /* Pods_MacMistral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MacMistral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,18 +48,10 @@
 			isa = PBXGroup;
 			children = (
 				2C0BA4D32BA6055E0050C66B /* MacMistral */,
-				2C0BA4D22BA6055E0050C66B /* Products */,
 				DDA7E8DA6859F56DFB8AB389 /* Pods */,
 				82D98578AB5CBF0C2C6EFD29 /* Frameworks */,
+				2C89B5E42BA64E3200B1F18A /* MacMistral.app */,
 			);
-			sourceTree = "<group>";
-		};
-		2C0BA4D22BA6055E0050C66B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				2C0BA4D12BA6055E0050C66B /* MacMistral.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		2C0BA4D32BA6055E0050C66B /* MacMistral */ = {
@@ -121,7 +113,7 @@
 			);
 			name = MacMistral;
 			productName = MacMistral;
-			productReference = 2C0BA4D12BA6055E0050C66B /* MacMistral.app */;
+			productReference = 2C89B5E42BA64E3200B1F18A /* MacMistral.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -148,7 +140,7 @@
 				Base,
 			);
 			mainGroup = 2C0BA4C82BA6055E0050C66B;
-			productRefGroup = 2C0BA4D22BA6055E0050C66B /* Products */;
+			productRefGroup = 2C0BA4C82BA6055E0050C66B;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -280,7 +272,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -337,7 +329,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -351,15 +343,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MacMistral/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "MacMistral/Preview\\ Content";
 				DEVELOPMENT_TEAM = R8JF2W45R3;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacMistral/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacMistral;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -380,15 +376,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MacMistral/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "MacMistral/Preview\\ Content";
 				DEVELOPMENT_TEAM = R8JF2W45R3;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MacMistral/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacMistral;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

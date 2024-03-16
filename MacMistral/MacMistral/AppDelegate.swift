@@ -15,6 +15,16 @@ struct AboutView: View {
             Text("MacMistral")
                 .font(.title)
                 .padding(.bottom)
+            if let appIcon = NSImage(named: "AppIcon") {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 64, height: 64)
+                    .padding(.bottom)
+            } else {
+                Text("Error: App icon not found")
+                    .foregroundColor(.red)
+            }
             Text("Developed by Petros Dhespollari")
                 .font(.subheadline)
             Text("Version 1.0")
@@ -48,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         // Set the activation policy to accessory to hide the Dock icon
+        
         NSApp.setActivationPolicy(.accessory)
         if let button = statusItem.button {
             let icon = NSImage(named: "MenuBarIcon")!.resized(to: CGSize(width: 14, height: 14))
@@ -64,9 +75,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.togglePopover()
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.togglePopover()
-        }
+// Uncomment the section below if you want the popover to open when opening the app
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            self.togglePopover()
+//        }
     }
     
     @objc func handleMenuIconAction(sender: NSStatusBarButton) {
@@ -86,7 +98,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc func didTapOne() {
         let aboutView = AboutView()
         let aboutWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 200),
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false

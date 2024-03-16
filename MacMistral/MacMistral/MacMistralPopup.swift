@@ -14,7 +14,7 @@ class MacMistralPopup: NSViewController {
         // create a hosting controller with your SwiftUI view
         let hostingController = NSHostingController(rootView: MainUI())
         self.view = hostingController.view
-        self.view.frame = CGRect(origin: .zero, size: .init(width: 500, height: 700))
+        self.view.frame = CGRect(origin: .zero, size: .init(width: 500, height: 600))
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -39,12 +39,11 @@ struct MainUI: View {
 
     var body: some View {
         VStack(spacing: 0.0) {
-            self.errorView
             WebView(config: self.webConfig,
                     action: self.$action,
                     state: self.$state,
                     restrictedPages: nil)
-            Image(systemName: "line.1.horizontal")
+            //Image(systemName: "arrow.down")
         }
         .onAppear {
             if let url = URL(string: address) {
@@ -52,55 +51,6 @@ struct MainUI: View {
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
-    }
-
-    private var navigationToolbar: some View {
-        HStack(spacing: 10) {
-            if self.state.isLoading {
-                if #available(iOS 14, macOS 10.15, *) {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                } else {
-                    Text("Loading")
-                }
-            }
-            Spacer()
-            Button(action: {
-                self.action = .reload
-            }) {
-                Image(systemName: "arrow.counterclockwise")
-                    .imageScale(.large)
-                    .foregroundColor(.init(nsColor: .labelColor))
-            }
-            if self.state.canGoBack {
-                Button(action: {
-                    self.action = .goBack
-                }) {
-                    Image(systemName: "chevron.left")
-                        .imageScale(.large)
-                        .foregroundColor(.init(nsColor: .labelColor))
-                }
-            }
-            if self.state.canGoForward {
-                Button(action: {
-                    self.action = .goForward
-                }) {
-                    Image(systemName: "chevron.right")
-                        .imageScale(.large)
-                        .foregroundColor(.init(nsColor: .labelColor))
-                }
-            }
-        }.background(Color(nsColor: .windowBackgroundColor))
-            .padding([.top, .leading, .trailing, .bottom], 15.0)
-    }
-
-    private var errorView: some View {
-        Group {
-            if let error = state.error {
-                Text(error.localizedDescription)
-                    .foregroundColor(.red)
-            }
-        }
     }
 }
 
