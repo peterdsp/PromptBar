@@ -14,7 +14,7 @@ MacMistral is a SwiftUI application designed for macOS, allowing users to access
 
 ## Requirements
 
-- macOS 
+- macOS 12+
 
 ## Installation
 
