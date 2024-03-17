@@ -75,7 +75,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.togglePopover()
         }
         
-// Uncomment the section below if you want the popover to open when opening the app
+        // Uncomment the section below if you want the popover to open when opening the app
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 //            self.togglePopover()
 //        }
@@ -110,10 +110,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         aboutWindowController.showWindow(nil)
     }
     
+    @objc func didTapTwo() {
+        WebViewHelper.clean()
+    }
+    
     func constructMenu() {
         menu = NSMenu()
         let one = NSMenuItem(title: "About", action: #selector(didTapOne), keyEquivalent: "1")
-        let two = NSMenuItem(title: "Clean Cookies", action: #selector(didTapOne), keyEquivalent: "2")
+        let two = NSMenuItem(title: "Clean Cookies", action: #selector(didTapTwo), keyEquivalent: "2")
         menu.addItem(one)
         menu.addItem(two)
         menu.addItem(NSMenuItem.separator())
@@ -186,10 +190,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         hotAKey?.keyDownHandler = {
             NSApp.sendAction(#selector(NSStandardKeyBindingResponding.selectAll(_:)), to: nil, from: self)
         }
-    }
-    
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
     }
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {

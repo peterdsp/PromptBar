@@ -14,6 +14,7 @@
 		2C0BA4E82BA6083C0050C66B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C0BA4E72BA6083C0050C66B /* Info.plist */; };
 		2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */; };
 		2C0BA4EE2BA60F690050C66B /* MacMistralPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */; };
+		2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E816D2BA6751F0047A31C /* ObservableObject.swift */; };
 		D659761E14B9D2B39B36A60D /* Pods_MacMistral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F2D8E172B49EF6BAD51AE0 /* Pods_MacMistral.framework */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 		2C0BA4E72BA6083C0050C66B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMistralPopup.swift; sourceTree = "<group>"; };
+		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
 		2C89B5E42BA64E3200B1F18A /* MacMistral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMistral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D6FAB5DEB41BDBBA5C52BF /* Pods-MacMistral.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.debug.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.debug.xcconfig"; sourceTree = "<group>"; };
 		8F0ADF4E3968B97C11770276 /* Pods-MacMistral.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.release.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.release.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				2C0BA4DF2BA6055F0050C66B /* MacMistral.entitlements */,
 				2C0BA4DC2BA6055F0050C66B /* Preview Content */,
 				2C0BA4E72BA6083C0050C66B /* Info.plist */,
+				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
 			);
 			path = MacMistral;
 			sourceTree = "<group>";
@@ -209,6 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */,
 				2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */,
 				2C0BA4EE2BA60F690050C66B /* MacMistralPopup.swift in Sources */,
 				2C0BA4D72BA6055E0050C66B /* ContentView.swift in Sources */,
