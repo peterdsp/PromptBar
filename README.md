@@ -14,16 +14,30 @@ MacMistral is a SwiftUI application designed for macOS, allowing users to access
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/peterdsp/MacMistral.git`
-2. Open the project in Xcode
-3. Build and run the application
-4. MacMistral will now be available in your menubar
+Sure, here are the steps to install MacMistral on your Mac:
+
+1. Visit the MacMistral GitHub releases page by clicking [**Here**](https://github.com/peterdsp/MacMistral/releases/download/MacMistral/MacMistral.zip). Alternatively, you can go to the main GitHub page for MacMistral and click on the **Releases** tab to find the latest version.
+2. Click on the download link for the latest version. This will download a zip file containing the MacMistral.app to your Mac.
+3. Locate the downloaded zip file in your Downloads folder and extract it by double-clicking on it.
+4. Once the zip file is extracted, you will see the MacMistral.app file.
+5. Drag the **MacMistral.app** file to your **Applications** folder. This will install MacMistral on your Mac.
 
 ## Usage
 
 1. Click on the MacMistral icon in your menubar
 2. Start a conversation with Mistral AI
 3. The chat interface will appear in a dropdown menu from the menubar
+
+To have MacMistral automatically load in the menubar when you log in to your Mac, you can add it to your Login Items through macOS settings. Here's how to do it:
+
+1. Open **System Settings**.
+2. Click on **General** from the left sidebar.
+3. Click on the **Login Items** tab.
+4. Click the **+** button to add a new login item.
+5. Navigate to the location where you have installed **MacMistral**.
+6. Select **MacMistral** and click **Open**.
+
+Now, MacMistral will automatically start and appear in your menubar whenever you log in to your Mac.
 
 ## License
 
