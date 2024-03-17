@@ -31,6 +31,7 @@ struct MainUI: View {
     @State private var action = WebViewAction.idle
     @State private var state = WebViewState.empty
     @State private var address = "https://chat.mistral.ai/chat/"
+    @ObservedObject private var reloadState = WebViewHelper.reloadState
 
     var webConfig: WebViewConfig {
         var defaultC = WebViewConfig.default
@@ -43,7 +44,16 @@ struct MainUI: View {
                     action: self.$action,
                     state: self.$state,
                     restrictedPages: nil)
-            //Image(systemName: "arrow.down")
+                .onReceive(self.reloadState.$shouldReload) { shouldReload in
+                    if shouldReload {
+                        if let url = URL(string: address) {
+                            self.action = .load(URLRequest(url: url))
+                        }
+                        // Reset shouldReload after reloading
+                        self.reloadState.shouldReload = false
+                    }
+                }
+            // Image(systemName: "arrow.down")
         }
         .onAppear {
             if let url = URL(string: address) {
@@ -55,6 +65,8 @@ struct MainUI: View {
 }
 
 enum WebViewHelper {
+    static let reloadState = ReloadState()
+
     static func clean() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
         print("[WebCacheCleaner] All cookies deleted")
@@ -64,6 +76,8 @@ enum WebViewHelper {
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
                 print("[WebCacheCleaner] Record \(record) deleted")
             }
+            // Set shouldReload to true after cleaning cache
+            self.reloadState.shouldReload = true
         }
     }
 }
