@@ -20,7 +20,7 @@ MacMistral is a SwiftUI application designed for macOS, allowing users to access
 
 Sure, here are the steps to install MacMistral on your Mac:
 
-1. Visit the MacMistral **Gumroad** page by clicking [**Here**](peterdsp.gumroad.com/l/macmistral). Alternatively, you can go to the main GitHub page for MacMistral and click on the **Releases** tab to find the latest version.
+1. Visit the MacMistral **Gumroad** page by clicking [**Here**](https://peterdsp.gumroad.com/l/macmistral). Alternatively, you can go to the main GitHub page for MacMistral and click on the **Releases** tab to find the latest version.
 2. Click on the download link for the latest version. This will download a zip file containing the MacMistral.app to your Mac.
 3. Locate the downloaded zip file in your Downloads folder and extract it by double-clicking on it.
 4. Once the zip file is extracted, you will see the MacMistral.app file.
