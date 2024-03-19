@@ -10,10 +10,22 @@ import SwiftUI
 import WebKit
 
 class MacMistralPopup: NSViewController {
+    var hostingController: NSHostingController<MainUI>?
+
     override func loadView() {
-        // create a hosting controller with your SwiftUI view
-        let hostingController = NSHostingController(rootView: MainUI())
-        self.view = hostingController.view
+        // Create a hosting controller with your SwiftUI view and the selected AI chat's address
+        let appDelegate = NSApp.delegate as? AppDelegate
+        let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
+        let initialAddress: String?
+        if let selectedAIChatTitle = selectedAIChatTitle, let chatOptions = appDelegate?.chatOptions, let url = chatOptions[selectedAIChatTitle] {
+            initialAddress = url
+        } else if let chatOptions = appDelegate?.chatOptions, let firstUrl = chatOptions.values.first {
+            initialAddress = firstUrl
+        } else {
+            initialAddress = nil
+        }
+        self.hostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress ?? ""))
+        self.view = self.hostingController!.view
         self.view.frame = CGRect(origin: .zero, size: .init(width: 500, height: 600))
     }
 
@@ -30,8 +42,24 @@ class MacMistralPopup: NSViewController {
 struct MainUI: View {
     @State private var action = WebViewAction.idle
     @State private var state = WebViewState.empty
-    @State private var address = "https://chat.mistral.ai/chat/"
+    @State private var address: String
     @ObservedObject private var reloadState = WebViewHelper.reloadState
+
+    public func reloadWebView() {
+        self.action = .reload
+    }
+
+    init(initialAddress: String = "https://chat.mistral.ai/chat/") {
+        self._address = State(initialValue: initialAddress)
+    }
+
+    // Add a public method to update the address and trigger the action
+    public func updateAddress(_ newAddress: String) {
+        self.address = newAddress
+        if let url = URL(string: newAddress) {
+            self.action = .load(URLRequest(url: url))
+        }
+    }
 
     var webConfig: WebViewConfig {
         var defaultC = WebViewConfig.default
@@ -61,6 +89,14 @@ struct MainUI: View {
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .overlay(
+            Button("r", action: {
+                print("Cmd+R pressed")
+                self.reloadWebView() // Trigger the reload
+            })
+            .keyboardShortcut(KeyEquivalent("r"), modifiers: [.command])
+            .opacity(0.0) // Hide the button
+        )
     }
 }
 
