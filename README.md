@@ -1,17 +1,7 @@
 # <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral </p>
 
 MacMistral is a SwiftUI application designed for macOS, allowing users to access the Mistral AI chat directly from their menubar. This app provides a convenient way to interact with the Mistral AI without needing to open a browser or switch between applications.
-
-<table> 
-  <tr> 
-    <td align="center"> 
-      <img width="500" alt="image1" src="https://github.com/peterdsp/MacMistral/assets/45949870/f623f9ef-ec89-4bdc-a67f-ac290b8351e5"> 
-  </td> 
-    <td align="center"> 
-      <img width="500" alt="image2" src="https://github.com/peterdsp/MacMistral/assets/45949870/c674af12-fb23-45cf-8dfa-117ca06f0f89">
-    </td> 
-  </tr> 
-</table>
+<p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/e96cf819-e165-4f18-b44b-01dbb2bd2158" width="500" alt="Untitled design"> </p>
 
 ## Features
 
