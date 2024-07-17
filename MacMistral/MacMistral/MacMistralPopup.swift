@@ -13,7 +13,6 @@ class MacMistralPopup: NSViewController {
     var hostingController: NSHostingController<MainUI>?
 
     override func loadView() {
-        // Create a hosting controller with your SwiftUI view and the selected AI chat's address
         let appDelegate = NSApp.delegate as? AppDelegate
         let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
         let initialAddress: String?
@@ -26,7 +25,7 @@ class MacMistralPopup: NSViewController {
         }
         self.hostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress ?? ""))
         self.view = self.hostingController!.view
-        self.view.frame = CGRect(origin: .zero, size: .init(width: 500, height: 600))
+        self.view.frame = CGRect(origin: .zero, size: appDelegate?.windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600))
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -34,7 +33,6 @@ class MacMistralPopup: NSViewController {
         var size = appDelegate.popover?.contentSize ?? CGSize.zero
         size.width += event.deltaX
         size.height += event.deltaY
-        // Update popover size depend on your reference
         appDelegate.popover?.contentSize = size
     }
 }
@@ -53,7 +51,6 @@ struct MainUI: View {
         self._address = State(initialValue: initialAddress)
     }
 
-    // Add a public method to update the address and trigger the action
     public func updateAddress(_ newAddress: String) {
         self.address = newAddress
         if let url = URL(string: newAddress) {
@@ -77,11 +74,9 @@ struct MainUI: View {
                         if let url = URL(string: address) {
                             self.action = .load(URLRequest(url: url))
                         }
-                        // Reset shouldReload after reloading
                         self.reloadState.shouldReload = false
                     }
                 }
-            // Image(systemName: "arrow.down")
         }
         .onAppear {
             if let url = URL(string: address) {
@@ -92,10 +87,10 @@ struct MainUI: View {
         .overlay(
             Button("r", action: {
                 print("Cmd+R pressed")
-                self.reloadWebView() // Trigger the reload
+                self.reloadWebView()
             })
             .keyboardShortcut(KeyEquivalent("r"), modifiers: [.command])
-            .opacity(0.0) // Hide the button
+            .opacity(0.0)
         )
     }
 }
@@ -112,7 +107,6 @@ enum WebViewHelper {
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
                 print("[WebCacheCleaner] Record \(record) deleted")
             }
-            // Set shouldReload to true after cleaning cache
             self.reloadState.shouldReload = true
         }
     }

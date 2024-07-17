@@ -17,44 +17,23 @@ public enum WebViewAction: Equatable {
          goBack,
          goForward,
          evaluateJS(String, (Result<Any?, Error>) -> Void)
-    
+
     public static func == (lhs: WebViewAction, rhs: WebViewAction) -> Bool {
-        if case .idle = lhs,
-           case .idle = rhs
-        {
+        switch (lhs, rhs) {
+        case (.idle, .idle),
+             (.reload, .reload),
+             (.goBack, .goBack),
+             (.goForward, .goForward):
             return true
-        }
-        if case let .load(requestLHS) = lhs,
-           case let .load(requestRHS) = rhs
-        {
+        case let (.load(requestLHS), .load(requestRHS)):
             return requestLHS == requestRHS
-        }
-        if case let .loadHTML(htmlLHS) = lhs,
-           case let .loadHTML(htmlRHS) = rhs
-        {
+        case let (.loadHTML(htmlLHS), .loadHTML(htmlRHS)):
             return htmlLHS == htmlRHS
-        }
-        if case .reload = lhs,
-           case .reload = rhs
-        {
-            return true
-        }
-        if case .goBack = lhs,
-           case .goBack = rhs
-        {
-            return true
-        }
-        if case .goForward = lhs,
-           case .goForward = rhs
-        {
-            return true
-        }
-        if case let .evaluateJS(commandLHS, _) = lhs,
-           case let .evaluateJS(commandRHS, _) = rhs
-        {
+        case let (.evaluateJS(commandLHS, _), .evaluateJS(commandRHS, _)):
             return commandLHS == commandRHS
+        default:
+            return false
         }
-        return false
     }
 }
 
@@ -66,7 +45,7 @@ public struct WebViewState: Equatable {
     public internal(set) var error: Error?
     public internal(set) var canGoBack: Bool
     public internal(set) var canGoForward: Bool
-    
+
     public static let empty = WebViewState(isLoading: false,
                                            pageURL: nil,
                                            pageTitle: nil,
@@ -74,9 +53,9 @@ public struct WebViewState: Equatable {
                                            error: nil,
                                            canGoBack: false,
                                            canGoForward: false)
-    
+
     public static func == (lhs: WebViewState, rhs: WebViewState) -> Bool {
-        lhs.isLoading == rhs.isLoading
+        return lhs.isLoading == rhs.isLoading
             && lhs.pageURL == rhs.pageURL
             && lhs.pageTitle == rhs.pageTitle
             && lhs.pageHTML == rhs.pageHTML
@@ -89,11 +68,11 @@ public struct WebViewState: Equatable {
 public class ContentView: NSObject {
     private let webView: WebView
     var actionInProgress = false
-    
+
     init(webView: WebView) {
         self.webView = webView
     }
-    
+
     func setLoading(_ isLoading: Bool,
                     canGoBack: Bool? = nil,
                     canGoForward: Bool? = nil,
@@ -121,7 +100,6 @@ extension ContentView: WKNavigationDelegate {
         setLoading(false,
                    canGoBack: webView.canGoBack,
                    canGoForward: webView.canGoForward)
-        
         webView.evaluateJavaScript("document.title") { response, _ in
             if let title = response as? String {
                 var newState = self.webView.state
@@ -129,7 +107,7 @@ extension ContentView: WKNavigationDelegate {
                 self.webView.state = newState
             }
         }
-      
+
         webView.evaluateJavaScript("document.URL.toString()") { response, _ in
             if let url = response as? String {
                 var newState = self.webView.state
@@ -137,7 +115,7 @@ extension ContentView: WKNavigationDelegate {
                 self.webView.state = newState
             }
         }
-        
+
         if self.webView.htmlInState {
             webView.evaluateJavaScript("document.documentElement.outerHTML.toString()") { response, _ in
                 if let html = response as? String {
@@ -148,35 +126,35 @@ extension ContentView: WKNavigationDelegate {
             }
         }
     }
-    
+
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         setLoading(false)
     }
-    
+
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         setLoading(false, error: error)
     }
-    
+
     public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         setLoading(true)
     }
-    
+
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         setLoading(true,
                    canGoBack: webView.canGoBack,
                    canGoForward: webView.canGoForward)
     }
-    
+
     public func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
     {
-        if let host = navigationAction.request.url?.host {
-            if self.webView.restrictedPages?.first(where: { host.contains($0) }) != nil {
-                decisionHandler(.cancel)
-                setLoading(false)
-                return
-            }
+        if let host = navigationAction.request.url?.host,
+           self.webView.restrictedPages?.first(where: { host.contains($0) }) != nil
+        {
+            decisionHandler(.cancel)
+            setLoading(false)
+            return
         }
         if let url = navigationAction.request.url,
            let scheme = url.scheme,
@@ -205,8 +183,6 @@ extension ContentView: WKUIDelegate {
 
 public struct WebViewConfig {
     public static let `default` = WebViewConfig()
-    
-    public let javaScriptEnabled: Bool
     public let allowsBackForwardNavigationGestures: Bool
     public let allowsInlineMediaPlayback: Bool
     public let mediaTypesRequiringUserActionForPlayback: WKAudiovisualMediaTypes
@@ -214,9 +190,8 @@ public struct WebViewConfig {
     public let isOpaque: Bool
     public let backgroundColor: Color
     public var customUserAgent: String?
-    
-    public init(javaScriptEnabled: Bool = true,
-                allowsBackForwardNavigationGestures: Bool = true,
+
+    public init(allowsBackForwardNavigationGestures: Bool = true,
                 allowsInlineMediaPlayback: Bool = true,
                 mediaTypesRequiringUserActionForPlayback: WKAudiovisualMediaTypes = [],
                 isScrollEnabled: Bool = true,
@@ -224,7 +199,6 @@ public struct WebViewConfig {
                 backgroundColor: Color = .clear,
                 customUserAgent: String? = nil)
     {
-        self.javaScriptEnabled = javaScriptEnabled
         self.allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures
         self.allowsInlineMediaPlayback = allowsInlineMediaPlayback
         self.mediaTypesRequiringUserActionForPlayback = mediaTypesRequiringUserActionForPlayback
@@ -243,7 +217,6 @@ public struct WebView: NSViewRepresentable {
     let restrictedPages: [String]?
     let htmlInState: Bool
     let schemeHandlers: [String: (URL) -> Void]
-    
     public init(config: WebViewConfig = .default,
                 action: Binding<WebViewAction>,
                 state: Binding<WebViewState>,
@@ -258,27 +231,29 @@ public struct WebView: NSViewRepresentable {
         self.htmlInState = htmlInState
         self.schemeHandlers = schemeHandlers
     }
-    
+
     public func makeCoordinator() -> ContentView {
         ContentView(webView: self)
     }
-    
+
     public func makeNSView(context: Context) -> WKWebView {
-        let preferences = WKPreferences()
-        preferences.javaScriptEnabled = config.javaScriptEnabled
-        
+        let preferences = WKWebpagePreferences()
+        preferences.allowsContentJavaScript = true
+
         let configuration = WKWebViewConfiguration()
-        configuration.preferences = preferences
-        
+        configuration.defaultWebpagePreferences = preferences
+        configuration.websiteDataStore = WKWebsiteDataStore.default()
+        configuration.suppressesIncrementalRendering = false
+
         let webView = WKWebView(frame: CGRect.zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.customUserAgent = config.customUserAgent
         webView.uiDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
-        
+
         return webView
     }
-    
+
     public func updateNSView(_ uiView: WKWebView, context: Context) {
         if action == .idle {
             return
