@@ -16,20 +16,32 @@ class MacMistralPopup: NSViewController {
         let appDelegate = NSApp.delegate as? AppDelegate
         let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
         let initialAddress: String?
-        if let selectedAIChatTitle = selectedAIChatTitle, let chatOptions = appDelegate?.chatOptions, let url = chatOptions[selectedAIChatTitle] {
+        if let selectedAIChatTitle = selectedAIChatTitle,
+            let chatOptions = appDelegate?.chatOptions,
+            let url = chatOptions[selectedAIChatTitle]
+        {
             initialAddress = url
-        } else if let chatOptions = appDelegate?.chatOptions, let firstUrl = chatOptions.values.first {
+        } else if let chatOptions = appDelegate?.chatOptions,
+            let firstUrl = chatOptions.values.first
+        {
             initialAddress = firstUrl
         } else {
             initialAddress = nil
         }
-        self.hostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress ?? ""))
+        self.hostingController = NSHostingController(
+            rootView: MainUI(initialAddress: initialAddress ?? ""))
         self.view = self.hostingController!.view
-        self.view.frame = CGRect(origin: .zero, size: appDelegate?.windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600))
+        self.view.frame = CGRect(
+            origin: .zero,
+            size: appDelegate?.windowSizeOptions["Medium"]
+                ?? CGSize(width: 500, height: 600))
     }
 
     override func mouseDragged(with event: NSEvent) {
-        guard let appDelegate: AppDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
+        guard
+            let appDelegate: AppDelegate = NSApplication.shared.delegate
+                as? AppDelegate
+        else { return }
         var size = appDelegate.popover?.contentSize ?? CGSize.zero
         size.width += event.deltaX
         size.height += event.deltaY
@@ -42,16 +54,21 @@ struct MainUI: View {
     @State private var state = WebViewState.empty
     @State private var address: String
     @ObservedObject private var reloadState = WebViewHelper.reloadState
+    private let customUserAgent: String?
 
     public func reloadWebView() {
         self.action = .reload
     }
 
-    init(initialAddress: String = "https://chat.mistral.ai/chat/") {
+    init(
+        initialAddress: String = "https://chat.mistral.ai/chat/",
+        customUserAgent: String? = nil
+    ) {
         self._address = State(initialValue: initialAddress)
+        self.customUserAgent = customUserAgent
     }
 
-    public func updateAddress(_ newAddress: String) {
+    public func navigate(to newAddress: String) {
         self.address = newAddress
         if let url = URL(string: newAddress) {
             self.action = .load(URLRequest(url: url))
@@ -59,24 +76,24 @@ struct MainUI: View {
     }
 
     var webConfig: WebViewConfig {
-        var defaultC = WebViewConfig.default
-        return defaultC
+        return WebViewConfig(customUserAgent: customUserAgent)
     }
-
     var body: some View {
         VStack(spacing: 0.0) {
-            WebView(config: self.webConfig,
-                    action: self.$action,
-                    state: self.$state,
-                    restrictedPages: nil)
-                .onReceive(self.reloadState.$shouldReload) { shouldReload in
-                    if shouldReload {
-                        if let url = URL(string: address) {
-                            self.action = .load(URLRequest(url: url))
-                        }
-                        self.reloadState.shouldReload = false
+            WebView(
+                config: self.webConfig,
+                action: self.$action,
+                state: self.$state,
+                restrictedPages: nil
+            )
+            .onReceive(self.reloadState.$shouldReload) { shouldReload in
+                if shouldReload {
+                    if let url = URL(string: address) {
+                        self.action = .load(URLRequest(url: url))
                     }
+                    self.reloadState.shouldReload = false
                 }
+            }
         }
         .onAppear {
             if let url = URL(string: address) {
@@ -85,10 +102,13 @@ struct MainUI: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .overlay(
-            Button("r", action: {
-                print("Cmd+R pressed")
-                self.reloadWebView()
-            })
+            Button(
+                "r",
+                action: {
+                    print("Cmd+R pressed")
+                    self.reloadWebView()
+                }
+            )
             .keyboardShortcut(KeyEquivalent("r"), modifiers: [.command])
             .opacity(0.0)
         )
@@ -102,9 +122,13 @@ enum WebViewHelper {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
         print("[WebCacheCleaner] All cookies deleted")
 
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+        WKWebsiteDataStore.default().fetchDataRecords(
+            ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()
+        ) { records in
             records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+                WKWebsiteDataStore.default().removeData(
+                    ofTypes: record.dataTypes, for: [record],
+                    completionHandler: {})
                 print("[WebCacheCleaner] Record \(record) deleted")
             }
             self.reloadState.shouldReload = true

@@ -351,7 +351,7 @@
 				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "MacMistral/Preview\\ Content";
 				DEVELOPMENT_TEAM = R8JF2W45R3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -366,8 +366,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MacMistral.app.MacMistral;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.macMistral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -384,7 +384,7 @@
 				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_ASSET_PATHS = "MacMistral/Preview\\ Content";
 				DEVELOPMENT_TEAM = R8JF2W45R3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -399,8 +399,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MacMistral.app.MacMistral;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.macMistral;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

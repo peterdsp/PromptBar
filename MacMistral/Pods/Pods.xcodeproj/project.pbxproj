@@ -50,18 +50,18 @@
 		81F4EBF27B3F1C0A12866DE7B9BD679C /* HotKey-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "HotKey-dummy.m"; sourceTree = "<group>"; };
 		899A11502C963BEC287962281A814210 /* Pods-MacMistral-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MacMistral-acknowledgements.plist"; sourceTree = "<group>"; };
 		8B2A475C41BDBF04DA1836D5F7397F12 /* Pods-MacMistral.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MacMistral.modulemap"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; };
 		A3B2009184434729ACCB10CA7FEC24C5 /* HotKey.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HotKey.swift; path = Sources/HotKey/HotKey.swift; sourceTree = "<group>"; };
 		BAD7B0257281CD519BF60826062FFD8F /* Key.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Key.swift; path = Sources/HotKey/Key.swift; sourceTree = "<group>"; };
 		BE0CDE2EED2267A43E61FFA4E3307222 /* KeyCombo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeyCombo.swift; path = Sources/HotKey/KeyCombo.swift; sourceTree = "<group>"; };
 		BF2E724146CCFC10613B0148B39BC09F /* Pods-MacMistral.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MacMistral.release.xcconfig"; sourceTree = "<group>"; };
 		C32D2E6B1DAFC48F3BB978ADA695D359 /* Pods-MacMistral-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MacMistral-umbrella.h"; sourceTree = "<group>"; };
-		C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods-MacMistral */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-MacMistral"; path = Pods_MacMistral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods_MacMistral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MacMistral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC275F10B67C17FABA27DF358DB68FBA /* KeyCombo+System.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "KeyCombo+System.swift"; path = "Sources/HotKey/KeyCombo+System.swift"; sourceTree = "<group>"; };
 		D93DD5320B9CE6EC20456ACB55AC18C5 /* HotKey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = HotKey.release.xcconfig; sourceTree = "<group>"; };
 		E81F6492756EB97096F56436A1CE1548 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Carbon.framework; sourceTree = DEVELOPER_DIR; };
 		EC06087B2939703A4EFECAD790F44320 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = HotKey; path = HotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HotKey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,7 +115,6 @@
 				00020A4D867470FA8BF73F1C7B146E45 /* NSEventModifierFlags+HotKey.swift */,
 				644FB92CC1861D4C486A7589109413FA /* Support Files */,
 			);
-			name = HotKey;
 			path = HotKey;
 			sourceTree = "<group>";
 		};
@@ -181,8 +180,8 @@
 		E583B695FE370D4C6CC021D438684FD7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey */,
-				C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods-MacMistral */,
+				F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey.framework */,
+				C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods_MacMistral.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,7 +224,7 @@
 			);
 			name = "Pods-MacMistral";
 			productName = Pods_MacMistral;
-			productReference = C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods-MacMistral */;
+			productReference = C4CD02C1C74AAD74787FE2BF781FBA31 /* Pods_MacMistral.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		DB4D977E4336D9F2E9E510A33CD1DB6D /* HotKey */ = {
@@ -243,7 +242,7 @@
 			);
 			name = HotKey;
 			productName = HotKey;
-			productReference = F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey */;
+			productReference = F36B2E7BB4C3E92E4DF7443FAFF3AE3F /* HotKey.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */

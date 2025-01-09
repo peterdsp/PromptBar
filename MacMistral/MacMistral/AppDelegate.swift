@@ -28,7 +28,7 @@ struct AboutView: View {
             }
             Text("Developed by Petros Dhespollari")
                 .font(.subheadline)
-            Text("Version 1.1")
+            Text("Version 1.2")
                 .font(.subheadline)
                 .padding(.top)
             Button("Visit Developer's Website") {
@@ -47,38 +47,40 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var selectedAIChatTitle: String = "Mistral AI Chat"
     private let aiChatOptions: [String: String] = [
         "Mistral": "https://chat.mistral.ai/chat/",
-        "Claude": "https://claude.ai/chats",
         "ChatGPT": "https://chat.openai.com/#",
-        "Gemini": "https://gemini.google.com/app"
+        "Gemini": "https://gemini.google.com/app",
     ]
-    
+
     internal var windowSizeOptions: [String: CGSize] = [
         "Small": CGSize(width: 400, height: 300),
         "Medium": CGSize(width: 500, height: 600),
-        "Large": CGSize(width: 700, height: 800)
+        "Large": CGSize(width: 700, height: 800),
     ]
-    
+
     var chatOptions: [String: String] {
         return aiChatOptions
     }
-    
+
     public var popover: NSPopover!
     private var menu: NSMenu!
-    
-    let hotKey = HotKey(key: .c, modifiers: [.shift, .command]) // Global hotkey
-    
+    private let windowSizeKey = "selectedWindowSize"
+
+    let hotKey = HotKey(key: .c, modifiers: [.shift, .command])  // Global hotkey
+
     var hotCKey: HotKey?
     var hotVKey: HotKey?
     var hotZKey: HotKey?
     var hotXKey: HotKey?
     var hotAKey: HotKey?
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = NSStatusBar.system.statusItem(
+            withLength: NSStatusItem.variableLength)
         NSApp.setActivationPolicy(.accessory)
-        
+
         if let button = statusItem.button {
-            let icon = NSImage(named: "MenuBarIcon")!.resized(to: CGSize(width: 14, height: 14))
+            let icon = NSImage(named: "MenuBarIcon")!.resized(
+                to: CGSize(width: 14, height: 14))
             icon.isTemplate = true
             button.image = icon
             button.action = #selector(handleMenuIconAction(sender:))
@@ -86,21 +88,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         // Check if there is a saved AI chat title, set default to "Mistral" if not
-        if let savedAIChatTitle = UserDefaults.standard.string(forKey: "selectedAIChatTitle") {
+        if let savedAIChatTitle = UserDefaults.standard.string(
+            forKey: "selectedAIChatTitle")
+        {
             selectedAIChatTitle = savedAIChatTitle
         } else {
             selectedAIChatTitle = "Mistral"
-            UserDefaults.standard.set(selectedAIChatTitle, forKey: "selectedAIChatTitle")
+            UserDefaults.standard.set(
+                selectedAIChatTitle, forKey: "selectedAIChatTitle")
         }
 
         constructPopover()
         constructMenu()
 
-        hotKey.keyUpHandler = { // Global hotkey handler
+        // ---> NEW: Apply previously saved window size or default to Medium
+        if let savedSizeName = UserDefaults.standard.string(
+            forKey: windowSizeKey),
+            let savedSize = windowSizeOptions[savedSizeName]
+        {
+            popover.contentSize = savedSize
+        } else {
+            let defaultSizeName = "Medium"
+            popover.contentSize = windowSizeOptions[defaultSizeName]!
+            UserDefaults.standard.set(defaultSizeName, forKey: windowSizeKey)
+        }
+
+        hotKey.keyUpHandler = {  // Global hotkey handler
             self.togglePopover()
         }
+
+        NSApp.setActivationPolicy(.accessory)
     }
-    
+
     @objc func handleMenuIconAction(sender: NSStatusBarButton) {
         let event = NSApp.currentEvent!
         if event.type == .rightMouseUp {
@@ -110,11 +129,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             togglePopover()
         }
     }
-    
+
     func menuDidClose(_ menu: NSMenu) {
         removeMenu()
     }
-    
+
     @objc func didTapOne() {
         let aboutView = AboutView()
         let aboutWindow = NSWindow(
@@ -129,68 +148,88 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         aboutWindow.makeKeyAndOrderFront(nil)
         aboutWindowController.showWindow(nil)
     }
-    
+
     @objc func didTapTwo() {
         WebViewHelper.clean()
     }
-    
+
     @objc func changeAIChat(sender: NSMenuItem) {
         if let urlString = sender.representedObject as? String {
-            selectedAIChatTitle = sender.title.trimmingCharacters(in: .whitespacesAndNewlines)
-            let initialAddress = aiChatOptions[selectedAIChatTitle] ?? "https://chat.mistral.ai/chat/"
-            let newHostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress))
+            selectedAIChatTitle = sender.title.trimmingCharacters(
+                in: .whitespacesAndNewlines)
+            let initialAddress =
+                aiChatOptions[selectedAIChatTitle]
+                ?? "https://chat.mistral.ai/chat/"
+            let newHostingController = NSHostingController(
+                rootView: MainUI(initialAddress: initialAddress))
             let newPopupContentViewController = MacMistralPopup()
-            newPopupContentViewController.hostingController = newHostingController
+            newPopupContentViewController.hostingController =
+                newHostingController
             popover.contentViewController = newPopupContentViewController
             popover.contentSize = newHostingController.view.fittingSize
-            
+
             updateMenuItemsState()
-            UserDefaults.standard.set(selectedAIChatTitle, forKey: "selectedAIChatTitle")
+            UserDefaults.standard.set(
+                selectedAIChatTitle, forKey: "selectedAIChatTitle")
         }
     }
-    
+
     @objc func changeWindowSize(sender: NSMenuItem) {
         if let newSize = windowSizeOptions[sender.title] {
             popover.contentSize = newSize
+
+            // ---> NEW: Save the size name in UserDefaults
+            UserDefaults.standard.set(sender.title, forKey: windowSizeKey)
+
+            // Update the checkmark states
             updateWindowSizeMenuItemsState()
         }
     }
-    
+
     func updateMenuItemsState() {
         if let changeChatAIMenuItem = menu.item(withTitle: "Change AI Chat"),
-           let changeChatAISubmenu = changeChatAIMenuItem.submenu
+            let changeChatAISubmenu = changeChatAIMenuItem.submenu
         {
             for item in changeChatAISubmenu.items {
                 item.state = (item.title == selectedAIChatTitle) ? .on : .off
             }
         }
     }
-    
+
     func updateWindowSizeMenuItemsState() {
         if let windowSizeMenuItem = menu.item(withTitle: "Change Window Size"),
-           let windowSizeSubmenu = windowSizeMenuItem.submenu
+            let windowSizeSubmenu = windowSizeMenuItem.submenu
         {
             for item in windowSizeSubmenu.items {
-                item.state = (popover.contentSize == windowSizeOptions[item.title]) ? .on : .off
+                item.state =
+                    (popover.contentSize == windowSizeOptions[item.title])
+                    ? .on
+                    : .off
             }
         }
     }
-    
+
     func constructMenu() {
         menu = NSMenu()
-        let aboutMenuItem = NSMenuItem(title: "About", action: #selector(didTapOne), keyEquivalent: "1")
-        let cleanCookiesMenuItem = NSMenuItem(title: "Clean Cookies", action: #selector(didTapTwo), keyEquivalent: "2")
+        let aboutMenuItem = NSMenuItem(
+            title: "About", action: #selector(didTapOne), keyEquivalent: "1")
+        let cleanCookiesMenuItem = NSMenuItem(
+            title: "Clean Cookies", action: #selector(didTapTwo),
+            keyEquivalent: "2")
         menu.addItem(aboutMenuItem)
         menu.addItem(cleanCookiesMenuItem)
         menu.addItem(NSMenuItem.separator())
 
-        let changeChatAIMenuItem = NSMenuItem(title: "Change AI Chat", action: nil, keyEquivalent: "")
+        let changeChatAIMenuItem = NSMenuItem(
+            title: "Change AI Chat", action: nil, keyEquivalent: "")
         let changeChatAISubmenu = NSMenu()
 
-        let aiChatOrder = ["Mistral", "Claude", "ChatGPT", "Gemini"]
+        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini"]
         for title in aiChatOrder {
             if let url = aiChatOptions[title] {
-                let menuItem = NSMenuItem(title: title, action: #selector(changeAIChat(sender:)), keyEquivalent: "")
+                let menuItem = NSMenuItem(
+                    title: title, action: #selector(changeAIChat(sender:)),
+                    keyEquivalent: "")
                 menuItem.representedObject = url
                 changeChatAISubmenu.addItem(menuItem)
             }
@@ -199,13 +238,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         changeChatAIMenuItem.submenu = changeChatAISubmenu
         menu.addItem(changeChatAIMenuItem)
 
-        let changeWindowSizeMenuItem = NSMenuItem(title: "Change Window Size", action: nil, keyEquivalent: "")
+        let changeWindowSizeMenuItem = NSMenuItem(
+            title: "Change Window Size", action: nil, keyEquivalent: "")
         let changeWindowSizeSubmenu = NSMenu()
 
         let sortedWindowSizeKeys = ["Small", "Medium", "Large"]
         for size in sortedWindowSizeKeys {
-            if let _ = windowSizeOptions[size] {
-                let menuItem = NSMenuItem(title: size, action: #selector(changeWindowSize(sender:)), keyEquivalent: "")
+            if windowSizeOptions[size] != nil {
+                let menuItem = NSMenuItem(
+                    title: size, action: #selector(changeWindowSize(sender:)),
+                    keyEquivalent: "")
                 changeWindowSizeSubmenu.addItem(menuItem)
             }
         }
@@ -213,27 +255,31 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(changeWindowSizeMenuItem)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(
+            NSMenuItem(
+                title: "Quit", action: #selector(NSApplication.terminate(_:)),
+                keyEquivalent: "q"))
         menu.delegate = self
     }
-    
+
     func constructPopover() {
         popover = NSPopover()
         popover.contentViewController = MacMistralPopup()
         popover.delegate = self
         popover.behavior = .transient
-        popover.contentSize = windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600)
+        popover.contentSize =
+            windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600)
     }
-    
+
     func showMenu() {
         statusItem.menu = menu
         statusItem.popUpMenu(menu)
     }
-    
+
     func removeMenu() {
         statusItem.menu = nil
     }
-    
+
     func togglePopover() {
         if popover.isShown {
             popover.performClose(nil)
@@ -243,7 +289,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 updateMenuItemsState()
                 updateWindowSizeMenuItemsState()
-                popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+                popover.show(
+                    relativeTo: button.bounds, of: button, preferredEdge: .minY)
                 popover.contentViewController?.view.window?.level = .floating
                 popover.contentViewController?.view.window?.makeKey()
                 constructKeys()
@@ -260,34 +307,37 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func constructKeys() {
-        hotCKey = HotKey(key: .c, modifiers: [.command]) // Global hotkey
-        hotVKey = HotKey(key: .v, modifiers: [.command]) // Global hotkey
-        hotZKey = HotKey(key: .z, modifiers: [.command]) // Global hotkey
-        hotXKey = HotKey(key: .x, modifiers: [.command]) // Global hotkey
-        hotAKey = HotKey(key: .a, modifiers: [.command]) // Global hotkey
-        
+        hotCKey = HotKey(key: .c, modifiers: [.command])  // Global hotkey
+        hotVKey = HotKey(key: .v, modifiers: [.command])  // Global hotkey
+        hotZKey = HotKey(key: .z, modifiers: [.command])  // Global hotkey
+        hotXKey = HotKey(key: .x, modifiers: [.command])  // Global hotkey
+        hotAKey = HotKey(key: .a, modifiers: [.command])  // Global hotkey
+
         hotCKey?.keyDownHandler = {
             NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: self)
         }
-        
+
         hotVKey?.keyDownHandler = {
             NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: self)
         }
-        
+
         hotXKey?.keyDownHandler = {
             NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: self)
         }
-        
+
         hotZKey?.keyDownHandler = {
             NSApp.sendAction(Selector("undo:"), to: nil, from: self)
         }
-        
+
         hotAKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSStandardKeyBindingResponding.selectAll(_:)), to: nil, from: self)
+            NSApp.sendAction(
+                #selector(NSStandardKeyBindingResponding.selectAll(_:)),
+                to: nil, from: self)
         }
     }
 
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool
+    {
         return true
     }
 }
@@ -302,7 +352,9 @@ extension NSImage {
     func resized(to size: CGSize) -> NSImage {
         let newImage = NSImage(size: size)
         newImage.lockFocus()
-        draw(in: NSRect(origin: .zero, size: size), from: NSZeroRect, operation: .copy, fraction: 1.0)
+        draw(
+            in: NSRect(origin: .zero, size: size), from: NSZeroRect,
+            operation: .copy, fraction: 1.0)
         newImage.unlockFocus()
         return newImage
     }
@@ -317,7 +369,7 @@ class AboutWindowController: NSWindowController {
 
 extension AboutWindowController: NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        sender.orderOut(nil) // Hide the window instead of closing
-        return false // Prevent the window from closing
+        sender.orderOut(nil)  // Hide the window instead of closing
+        return false  // Prevent the window from closing
     }
 }

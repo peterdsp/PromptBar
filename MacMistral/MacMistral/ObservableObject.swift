@@ -10,4 +10,3 @@ import SwiftUI
 class ReloadState: ObservableObject {
     @Published var shouldReload: Bool = false
 }
-
