@@ -15,6 +15,10 @@
 		2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */; };
 		2C0BA4EE2BA60F690050C66B /* MacMistralPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */; };
 		2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E816D2BA6751F0047A31C /* ObservableObject.swift */; };
+		2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */; };
+		2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */; };
+		2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */; };
+		2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB42D312E0200F6B4F5 /* AboutView.swift */; };
 		D659761E14B9D2B39B36A60D /* Pods_MacMistral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F2D8E172B49EF6BAD51AE0 /* Pods_MacMistral.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +33,10 @@
 		2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMistralPopup.swift; sourceTree = "<group>"; };
 		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
 		2C89B5E42BA64E3200B1F18A /* MacMistral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacMistral.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHelper.swift; sourceTree = "<group>"; };
+		2C98EFB42D312E0200F6B4F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		89D6FAB5DEB41BDBBA5C52BF /* Pods-MacMistral.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.debug.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.debug.xcconfig"; sourceTree = "<group>"; };
 		8F0ADF4E3968B97C11770276 /* Pods-MacMistral.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MacMistral.release.xcconfig"; path = "Target Support Files/Pods-MacMistral/Pods-MacMistral.release.xcconfig"; sourceTree = "<group>"; };
 		98F2D8E172B49EF6BAD51AE0 /* Pods_MacMistral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MacMistral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,15 +67,12 @@
 		2C0BA4D32BA6055E0050C66B /* MacMistral */ = {
 			isa = PBXGroup;
 			children = (
-				2C0BA4D42BA6055E0050C66B /* main.swift */,
-				2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */,
-				2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */,
-				2C0BA4D62BA6055E0050C66B /* ContentView.swift */,
+				2C98EFA32D312B6A00F6B4F5 /* App */,
+				2C98EFA52D312B9700F6B4F5 /* Views */,
+				2C98EFB72D312E5500F6B4F5 /* Helpers */,
 				2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */,
-				2C0BA4DF2BA6055F0050C66B /* MacMistral.entitlements */,
 				2C0BA4DC2BA6055F0050C66B /* Preview Content */,
-				2C0BA4E72BA6083C0050C66B /* Info.plist */,
-				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
+				2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */,
 			);
 			path = MacMistral;
 			sourceTree = "<group>";
@@ -78,6 +83,37 @@
 				2C0BA4DD2BA6055F0050C66B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		2C98EFA32D312B6A00F6B4F5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2C0BA4D42BA6055E0050C66B /* main.swift */,
+				2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */,
+				2C0BA4DF2BA6055F0050C66B /* MacMistral.entitlements */,
+				2C0BA4E72BA6083C0050C66B /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		2C98EFA52D312B9700F6B4F5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2C98EFB42D312E0200F6B4F5 /* AboutView.swift */,
+				2C0BA4ED2BA60F690050C66B /* MacMistralPopup.swift */,
+				2C0BA4D62BA6055E0050C66B /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2C98EFB72D312E5500F6B4F5 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */,
+				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
+				2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		82D98578AB5CBF0C2C6EFD29 /* Frameworks */ = {
@@ -158,6 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */,
+				2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */,
 				2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */,
 				2C0BA4E82BA6083C0050C66B /* Info.plist in Resources */,
 			);
@@ -215,8 +252,11 @@
 				2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */,
 				2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */,
 				2C0BA4EE2BA60F690050C66B /* MacMistralPopup.swift in Sources */,
+				2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */,
 				2C0BA4D72BA6055E0050C66B /* ContentView.swift in Sources */,
 				2C0BA4D52BA6055E0050C66B /* main.swift in Sources */,
+				2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */,
+				2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,7 +388,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MacMistral/App/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
@@ -357,9 +397,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MacMistral/Info.plist;
+				INFOPLIST_FILE = MacMistral/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacMistral;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -367,7 +408,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.macMistral;
+				PRODUCT_BUNDLE_IDENTIFIER = "peterdsp.app.mac-mistral";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -381,7 +422,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = MacMistral/MacMistral.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MacMistral/App/MacMistral.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
@@ -390,9 +431,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MacMistral/Info.plist;
+				INFOPLIST_FILE = MacMistral/App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacMistral;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -400,7 +442,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.2;
-				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.macMistral;
+				PRODUCT_BUNDLE_IDENTIFIER = "peterdsp.app.mac-mistral";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
