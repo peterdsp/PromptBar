@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         "Mistral": "https://chat.mistral.ai/chat/",
         "ChatGPT": "https://chat.openai.com/#",
         "Gemini": "https://gemini.google.com/app",
+        "DeepSeek": "https://chat.deepseek.com/",
     ]
 
     internal var windowSizeOptions: [String: CGSize] = [
@@ -208,7 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         )
         let changeChatAISubmenu = NSMenu()
 
-        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini"]
+        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini", "DeepSeek"]
         for title in aiChatOrder {
             if let url = aiChatOptions[title] {
                 let menuItem = NSMenuItem(
