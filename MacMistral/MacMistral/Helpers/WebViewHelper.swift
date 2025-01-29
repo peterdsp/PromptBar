@@ -12,7 +12,6 @@ import WebKit
 
     @objc static func clean() {  // Add @objc to make it accessible to #selector
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        print("[WebCacheCleaner] All cookies deleted")
 
         WKWebsiteDataStore.default().fetchDataRecords(
             ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()
@@ -21,7 +20,6 @@ import WebKit
                 WKWebsiteDataStore.default().removeData(
                     ofTypes: record.dataTypes, for: [record],
                     completionHandler: {})
-                print("[WebCacheCleaner] Record \(record) deleted")
             }
             self.reloadState.shouldReload = true
         }

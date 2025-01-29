@@ -6,6 +6,9 @@
 //
 
 import Cocoa
+import FirebaseCore
+import FirebaseInstallations
+import FirebaseRemoteConfig
 import HotKey
 import SwiftUI
 import WebKit
@@ -19,6 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         "ChatGPT": "https://chat.openai.com/#",
         "Gemini": "https://gemini.google.com/app",
         "DeepSeek": "https://chat.deepseek.com/",
+        "Qwen": "https://chat.qwenlm.ai/",
     ]
 
     internal var windowSizeOptions: [String: CGSize] = [
@@ -44,6 +48,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var hotAKey: HotKey?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        FirebaseApp.configure()
+
         statusItem = NSStatusBar.system.statusItem(
             withLength: NSStatusItem.variableLength)
         NSApp.setActivationPolicy(.accessory)
@@ -112,11 +118,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             backing: .buffered,
             defer: false
         )
-        let aboutWindowController = AboutWindowController(window: aboutWindow)
-        aboutWindow.contentView = NSHostingView(rootView: aboutView)
+
+        // Set window level to floating to keep it above other windows
+        aboutWindow.level = .floating
         aboutWindow.center()
-        aboutWindow.makeKeyAndOrderFront(nil)
+        aboutWindow.contentView = NSHostingView(rootView: aboutView)
+
+        let aboutWindowController = AboutWindowController(window: aboutWindow)
         aboutWindowController.showWindow(nil)
+
+        // Bring to front and maintain position
+        aboutWindow.orderFrontRegardless()
     }
 
     @objc func didTapTwo() {
@@ -209,7 +221,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         )
         let changeChatAISubmenu = NSMenu()
 
-        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini", "DeepSeek"]
+        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini", "DeepSeek", "Qwen"]
         for title in aiChatOrder {
             if let url = aiChatOptions[title] {
                 let menuItem = NSMenuItem(

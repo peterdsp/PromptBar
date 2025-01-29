@@ -110,17 +110,10 @@ extension ContentView: WKNavigationDelegate {
             false,
             canGoBack: webView.canGoBack,
             canGoForward: webView.canGoForward)
-        print(
-            "[WebView] Finished navigation to: \(webView.url?.absoluteString ?? "unknown URL")"
-        )
 
         webView.evaluateJavaScript("document.title") { response, error in
             if let error = error {
-                print(
-                    "[WebView] Error retrieving title: \(error.localizedDescription)"
-                )
             } else if let title = response as? String {
-                print("[WebView] Page title: \(title)")
                 var newState = self.webView.state
                 newState.pageTitle = title
                 self.webView.state = newState
@@ -130,11 +123,7 @@ extension ContentView: WKNavigationDelegate {
         webView.evaluateJavaScript("document.URL.toString()") {
             response, error in
             if let error = error {
-                print(
-                    "[WebView] Error retrieving URL: \(error.localizedDescription)"
-                )
             } else if let url = response as? String {
-                print("[WebView] Page URL: \(url)")
                 var newState = self.webView.state
                 newState.pageURL = url
                 self.webView.state = newState
@@ -146,11 +135,7 @@ extension ContentView: WKNavigationDelegate {
                 "document.documentElement.outerHTML.toString()"
             ) { response, error in
                 if let error = error {
-                    print(
-                        "[WebView] Error retrieving HTML: \(error.localizedDescription)"
-                    )
                 } else if let html = response as? String {
-                    print("[WebView] Page HTML loaded.")
                     var newState = self.webView.state
                     newState.pageHTML = html
                     self.webView.state = newState
@@ -160,7 +145,6 @@ extension ContentView: WKNavigationDelegate {
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        print("[WebView] Web content process terminated.")
         setLoading(false)
     }
 
@@ -168,18 +152,12 @@ extension ContentView: WKNavigationDelegate {
         _ webView: WKWebView, didFail navigation: WKNavigation!,
         withError error: Error
     ) {
-        print(
-            "[WebView] Navigation failed with error: \(error.localizedDescription)"
-        )
         setLoading(false, error: error)
     }
 
     public func webView(
         _ webView: WKWebView, didCommit navigation: WKNavigation!
     ) {
-        print(
-            "[WebView] Content started arriving for: \(webView.url?.absoluteString ?? "unknown URL")"
-        )
         setLoading(true)
     }
 
@@ -187,9 +165,6 @@ extension ContentView: WKNavigationDelegate {
         _ webView: WKWebView,
         didStartProvisionalNavigation navigation: WKNavigation!
     ) {
-        print(
-            "[WebView] Started provisional navigation to: \(webView.url?.absoluteString ?? "unknown URL")"
-        )
         setLoading(
             true,
             canGoBack: webView.canGoBack,
@@ -205,7 +180,6 @@ extension ContentView: WKNavigationDelegate {
             self.webView.restrictedPages?.first(where: { host.contains($0) })
                 != nil
         {
-            print("[WebView] Navigation to restricted host \(host) canceled.")
             decisionHandler(.cancel)
             setLoading(false)
             return
@@ -214,16 +188,10 @@ extension ContentView: WKNavigationDelegate {
             let scheme = url.scheme,
             let schemeHandler = self.webView.schemeHandlers[scheme]
         {
-            print(
-                "[WebView] Custom scheme handler triggered for: \(url.absoluteString)"
-            )
             schemeHandler(url)
             decisionHandler(.cancel)
             return
         }
-        print(
-            "[WebView] Navigation action allowed for: \(navigationAction.request.url?.absoluteString ?? "unknown URL")"
-        )
         decisionHandler(.allow)
     }
 }

@@ -105,7 +105,6 @@ struct MainUI: View {
             Button(
                 "r",
                 action: {
-                    print("Cmd+R pressed")
                     self.reloadWebView()
                 }
             )
