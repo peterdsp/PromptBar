@@ -15,26 +15,20 @@ class MacMistralPopup: NSViewController {
     override func loadView() {
         let appDelegate = NSApp.delegate as? AppDelegate
         let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
-        let initialAddress: String?
-        if let selectedAIChatTitle = selectedAIChatTitle,
-            let chatOptions = appDelegate?.chatOptions,
-            let url = chatOptions[selectedAIChatTitle]
-        {
-            initialAddress = url
-        } else if let chatOptions = appDelegate?.chatOptions,
-            let firstUrl = chatOptions.values.first
-        {
-            initialAddress = firstUrl
-        } else {
-            initialAddress = nil
-        }
+        let initialAddress: String? = appDelegate?.chatOptions[
+            selectedAIChatTitle ?? "Mistral"]
+
+        // Preload WebView before showing the UI
         self.hostingController = NSHostingController(
             rootView: MainUI(initialAddress: initialAddress ?? ""))
         self.view = self.hostingController!.view
         self.view.frame = CGRect(
-            origin: .zero,
-            size: appDelegate?.windowSizeOptions["Medium"]
-                ?? CGSize(width: 500, height: 600))
+            origin: .zero, size: CGSize(width: 500, height: 600))  // Default size
+
+        // Preload WebView Content
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.hostingController?.rootView.reloadWebView()
+        }
     }
 
     override func mouseDragged(with event: NSEvent) {

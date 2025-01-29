@@ -15,6 +15,7 @@ import WebKit
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
+    private var alwaysOnTop: Bool = false
 
     var selectedAIChatTitle: String = "Mistral AI Chat"
     private let aiChatOptions: [String: String] = [
@@ -108,6 +109,38 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuDidClose(_ menu: NSMenu) {
         removeMenu()
+    }
+
+    func updateWindowLevel() {
+        if let window = popover.contentViewController?.view.window {
+            window.level = alwaysOnTop ? .statusBar : .normal
+            if alwaysOnTop {
+                window.collectionBehavior = [
+                    .canJoinAllSpaces, .fullScreenAuxiliary,
+                ]
+            } else {
+                window.level = .floating
+            }
+        }
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        updateWindowLevel()
+    }
+
+    func applicationDidResignActive(_ notification: Notification) {
+        if alwaysOnTop, let window = popover.contentViewController?.view.window
+        {
+            window.level = .floating
+            window.orderFrontRegardless()
+        }
+    }
+
+    @objc func toggleAlwaysOnTop(sender: NSMenuItem) {
+        alwaysOnTop.toggle()
+        sender.state = alwaysOnTop ? .on : .off
+        updateWindowLevel()
+        updatePopoverBehavior()
     }
 
     @objc func didTapOne() {
@@ -258,6 +291,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         changeWindowSizeMenuItem.submenu = changeWindowSizeSubmenu
         menu.addItem(changeWindowSizeMenuItem)
 
+        let alwaysOnTopMenuItem = NSMenuItem(
+            title: "Always on Top",
+            action: #selector(toggleAlwaysOnTop),
+            keyEquivalent: ""
+        )
+        alwaysOnTopMenuItem.state = alwaysOnTop ? .on : .off
+        menu.addItem(alwaysOnTopMenuItem)
+
         // Separator
         menu.addItem(NSMenuItem.separator())
 
@@ -277,9 +318,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         popover = NSPopover()
         popover.contentViewController = MacMistralPopup()
         popover.delegate = self
-        popover.behavior = .transient
         popover.contentSize =
             windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600)
+
+        // Adjust behavior based on `alwaysOnTop`
+        updatePopoverBehavior()
+    }
+
+    func updatePopoverBehavior() {
+        popover.behavior = alwaysOnTop ? .applicationDefined : .transient
     }
 
     func showMenu() {
@@ -302,7 +349,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 updateWindowSizeMenuItemsState()
                 popover.show(
                     relativeTo: button.bounds, of: button, preferredEdge: .minY)
-                popover.contentViewController?.view.window?.level = .floating
                 popover.contentViewController?.view.window?.makeKey()
                 constructKeys()
             }
