@@ -1,6 +1,6 @@
 # <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral </p>
 
-**MacMistral** is a **SwiftUI** application designed for **macOS**, allowing users to access AI chat models **directly from their menubar**. No need for a browser—just **one click to chat** with your preferred AI!  
+**MacMistral** is a **SwiftUI** application designed for **macOS**, allowing users to access AI chat models **directly from their menubar**. No need for a browser—just **one click to chat** with your preferred AI!
 
 <p align="center"> <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="MacMistral Interface"> </p>
 
@@ -13,17 +13,14 @@
   - **Gemini**
   - **ChatGPT**
   - **DeepSeek**
-  - **NEW: Grok (Added in v1.2.3)**
+  - **Grok**
 - **Dynamic Window Sizing** – Choose between **Small, Medium, and Large** chat windows.
 - **SwiftUI-Powered UI** – Native macOS feel with a modern and intuitive interface.
 
-## 📌 What's New in Version 1.2.3?
+## 📌 What's New in Version 1.2.4?
 
-- **🚀 Expanded AI Selection** – Added **Grok AI** to the list of available chat options.
-- **🛠️ Improved WebView Handling** – More reliable initialization for a smoother experience.
-- **🎨 UI Enhancements** – Default window size is now dynamically set for better consistency.
-- **⚡ Faster Chat Loading** – WebView content now preloads asynchronously for **snappier responses**.
-- **❌ Removed Qwen** – Streamlining supported AI chat models.
+- **🛠️ Maintenance & Bug Fixes** – Addressed issues that prevented the app from running on some devices.  
+- **⚙️ Stability Improvements** – Under-the-hood tweaks for a smoother experience when switching between AI models.
 
 ---
 
@@ -40,19 +37,19 @@
    *(Alternatively, go to the main GitHub page and check the **Releases** tab for the latest version.)*  
 2. Download the latest version (`.zip` file).  
 3. Locate the downloaded zip file in **Finder** and **double-click** to extract it.  
-4. Move the **MacMistral.app** file to your **Applications** folder.  
+4. Move the **MacMistral.app** file to your **Applications** folder.
 
 ### **macOS Security Notice:**
 Since MacMistral is from an **"unidentified developer"**, macOS may block the app from running. To bypass this:  
 1. Locate **MacMistral.app** in your **Applications** folder.  
 2. **Right-click** (or Control-click) and select **Open**.  
-3. Click **Open** again when prompted.  
+3. Click **Open** again when prompted.
 
-💡 **Pro Tip:** To avoid this issue in the future, go to **System Settings → Privacy & Security** and set **“Allow applications from Anywhere.”**  
+💡 **Pro Tip:** To avoid this issue in the future, go to **System Settings → Privacy & Security** and set **“Allow applications from Anywhere.”**
 
 ---
 
-## 🔧 Usage  
+## 🔧 Usage
 
 1. **Click** the MacMistral icon in your menubar.  
 2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, or Grok**).  
@@ -64,29 +61,29 @@ Since MacMistral is from an **"unidentified developer"**, macOS may block the ap
 
 ---
 
-## 🔄 Auto-Start on Login  
+## 🔄 Auto-Start on Login
 
-Want MacMistral to launch automatically when you log in?  
+Want MacMistral to launch automatically when you log in?
 
 1. Open **System Settings**.  
 2. Click **General** → **Login Items**.  
 3. Click the **+** button to add an app.  
 4. Navigate to **MacMistral.app** in your Applications folder.  
-5. Select it and click **Open**.  
+5. Select it and click **Open**.
 
-Now, MacMistral will start up and be ready in your menubar whenever you log in!  
-
----
-
-## 📜 License  
-
-This project is licensed under the **Creative Commons Attribution-ShareAlike 4.0 International License**. See the **LICENSE.md** file for details.  
+Now, MacMistral will start up and be ready in your menubar whenever you log in!
 
 ---
 
-### 🚀 Download MacMistral Now!  
+## 📜 License
+
+This project is licensed under the **Creative Commons Attribution-ShareAlike 4.0 International License**. See the **LICENSE.md** file for details.
+
+---
+
+### 🚀 Download MacMistral Now!
 
 💡 **One-click AI access, right from your Mac’s menubar!**  
 🔗 **[Get MacMistral Now](https://ko-fi.com/s/b1ef047a6f)**  
 
-Want to support future updates? **Buy me a coffee on Ko-fi!** ☕💙  
+Want to support future updates? **Buy me a coffee on Ko-fi!** ☕💙
