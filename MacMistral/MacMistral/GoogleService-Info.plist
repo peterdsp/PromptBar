@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>peterdsp.app.mac-mistral</string>
+	<string>peterdsp.app.macmistral</string>
 	<key>PROJECT_ID</key>
 	<string>mac-mistral</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:353687697163:ios:010314f57078517658940e</string>
+	<string>1:353687697163:ios:0d6be631a64dde0e58940e</string>
 </dict>
 </plist>
