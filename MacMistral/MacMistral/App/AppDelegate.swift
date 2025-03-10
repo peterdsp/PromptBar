@@ -23,7 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         "ChatGPT": "https://chat.openai.com/#",
         "Gemini": "https://gemini.google.com/app",
         "DeepSeek": "https://chat.deepseek.com/",
-        "Grok": "https://x.com/i/grok"
+        "Grok": "https://grok.com/",
     ]
 
     internal var windowSizeOptions: [String: CGSize] = [
