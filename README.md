@@ -1,10 +1,10 @@
-# <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral 1.2.5 </p>
+# <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral 1.3 </p>
 
 **MacMistral** is a **SwiftUI** application designed for **macOS**, allowing users to access AI chat models **directly from their menubar**. No browser required—just **one click to chat** with your preferred AI!
 
 <p align="center"> <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="MacMistral Interface"> </p>
 
-## ✨ What's New in Version 1.2.5?
+## ✨ What's New in Version 1.3?
 
 - **🚀 Official Apple Notarization** – MacMistral is now **notarized by Apple**, meaning smoother installation without security warnings.  
 - **📢 Upcoming App Store Release** – MacMistral will soon be available on the **Mac App Store**!  
