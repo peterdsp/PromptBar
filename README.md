@@ -1,10 +1,10 @@
-# <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral 1.2.5 </p>
+# <p align="center"> <img src="https://github.com/peterdsp/MacMistral/assets/45949870/263217c7-9683-4cd9-972e-9b742abcdc82" width="150" height="150" /> <br> MacMistral 1.3 </p>
 
 **MacMistral** is a **SwiftUI** application designed for **macOS**, allowing users to access AI chat models **directly from their menubar**. No browser required—just **one click to chat** with your preferred AI!
 
 <p align="center"> <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="MacMistral Interface"> </p>
 
-## ✨ What's New in Version 1.2.5?
+## ✨ What's New in Version 1.3?
 
 - **🚀 Official Apple Notarization** – MacMistral is now **notarized by Apple**, meaning smoother installation without security warnings.  
 - **📢 Upcoming App Store Release** – MacMistral will soon be available on the **Mac App Store**!  
@@ -40,10 +40,8 @@
 
 ### **How to Install MacMistral on Your Mac:**
 1. Visit the **MacMistral Ko-fi page** by clicking [**here**](https://ko-fi.com/s/b1ef047a6f).  
-   *(Alternatively, check the **Releases** tab on GitHub for the latest version.)*  
-2. Download the latest version (`.zip` file).  
-3. Locate the downloaded zip file in **Finder** and **double-click** to extract it.  
-4. Move **MacMistral.app** to your **Applications** folder.
+2. Buy the latest version (`.pkg` file).  
+3. Locate the downloaded zip file in **Finder** and **double-click** to install it.
 
 ### **Apple Notarization – No More Gatekeeper Issues!**  
 MacMistral 1.2.5 has been **notarized by Apple**, so macOS will no longer flag it as from an "unidentified developer."  
