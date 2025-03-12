@@ -40,10 +40,8 @@
 
 ### **How to Install MacMistral on Your Mac:**
 1. Visit the **MacMistral Ko-fi page** by clicking [**here**](https://ko-fi.com/s/b1ef047a6f).  
-   *(Alternatively, check the **Releases** tab on GitHub for the latest version.)*  
-2. Download the latest version (`.zip` file).  
-3. Locate the downloaded zip file in **Finder** and **double-click** to extract it.  
-4. Move **MacMistral.app** to your **Applications** folder.
+2. Buy the latest version (`.pkg` file).  
+3. Locate the downloaded zip file in **Finder** and **double-click** to install it.
 
 ### **Apple Notarization – No More Gatekeeper Issues!**  
 MacMistral 1.2.5 has been **notarized by Apple**, so macOS will no longer flag it as from an "unidentified developer."  
