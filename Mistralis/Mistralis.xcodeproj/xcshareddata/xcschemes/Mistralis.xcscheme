@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2C0BA4D02BA6055E0050C66B"
-               BuildableName = "SwiftChat.app"
-               BlueprintName = "SwiftChat"
-               ReferencedContainer = "container:MacMistral.xcodeproj">
+               BuildableName = "Mistralis.app"
+               BlueprintName = "Mistralis"
+               ReferencedContainer = "container:Mistralis.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C0BA4D02BA6055E0050C66B"
-            BuildableName = "SwiftChat.app"
-            BlueprintName = "SwiftChat"
-            ReferencedContainer = "container:MacMistral.xcodeproj">
+            BuildableName = "Mistralis.app"
+            BlueprintName = "Mistralis"
+            ReferencedContainer = "container:Mistralis.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2C0BA4D02BA6055E0050C66B"
-            BuildableName = "SwiftChat.app"
-            BlueprintName = "SwiftChat"
-            ReferencedContainer = "container:MacMistral.xcodeproj">
+            BuildableName = "Mistralis.app"
+            BlueprintName = "Mistralis"
+            ReferencedContainer = "container:Mistralis.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

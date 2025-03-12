@@ -149,7 +149,7 @@
 			dependencies = (
 			);
 			name = Mistralis;
-			productName = MacMistral;
+			productName = Mistralis;
 			productReference = 2C89B5E42BA64E3200B1F18A /* Mistralis.app */;
 			productType = "com.apple.product-type.application";
 		};
