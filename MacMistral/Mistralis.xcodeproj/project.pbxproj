@@ -1,0 +1,480 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C0BA4D52BA6055E0050C66B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4D42BA6055E0050C66B /* main.swift */; };
+		2C0BA4D72BA6055E0050C66B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4D62BA6055E0050C66B /* ContentView.swift */; };
+		2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */; };
+		2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C0BA4DD2BA6055F0050C66B /* Preview Assets.xcassets */; };
+		2C0BA4E82BA6083C0050C66B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C0BA4E72BA6083C0050C66B /* Info.plist */; };
+		2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */; };
+		2C0BA4EE2BA60F690050C66B /* MistralisPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4ED2BA60F690050C66B /* MistralisPopup.swift */; };
+		2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E816D2BA6751F0047A31C /* ObservableObject.swift */; };
+		2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */; };
+		2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */; };
+		2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */; };
+		2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB42D312E0200F6B4F5 /* AboutView.swift */; };
+		D659761E14B9D2B39B36A60D /* Pods_Mistralis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F2D8E172B49EF6BAD51AE0 /* Pods_Mistralis.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2C0BA4D42BA6055E0050C66B /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		2C0BA4D62BA6055E0050C66B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2C0BA4DD2BA6055F0050C66B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		2C0BA4E72BA6083C0050C66B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2C0BA4ED2BA60F690050C66B /* MistralisPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistralisPopup.swift; sourceTree = "<group>"; };
+		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
+		2C89B5E42BA64E3200B1F18A /* Mistralis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mistralis.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHelper.swift; sourceTree = "<group>"; };
+		2C98EFB42D312E0200F6B4F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		53E3B1DEBB38A54D423393DA /* Pods-Mistralis.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mistralis.debug.xcconfig"; path = "Target Support Files/Pods-Mistralis/Pods-Mistralis.debug.xcconfig"; sourceTree = "<group>"; };
+		7A4ACD63CFCD6E79A7B9AC5A /* Pods-Mistralis.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mistralis.release.xcconfig"; path = "Target Support Files/Pods-Mistralis/Pods-Mistralis.release.xcconfig"; sourceTree = "<group>"; };
+		98F2D8E172B49EF6BAD51AE0 /* Pods_Mistralis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mistralis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2C0BA4CE2BA6055E0050C66B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D659761E14B9D2B39B36A60D /* Pods_Mistralis.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2C0BA4C82BA6055E0050C66B = {
+			isa = PBXGroup;
+			children = (
+				2C0BA4D32BA6055E0050C66B /* Mistralis */,
+				DDA7E8DA6859F56DFB8AB389 /* Pods */,
+				82D98578AB5CBF0C2C6EFD29 /* Frameworks */,
+				2C89B5E42BA64E3200B1F18A /* Mistralis.app */,
+			);
+			sourceTree = "<group>";
+		};
+		2C0BA4D32BA6055E0050C66B /* Mistralis */ = {
+			isa = PBXGroup;
+			children = (
+				2C98EFA32D312B6A00F6B4F5 /* App */,
+				2C98EFA52D312B9700F6B4F5 /* Views */,
+				2C98EFB72D312E5500F6B4F5 /* Helpers */,
+				2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */,
+				2C0BA4DC2BA6055F0050C66B /* Preview Content */,
+				2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */,
+			);
+			path = Mistralis;
+			sourceTree = "<group>";
+		};
+		2C0BA4DC2BA6055F0050C66B /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				2C0BA4DD2BA6055F0050C66B /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		2C98EFA32D312B6A00F6B4F5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2C0BA4D42BA6055E0050C66B /* main.swift */,
+				2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */,
+				2C0BA4E72BA6083C0050C66B /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		2C98EFA52D312B9700F6B4F5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2C98EFB42D312E0200F6B4F5 /* AboutView.swift */,
+				2C0BA4ED2BA60F690050C66B /* MistralisPopup.swift */,
+				2C0BA4D62BA6055E0050C66B /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		2C98EFB72D312E5500F6B4F5 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */,
+				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
+				2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		82D98578AB5CBF0C2C6EFD29 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				98F2D8E172B49EF6BAD51AE0 /* Pods_Mistralis.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DDA7E8DA6859F56DFB8AB389 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				53E3B1DEBB38A54D423393DA /* Pods-Mistralis.debug.xcconfig */,
+				7A4ACD63CFCD6E79A7B9AC5A /* Pods-Mistralis.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2C0BA4D02BA6055E0050C66B /* Mistralis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C0BA4E22BA6055F0050C66B /* Build configuration list for PBXNativeTarget "Mistralis" */;
+			buildPhases = (
+				F65421029483697384E324F6 /* [CP] Check Pods Manifest.lock */,
+				2C0BA4CD2BA6055E0050C66B /* Sources */,
+				2C0BA4CE2BA6055E0050C66B /* Frameworks */,
+				2C0BA4CF2BA6055E0050C66B /* Resources */,
+				DF94DC5276814DB8F7DC990D /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Mistralis;
+			productName = MacMistral;
+			productReference = 2C89B5E42BA64E3200B1F18A /* Mistralis.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2C0BA4C92BA6055E0050C66B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					2C0BA4D02BA6055E0050C66B = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 2C0BA4CC2BA6055E0050C66B /* Build configuration list for PBXProject "Mistralis" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2C0BA4C82BA6055E0050C66B;
+			productRefGroup = 2C0BA4C82BA6055E0050C66B;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2C0BA4D02BA6055E0050C66B /* Mistralis */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2C0BA4CF2BA6055E0050C66B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */,
+				2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */,
+				2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */,
+				2C0BA4E82BA6083C0050C66B /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DF94DC5276814DB8F7DC990D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mistralis/Pods-Mistralis-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Mistralis/Pods-Mistralis-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mistralis/Pods-Mistralis-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F65421029483697384E324F6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Mistralis-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C0BA4CD2BA6055E0050C66B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */,
+				2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */,
+				2C0BA4EE2BA60F690050C66B /* MistralisPopup.swift in Sources */,
+				2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */,
+				2C0BA4D72BA6055E0050C66B /* ContentView.swift in Sources */,
+				2C0BA4D52BA6055E0050C66B /* main.swift in Sources */,
+				2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */,
+				2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2C0BA4E02BA6055F0050C66B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2C0BA4E12BA6055F0050C66B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		2C0BA4E32BA6055F0050C66B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53E3B1DEBB38A54D423393DA /* Pods-Mistralis.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Mistralis/App/Mistralis.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_ASSET_PATHS = "Mistralis/Preview\\ Content";
+				DEVELOPMENT_TEAM = YTS4KJBX3P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Mistralis/App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Mistralis;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.3;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.Mistralis;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2C0BA4E42BA6055F0050C66B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A4ACD63CFCD6E79A7B9AC5A /* Pods-Mistralis.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Mistralis/App/Mistralis.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_ASSET_PATHS = "Mistralis/Preview\\ Content";
+				DEVELOPMENT_TEAM = YTS4KJBX3P;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Mistralis/App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Mistralis;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.3;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.Mistralis;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C0BA4CC2BA6055E0050C66B /* Build configuration list for PBXProject "Mistralis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C0BA4E02BA6055F0050C66B /* Debug */,
+				2C0BA4E12BA6055F0050C66B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2C0BA4E22BA6055F0050C66B /* Build configuration list for PBXNativeTarget "Mistralis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2C0BA4E32BA6055F0050C66B /* Debug */,
+				2C0BA4E42BA6055F0050C66B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2C0BA4C92BA6055E0050C66B /* Project object */;
+}
