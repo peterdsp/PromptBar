@@ -20,10 +20,10 @@
 - **Instant AI Access** – Chat with AI models in **one click** from your menubar.
 - **Seamless macOS Integration** – Lightweight, smooth, and responsive.
 - **Multi-Model Support** – Choose from:
-  - **Mistral**
+  - **Mistral** (no login required!)
   - **Gemini**
   - **ChatGPT**
-  - **DeepSeek**
+  - **DeepSeek** (no login required!)
   - **Grok** (no login required!)
 - **Dynamic Window Sizing** – Switch between **Small, Medium, and Large** chat windows.
 - **Apple-Notarized Security** – No macOS security hurdles—just download and run.
