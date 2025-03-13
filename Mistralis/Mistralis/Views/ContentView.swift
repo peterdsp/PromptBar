@@ -109,39 +109,77 @@ extension ContentView: WKNavigationDelegate {
         setLoading(
             false,
             canGoBack: webView.canGoBack,
-            canGoForward: webView.canGoForward)
+            canGoForward: webView.canGoForward
+        )
 
-        webView.evaluateJavaScript("document.title") { response, error in
-            if let error = error {
-            } else if let title = response as? String {
-                var newState = self.webView.state
-                newState.pageTitle = title
-                self.webView.state = newState
+        // ✅ Update page title
+        webView.evaluateJavaScript("document.title") { response, _ in
+            if let title = response as? String {
+                self.updateState(pageTitle: title)
             }
         }
 
-        webView.evaluateJavaScript("document.URL.toString()") {
-            response, error in
-            if let error = error {
-            } else if let url = response as? String {
-                var newState = self.webView.state
-                newState.pageURL = url
-                self.webView.state = newState
+        // ✅ Update page URL
+        webView.evaluateJavaScript("document.URL.toString()") { response, _ in
+            if let url = response as? String {
+                self.updateState(pageURL: url)
             }
         }
 
+        // ✅ Update page HTML if required
         if self.webView.htmlInState {
             webView.evaluateJavaScript(
                 "document.documentElement.outerHTML.toString()"
-            ) { response, error in
-                if let error = error {
-                } else if let html = response as? String {
-                    var newState = self.webView.state
-                    newState.pageHTML = html
-                    self.webView.state = newState
+            ) { response, _ in
+                if let html = response as? String {
+                    self.updateState(pageHTML: html)
                 }
             }
         }
+
+        // ✅ Get the "subscriptions" list from AppDelegate
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            let removeTextsJSArray = appDelegate.removeTexts
+                .map { "\"\($0)\"" }
+                .joined(separator: ", ")
+
+            let removeUpgradeButtonsJS = """
+                    (function() {
+                        const removeTexts = [\(removeTextsJSArray)];
+
+                        function removeUpgradeElements() {
+                            let upgradeElements = [...document.querySelectorAll("a, button, li")]
+                                .filter(el => removeTexts.some(text => el.innerText.includes(text)));
+                            upgradeElements.forEach(el => el.remove());
+                        }
+
+                        // Run immediately in case elements are already present
+                        removeUpgradeElements();
+
+                        // Set up a MutationObserver to handle dynamically loaded elements
+                        let observer = new MutationObserver(() => removeUpgradeElements());
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    })();
+                """
+
+            webView.evaluateJavaScript(removeUpgradeButtonsJS) { _, error in
+                if let error = error {
+                    print("⚠️ Failed to remove subscription items: \(error)")
+                }
+            }
+        }
+    }
+
+    // ✅ Helper function to update the WebViewState
+    private func updateState(
+        pageTitle: String? = nil, pageURL: String? = nil,
+        pageHTML: String? = nil
+    ) {
+        var newState = self.webView.state
+        if let title = pageTitle { newState.pageTitle = title }
+        if let url = pageURL { newState.pageURL = url }
+        if let html = pageHTML { newState.pageHTML = html }
+        self.webView.state = newState
     }
 
     public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
@@ -169,30 +207,6 @@ extension ContentView: WKNavigationDelegate {
             true,
             canGoBack: webView.canGoBack,
             canGoForward: webView.canGoForward)
-    }
-
-    public func webView(
-        _ webView: WKWebView,
-        decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
-    ) {
-        if let host = navigationAction.request.url?.host,
-            self.webView.restrictedPages?.first(where: { host.contains($0) })
-                != nil
-        {
-            decisionHandler(.cancel)
-            setLoading(false)
-            return
-        }
-        if let url = navigationAction.request.url,
-            let scheme = url.scheme,
-            let schemeHandler = self.webView.schemeHandlers[scheme]
-        {
-            schemeHandler(url)
-            decisionHandler(.cancel)
-            return
-        }
-        decisionHandler(.allow)
     }
 }
 
@@ -274,16 +288,9 @@ public struct WebViewConfig {
             preferences.allowsContentJavaScript = true
 
             let configuration = WKWebViewConfiguration()
-            configuration.applicationNameForUserAgent =
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15"
             configuration.defaultWebpagePreferences = preferences
             configuration.websiteDataStore = WKWebsiteDataStore.default()
             configuration.suppressesIncrementalRendering = false
-
-            // Apply custom user agent if provided
-            if let customUserAgent = config.customUserAgent {
-                configuration.applicationNameForUserAgent = customUserAgent
-            }
 
             let webView = WKWebView(
                 frame: CGRect.zero, configuration: configuration)

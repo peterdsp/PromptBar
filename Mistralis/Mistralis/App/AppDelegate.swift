@@ -16,6 +16,7 @@ import WebKit
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var alwaysOnTop: Bool = false
+    var removeTexts: [String] = []  // Store fetched items here
 
     var selectedAIChatTitle: String = "Mistralis"
     private let aiChatOptions: [String: String] = [
@@ -50,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         FirebaseApp.configure()
-
+        fetchSubscriptionConfig()
         statusItem = NSStatusBar.system.statusItem(
             withLength: NSStatusItem.variableLength)
         NSApp.setActivationPolicy(.accessory)
@@ -109,6 +110,52 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuDidClose(_ menu: NSMenu) {
         removeMenu()
+    }
+
+    func fetchSubscriptionConfig() {
+        let remoteConfig = RemoteConfig.remoteConfig()
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 0  // Adjust for production
+        remoteConfig.configSettings = settings
+
+        remoteConfig.fetchAndActivate { status, error in
+            if let error = error {
+                print(
+                    "⚠️ Error fetching remote config: \(error.localizedDescription)"
+                )
+                return
+            }
+
+            if status == .successFetchedFromRemote
+                || status == .successUsingPreFetchedData
+            {
+                let remoteConfigValue = remoteConfig.configValue(
+                    forKey: "subscriptions")
+
+                // ✅ Check if the string is empty (since it's not optional!)
+                let removeTextsJSON = remoteConfigValue.stringValue
+                if removeTextsJSON.isEmpty {
+                    print(
+                        "⚠️ No valid JSON found in 'subscriptions' remote config or it's empty."
+                    )
+                    return
+                }
+
+                let removeTextsData = Data(removeTextsJSON.utf8)
+
+                do {
+                    self.removeTexts = try JSONDecoder().decode(
+                        [String].self, from: removeTextsData)
+                    print(
+                        "✅ Successfully fetched subscriptions: \(self.removeTexts)"
+                    )
+                } catch {
+                    print(
+                        "⚠️ Failed to decode subscriptions JSON: \(error.localizedDescription)"
+                    )
+                }
+            }
+        }
     }
 
     func updateWindowLevel() {
