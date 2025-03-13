@@ -17,6 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var alwaysOnTop: Bool = false
     var removeTexts: [String] = []  // Store fetched items here
+    private var loadingView: NSView?
 
     var selectedAIChatTitle: String = "Mistralis"
     private let aiChatOptions: [String: String] = [
@@ -106,6 +107,95 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             removeMenu()
             togglePopover()
         }
+    }
+
+    func showLoadingView() {
+        guard let window = popover.contentViewController?.view.window else {
+            return
+        }
+
+        // Create loading overlay
+        let loadingOverlay = NSView(frame: window.contentView!.bounds)
+        loadingOverlay.wantsLayer = true
+        loadingOverlay.layer?.backgroundColor =
+            NSColor.black.withAlphaComponent(0.7).cgColor
+        loadingOverlay.alphaValue = 0  // Start invisible for fade-in
+        loadingOverlay.identifier = NSUserInterfaceItemIdentifier(
+            "loadingOverlay")
+
+        // Create spinning progress indicator
+        let spinner = NSProgressIndicator()
+        spinner.style = .spinning
+        spinner.controlSize = .large
+        spinner.isIndeterminate = true
+        spinner.startAnimation(nil)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+
+        // Create loading label
+        let label = NSTextField(
+            labelWithString: "Loading \(selectedAIChatTitle)...")
+        label.font = NSFont.boldSystemFont(ofSize: 18)
+        label.textColor = NSColor.white
+        label.alignment = .center
+        label.isBezeled = false
+        label.isEditable = false
+        label.drawsBackground = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.wantsLayer = true  // ✅ Ensures the layer is created
+
+        // Add views to overlay
+        loadingOverlay.addSubview(spinner)
+        loadingOverlay.addSubview(label)
+
+        NSLayoutConstraint.activate([
+            // Center spinner
+            spinner.centerXAnchor.constraint(
+                equalTo: loadingOverlay.centerXAnchor),
+            spinner.centerYAnchor.constraint(
+                equalTo: loadingOverlay.centerYAnchor, constant: -30),
+
+            // Center label below spinner
+            label.topAnchor.constraint(
+                equalTo: spinner.bottomAnchor, constant: 15),
+            label.centerXAnchor.constraint(
+                equalTo: loadingOverlay.centerXAnchor),
+        ])
+
+        // Add overlay to window
+        window.contentView?.addSubview(loadingOverlay)
+        self.loadingView = loadingOverlay
+
+        // 🔥 Fancy fade-in effect
+        NSAnimationContext.runAnimationGroup(
+            { context in
+                context.duration = 0.3
+                loadingOverlay.animator().alphaValue = 1
+            }, completionHandler: nil)
+
+        // 🔥 Bouncing effect for text (Now works!)
+        let bounceAnimation = CABasicAnimation(keyPath: "position.y")
+        bounceAnimation.duration = 0.6
+        bounceAnimation.byValue = 10  // Moves 10 points up/down
+        bounceAnimation.autoreverses = true
+        bounceAnimation.repeatCount = .infinity
+        bounceAnimation.timingFunction = CAMediaTimingFunction(
+            name: .easeInEaseOut)
+
+        label.layer?.add(bounceAnimation, forKey: "bounce")
+    }
+
+    func hideLoadingView() {
+        guard let loadingView = self.loadingView else { return }
+
+        NSAnimationContext.runAnimationGroup(
+            { context in
+                context.duration = 0.5  // Smooth fade-out over 0.5 seconds
+                loadingView.animator().alphaValue = 0
+            },
+            completionHandler: {
+                loadingView.removeFromSuperview()
+                self.loadingView = nil
+            })
     }
 
     func menuDidClose(_ menu: NSMenu) {

@@ -106,6 +106,9 @@ extension ContentView: WKNavigationDelegate {
     public func webView(
         _ webView: WKWebView, didFinish navigation: WKNavigation!
     ) {
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            appDelegate.hideLoadingView()  // Hide loader when navigation finishes
+        }
         setLoading(
             false,
             canGoBack: webView.canGoBack,
@@ -203,6 +206,9 @@ extension ContentView: WKNavigationDelegate {
         _ webView: WKWebView,
         didStartProvisionalNavigation navigation: WKNavigation!
     ) {
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            appDelegate.showLoadingView()  // Show loader when navigation starts
+        }
         setLoading(
             true,
             canGoBack: webView.canGoBack,
