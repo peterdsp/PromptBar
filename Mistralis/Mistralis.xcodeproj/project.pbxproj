@@ -30,13 +30,13 @@
 		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C0BA4ED2BA60F690050C66B /* MistralisPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistralisPopup.swift; sourceTree = "<group>"; };
 		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
-		2C89B5E42BA64E3200B1F18A /* Mistralis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mistralis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHelper.swift; sourceTree = "<group>"; };
 		2C98EFB42D312E0200F6B4F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		2C9F85E92D831C7800CB74F4 /* Mistralis.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Mistralis.entitlements; sourceTree = "<group>"; };
 		2C9F85EA2D831CB800CB74F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2C9F85EC2D8428B500CB74F4 /* Mistralis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mistralis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53E3B1DEBB38A54D423393DA /* Pods-Mistralis.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mistralis.debug.xcconfig"; path = "Target Support Files/Pods-Mistralis/Pods-Mistralis.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4ACD63CFCD6E79A7B9AC5A /* Pods-Mistralis.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mistralis.release.xcconfig"; path = "Target Support Files/Pods-Mistralis/Pods-Mistralis.release.xcconfig"; sourceTree = "<group>"; };
 		98F2D8E172B49EF6BAD51AE0 /* Pods_Mistralis.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mistralis.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,7 +60,7 @@
 				2C0BA4D32BA6055E0050C66B /* Mistralis */,
 				DDA7E8DA6859F56DFB8AB389 /* Pods */,
 				82D98578AB5CBF0C2C6EFD29 /* Frameworks */,
-				2C89B5E42BA64E3200B1F18A /* Mistralis.app */,
+				2C9F85EC2D8428B500CB74F4 /* Mistralis.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -152,7 +152,7 @@
 			);
 			name = Mistralis;
 			productName = Mistralis;
-			productReference = 2C89B5E42BA64E3200B1F18A /* Mistralis.app */;
+			productReference = 2C9F85EC2D8428B500CB74F4 /* Mistralis.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -393,7 +393,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Mistralis/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -430,7 +430,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "Mistralis/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
