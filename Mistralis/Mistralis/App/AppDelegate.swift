@@ -11,6 +11,7 @@ import FirebaseInstallations
 import FirebaseRemoteConfig
 import HotKey
 import SwiftUI
+import SystemConfiguration
 import WebKit
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
@@ -18,6 +19,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var alwaysOnTop: Bool = false
     var removeTexts: [String] = []  // Store fetched items here
     private var loadingView: NSView?
+    var errorOverlay: NSView?
+    var isCheckingInternet = false
 
     var selectedAIChatTitle: String = "Mistralis"
     private let aiChatOptions: [String: String] = [
@@ -114,6 +117,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return
         }
 
+        // 🔥 If loading is already shown, don't add another one
+        if loadingView != nil {
+            return
+        }
+
+        hideLoadingView()  // Remove any existing loading overlay first
+
+        // Check internet connectivity
+        if !isInternetAvailable() {
+            showNoInternetMessage(in: window)
+            return
+        }
+
         // Create loading overlay
         let loadingOverlay = NSView(frame: window.contentView!.bounds)
         loadingOverlay.wantsLayer = true
@@ -141,20 +157,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         label.isEditable = false
         label.drawsBackground = false
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.wantsLayer = true  // ✅ Ensures the layer is created
 
         // Add views to overlay
         loadingOverlay.addSubview(spinner)
         loadingOverlay.addSubview(label)
 
         NSLayoutConstraint.activate([
-            // Center spinner
             spinner.centerXAnchor.constraint(
                 equalTo: loadingOverlay.centerXAnchor),
             spinner.centerYAnchor.constraint(
                 equalTo: loadingOverlay.centerYAnchor, constant: -30),
 
-            // Center label below spinner
             label.topAnchor.constraint(
                 equalTo: spinner.bottomAnchor, constant: 15),
             label.centerXAnchor.constraint(
@@ -165,37 +178,158 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         window.contentView?.addSubview(loadingOverlay)
         self.loadingView = loadingOverlay
 
-        // 🔥 Fancy fade-in effect
+        // Fade-in effect
         NSAnimationContext.runAnimationGroup(
             { context in
                 context.duration = 0.3
                 loadingOverlay.animator().alphaValue = 1
             }, completionHandler: nil)
 
-        // 🔥 Bouncing effect for text (Now works!)
-        let bounceAnimation = CABasicAnimation(keyPath: "position.y")
-        bounceAnimation.duration = 0.6
-        bounceAnimation.byValue = 10  // Moves 10 points up/down
-        bounceAnimation.autoreverses = true
-        bounceAnimation.repeatCount = .infinity
-        bounceAnimation.timingFunction = CAMediaTimingFunction(
-            name: .easeInEaseOut)
-
-        label.layer?.add(bounceAnimation, forKey: "bounce")
+        // 🔥 Ensure it disappears after loading (adjust time as needed)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.hideLoadingView()
+        }
     }
-
     func hideLoadingView() {
         guard let loadingView = self.loadingView else { return }
 
         NSAnimationContext.runAnimationGroup(
             { context in
-                context.duration = 0.5  // Smooth fade-out over 0.5 seconds
+                context.duration = 0.5
                 loadingView.animator().alphaValue = 0
             },
             completionHandler: {
                 loadingView.removeFromSuperview()
                 self.loadingView = nil
-            })
+            }
+        )
+    }
+
+    // ✅ Show an error message and **keep checking** for internet availability
+    func showNoInternetMessage(in window: NSWindow) {
+        if errorOverlay != nil { return }  // Prevent multiple overlays
+
+        errorOverlay = NSView(frame: window.contentView!.bounds)
+        errorOverlay?.wantsLayer = true
+        errorOverlay?.layer?.backgroundColor =
+            NSColor.black.withAlphaComponent(0.7).cgColor
+        errorOverlay?.identifier = NSUserInterfaceItemIdentifier("errorOverlay")
+
+        let errorLabel = NSTextField(
+            labelWithString:
+                "No internet connection.\nPlease check your network and try again."
+        )
+        errorLabel.font = NSFont.boldSystemFont(ofSize: 16)
+        errorLabel.textColor = NSColor.white
+        errorLabel.alignment = .center
+        errorLabel.isBezeled = false
+        errorLabel.isEditable = false
+        errorLabel.drawsBackground = false
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        errorLabel.lineBreakMode = .byWordWrapping
+        errorLabel.maximumNumberOfLines = 2
+
+        errorOverlay?.addSubview(errorLabel)
+
+        NSLayoutConstraint.activate([
+            errorLabel.centerXAnchor.constraint(
+                equalTo: errorOverlay!.centerXAnchor),
+            errorLabel.centerYAnchor.constraint(
+                equalTo: errorOverlay!.centerYAnchor),
+        ])
+
+        window.contentView?.addSubview(errorOverlay!)
+
+        if !isCheckingInternet {
+            isCheckingInternet = true
+            checkInternetConnectionRepeatedly()
+        }
+    }
+
+    // ✅ Keep checking if internet is back and remove the message when available
+    func checkInternetConnectionRepeatedly() {
+        DispatchQueue.global(qos: .background).async {
+            while !self.isInternetAvailable() {
+                sleep(3)  // Wait for 3 seconds before rechecking
+            }
+
+            DispatchQueue.main.async {
+                self.hideNoInternetMessage()
+
+                // 🔥 Only show the loading screen if it's not already being shown
+                if self.loadingView == nil {
+                    self.showLoadingView()
+                }
+
+                // 🔥 Reload the AI Chat properly
+                self.reloadAIChat()
+                self.isCheckingInternet = false
+            }
+        }
+    }
+
+    func reloadAIChat() {
+        let initialAddress =
+            aiChatOptions[selectedAIChatTitle]
+            ?? "https://chat.mistral.ai/chat/"
+
+        let newHostingController = NSHostingController(
+            rootView: MainUI(initialAddress: initialAddress))
+        let newPopupContentViewController = MistralisPopup()
+        newPopupContentViewController.hostingController = newHostingController
+
+        popover.contentViewController = newPopupContentViewController
+        popover.contentSize = newHostingController.view.fittingSize
+
+        // 🔥 Automatically remove loading screen after a delay (adjust as needed)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.hideLoadingView()
+        }
+    }
+
+    // ✅ Remove error message when internet is back
+    func hideNoInternetMessage() {
+        guard let errorOverlay = self.errorOverlay else { return }
+
+        NSAnimationContext.runAnimationGroup(
+            { context in
+                context.duration = 0.5
+                errorOverlay.animator().alphaValue = 0
+            },
+            completionHandler: {
+                errorOverlay.removeFromSuperview()
+                self.errorOverlay = nil
+            }
+        )
+    }
+
+    // ✅ Check if the internet is available
+    func isInternetAvailable() -> Bool {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+
+        guard
+            let defaultRouteReachability = withUnsafePointer(
+                to: &zeroAddress,
+                {
+                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                        SCNetworkReachabilityCreateWithAddress(nil, $0)
+                    }
+                })
+        else {
+            return false
+        }
+
+        var flags: SCNetworkReachabilityFlags = []
+        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+            return false
+        }
+
+        let isReachable = flags.contains(.reachable)
+        let needsConnection = flags.contains(.connectionRequired)
+
+        return (isReachable && !needsConnection)
     }
 
     func menuDidClose(_ menu: NSMenu) {
@@ -307,16 +441,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc func changeAIChat(sender: NSMenuItem) {
         if let urlString = sender.representedObject as? String {
+            // 🔥 Check for internet BEFORE changing AI chat
+            if !isInternetAvailable() {
+                if let window = popover.contentViewController?.view.window {
+                    showNoInternetMessage(in: window)
+                }
+                return  // Prevent white screen
+            }
+
             selectedAIChatTitle = sender.title.trimmingCharacters(
                 in: .whitespacesAndNewlines)
             let initialAddress =
                 aiChatOptions[selectedAIChatTitle]
                 ?? "https://chat.mistral.ai/chat/"
+
+            // 🔥 Reload UI with new chat
             let newHostingController = NSHostingController(
                 rootView: MainUI(initialAddress: initialAddress))
             let newPopupContentViewController = MistralisPopup()
             newPopupContentViewController.hostingController =
                 newHostingController
+
             popover.contentViewController = newPopupContentViewController
             popover.contentSize = newHostingController.view.fittingSize
 
@@ -484,6 +629,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 NSApplication.shared.activate(ignoringOtherApps: true)
                 updateMenuItemsState()
                 updateWindowSizeMenuItemsState()
+
+                // 🔥 Check if internet is back before opening
+                if isInternetAvailable() {
+                    reloadAIChat()
+                }
+
                 popover.show(
                     relativeTo: button.bounds, of: button, preferredEdge: .minY)
                 popover.contentViewController?.view.window?.makeKey()
