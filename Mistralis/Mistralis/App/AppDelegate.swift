@@ -17,19 +17,13 @@ import WebKit
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var alwaysOnTop: Bool = false
-    var removeTexts: [String] = []  // Store fetched items here
+    var removeTexts: [String] = []
     private var loadingView: NSView?
     var errorOverlay: NSView?
     var isCheckingInternet = false
 
     var selectedAIChatTitle: String = "Mistralis"
-    private let aiChatOptions: [String: String] = [
-        "Mistral": "https://chat.mistral.ai/chat/",
-        "ChatGPT": "https://chat.openai.com/#",
-        "Gemini": "https://gemini.google.com/app",
-        "DeepSeek": "https://chat.deepseek.com/",
-        "Grok": "https://grok.com/",
-    ]
+    private var aiChatOptions: [String: String] = [:]
 
     internal var windowSizeOptions: [String: CGSize] = [
         "Small": CGSize(width: 400, height: 300),
@@ -353,30 +347,48 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             if status == .successFetchedFromRemote
                 || status == .successUsingPreFetchedData
             {
-                let remoteConfigValue = remoteConfig.configValue(
-                    forKey: "subscriptions")
-
-                // ✅ Check if the string is empty (since it's not optional!)
-                let removeTextsJSON = remoteConfigValue.stringValue
-                if removeTextsJSON.isEmpty {
-                    print(
-                        "⚠️ No valid JSON found in 'subscriptions' remote config or it's empty."
-                    )
-                    return
+                // Fetch subscriptions
+                let removeTextsJSON =
+                    remoteConfig.configValue(forKey: "subscriptions")
+                    .stringValue ?? ""
+                if !removeTextsJSON.isEmpty {
+                    do {
+                        let removeTextsData = Data(removeTextsJSON.utf8)
+                        self.removeTexts = try JSONDecoder().decode(
+                            [String].self, from: removeTextsData)
+                        print(
+                            "✅ Successfully fetched subscriptions: \(self.removeTexts)"
+                        )
+                    } catch {
+                        print(
+                            "⚠️ Failed to decode subscriptions JSON: \(error.localizedDescription)"
+                        )
+                    }
                 }
 
-                let removeTextsData = Data(removeTextsJSON.utf8)
+                // Fetch ai_chats
+                let aiChatsJSON =
+                    remoteConfig.configValue(forKey: "ai_chats").stringValue
+                    ?? ""
+                if !aiChatsJSON.isEmpty {
+                    do {
+                        let aiChatsData = Data(aiChatsJSON.utf8)
+                        self.aiChatOptions = try JSONDecoder().decode(
+                            [String: String].self, from: aiChatsData)
+                        print(
+                            "✅ Successfully fetched AI chats: \(self.aiChatOptions)"
+                        )
 
-                do {
-                    self.removeTexts = try JSONDecoder().decode(
-                        [String].self, from: removeTextsData)
-                    print(
-                        "✅ Successfully fetched subscriptions: \(self.removeTexts)"
-                    )
-                } catch {
-                    print(
-                        "⚠️ Failed to decode subscriptions JSON: \(error.localizedDescription)"
-                    )
+                        // 🔥 Rebuild menu dynamically when AI Chat options are fetched
+                        DispatchQueue.main.async {
+                            self.constructMenu()
+                            self.statusItem.menu = self.menu
+                        }
+                    } catch {
+                        print(
+                            "⚠️ Failed to decode ai_chats JSON: \(error.localizedDescription)"
+                        )
+                    }
                 }
             }
         }
@@ -530,33 +542,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         // Change AI Chat Submenu
         let changeChatAIMenuItem = NSMenuItem(
-            title: "Change AI Chat",
-            action: nil,
-            keyEquivalent: ""
-        )
+            title: "Change AI Chat", action: nil, keyEquivalent: "")
         let changeChatAISubmenu = NSMenu()
 
-        let aiChatOrder = ["Mistral", "ChatGPT", "Gemini", "DeepSeek", "Grok"]
-        for title in aiChatOrder {
-            if let url = aiChatOptions[title] {
+        if aiChatOptions.isEmpty {
+            let placeholderItem = NSMenuItem(
+                title: "Loading...", action: nil, keyEquivalent: "")
+            placeholderItem.isEnabled = false
+            changeChatAISubmenu.addItem(placeholderItem)
+        } else {
+            for (title, url) in aiChatOptions {
                 let menuItem = NSMenuItem(
-                    title: title,
-                    action: #selector(changeAIChat(sender:)),
-                    keyEquivalent: ""
-                )
+                    title: title, action: #selector(changeAIChat(sender:)),
+                    keyEquivalent: "")
                 menuItem.representedObject = url
                 changeChatAISubmenu.addItem(menuItem)
             }
         }
+
         changeChatAIMenuItem.submenu = changeChatAISubmenu
         menu.addItem(changeChatAIMenuItem)
 
         // Change Window Size Submenu
         let changeWindowSizeMenuItem = NSMenuItem(
-            title: "Change Window Size",
-            action: nil,
-            keyEquivalent: ""
-        )
+            title: "Change Window Size", action: nil, keyEquivalent: "")
         let changeWindowSizeSubmenu = NSMenu()
 
         let sortedWindowSizeKeys = ["Small", "Medium", "Large"]
@@ -570,9 +579,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 changeWindowSizeSubmenu.addItem(menuItem)
             }
         }
+
         changeWindowSizeMenuItem.submenu = changeWindowSizeSubmenu
         menu.addItem(changeWindowSizeMenuItem)
 
+        // Always on Top
         let alwaysOnTopMenuItem = NSMenuItem(
             title: "Always on Top",
             action: #selector(toggleAlwaysOnTop),
@@ -594,8 +605,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         )
 
         menu.delegate = self
-    }
 
+        // 🔥 Update Menu State (only call this once aiChatOptions is fetched)
+        updateMenuItemsState()
+    }
     func constructPopover() {
         popover = NSPopover()
         popover.contentViewController = MistralisPopup()
