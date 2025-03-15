@@ -643,8 +643,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 updateMenuItemsState()
                 updateWindowSizeMenuItemsState()
 
-                // 🔥 Check if internet is back before opening
-                if isInternetAvailable() {
+                // 🚀 FIX: Reload AI chat **only if it hasn't loaded before**
+                if popover.contentViewController == nil
+                    || popover.contentViewController?.view.window == nil
+                {
                     reloadAIChat()
                 }
 
@@ -655,7 +657,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         }
     }
-
     private func deinitKeys() {
         hotCKey = nil
         hotVKey = nil
