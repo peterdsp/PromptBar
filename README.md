@@ -1,6 +1,8 @@
 # <p align="center"> <img src="https://github.com/peterdsp/Mistralis/blob/b76145f10be87a36a940d24cf99991c8528b933e/Mistralis/Mistralis/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> Mistralis 1.3 </p>
 
-**Mistralis** is a **SwiftUI** application designed for **macOS**, allowing users to access AI chat models **directly from their menubar**. No browser required—just **one click to chat** with your preferred AI!
+**Mistralis – AI Chat Simplified for macOS**
+
+Mistralis is a **lightweight AI chat client** for macOS, integrating **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, and AI Studio** into a single **menubar app** for quick and seamless access.
 
 <p align="center"> <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="Mistralis Interface"> </p>
 
@@ -17,16 +19,12 @@
 
 ## 📌 Features
 
-- **Instant AI Access** – Chat with AI models in **one click** from your menubar.
-- **Seamless macOS Integration** – Lightweight, smooth, and responsive.
-- **Multi-Model Support** – Choose from:
-  - **Mistral** (no login required!)
-  - **Gemini**
-  - **ChatGPT**
-  - **DeepSeek** (no login required!)
-  - **Grok** (no login required!)
-- **Dynamic Window Sizing** – Switch between **Small, Medium, and Large** chat windows.
-- **Apple-Notarized Security** – No macOS security hurdles—just download and run.
+- **Instant AI Access** – Open Mistralis from the menubar with a **single click**.
+- **Multi-Model Support** – Choose between **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, and AI Studio** for diverse AI-powered assistance.
+- **Minimal and Lightweight** – Designed to run efficiently without consuming unnecessary system resources.
+- **Privacy-Focused** – No login credentials are stored locally; users sign in **directly through the AI provider of their choice**.
+- **Customizable Experience** – Resize the chat window, switch AI models, and adjust settings for an optimized workflow.
+- **Dynamic AI Expansion** – A new update mechanism allows additional AI chats to be **integrated directly from the server**, eliminating the need for frequent app updates.
 
 ---
 
@@ -53,7 +51,7 @@ Mistralis 1.2.5 has been **notarized by Apple**, so macOS will no longer flag it
 ## 🔧 Usage
 
 1. **Click** the Mistralis icon in your menubar.  
-2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, or Grok**).  
+2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, Grok, Perplexity, Copilot, or AI Studio**).  
 3. **Chat instantly**—no extra apps, no distractions!  
 4. **Customize** your experience:
    - Resize the chat window (**Small, Medium, Large**).
