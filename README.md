@@ -1,4 +1,4 @@
-# <p align="center"> <img src="https://github.com/peterdsp/PromptBar/blob/b76145f10be87a36a940d24cf99991c8528b933e/PromptBar/PromptBar/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> PromptBar 1.3 </p>
+# <p align="center"> <img src="https://github.com/peterdsp/PromptBar/blob/7f8a906a4cde518d8ab00868d7aeba51a2528570/Mistralis/Mistralis/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> PromptBar 1.3 </p>
 
 **PromptBar – AI Chat Simplified for macOS**
 
