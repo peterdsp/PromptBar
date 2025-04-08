@@ -57,7 +57,8 @@ public struct WebViewState: Equatable {
         pageHTML: nil,
         error: nil,
         canGoBack: false,
-        canGoForward: false)
+        canGoForward: false
+    )
 
     public static func == (lhs: WebViewState, rhs: WebViewState) -> Bool {
         return lhs.isLoading == rhs.isLoading
@@ -104,7 +105,8 @@ public class ContentView: NSObject {
 
 extension ContentView: WKNavigationDelegate {
     public func webView(
-        _ webView: WKWebView, didFinish navigation: WKNavigation!
+        _ webView: WKWebView,
+        didFinish navigation: WKNavigation!
     ) {
         if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
             appDelegate.hideLoadingView()  // Hide loader when navigation finishes
@@ -175,7 +177,8 @@ extension ContentView: WKNavigationDelegate {
 
     // ✅ Helper function to update the WebViewState
     private func updateState(
-        pageTitle: String? = nil, pageURL: String? = nil,
+        pageTitle: String? = nil,
+        pageURL: String? = nil,
         pageHTML: String? = nil
     ) {
         var newState = self.webView.state
@@ -190,14 +193,49 @@ extension ContentView: WKNavigationDelegate {
     }
 
     public func webView(
-        _ webView: WKWebView, didFail navigation: WKNavigation!,
+        _ webView: WKWebView,
+        runOpenPanelWith parameters: WKOpenPanelParameters,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: @escaping ([URL]?) -> Void
+    ) {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = parameters.allowsMultipleSelection
+
+        let panelSize = CGSize(width: 600, height: 400)
+
+        // Delay to prevent popover dismissal (critical!)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            if let screenFrame = NSScreen.main?.visibleFrame {
+                let origin = CGPoint(
+                    x: screenFrame.midX - panelSize.width / 2,
+                    y: screenFrame.midY - panelSize.height / 2
+                )
+                panel.setFrame(CGRect(origin: origin, size: panelSize), display: false)
+            }
+
+            panel.begin { result in
+                if result == .OK {
+                    completionHandler(panel.urls)
+                } else {
+                    completionHandler(nil)
+                }
+            }
+        }
+    }
+
+    public func webView(
+        _ webView: WKWebView,
+        didFail navigation: WKNavigation!,
         withError error: Error
     ) {
         setLoading(false, error: error)
     }
 
     public func webView(
-        _ webView: WKWebView, didCommit navigation: WKNavigation!
+        _ webView: WKWebView,
+        didCommit navigation: WKNavigation!
     ) {
         setLoading(true)
     }
@@ -212,7 +250,8 @@ extension ContentView: WKNavigationDelegate {
         setLoading(
             true,
             canGoBack: webView.canGoBack,
-            canGoForward: webView.canGoForward)
+            canGoForward: webView.canGoForward
+        )
     }
 }
 
@@ -299,7 +338,9 @@ public struct WebViewConfig {
             configuration.suppressesIncrementalRendering = false
 
             let webView = WKWebView(
-                frame: CGRect.zero, configuration: configuration)
+                frame: CGRect.zero,
+                configuration: configuration
+            )
             webView.navigationDelegate = context.coordinator
             webView.uiDelegate = context.coordinator
             webView.allowsBackForwardNavigationGestures =
