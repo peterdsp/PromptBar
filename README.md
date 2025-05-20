@@ -6,12 +6,13 @@ PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral A
 
 <p align="center"> <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="PromptBar Interface"> </p>
 
-## ✨ What's New in Version 1.3?
+## ✨ What's New in Version 1.3.0?
 
+- **🌐 Multiple AI Chats Added** – Now support simultaneous chats with multiple AI models, including Grok, Perplexity, Gemini, DeepSeek, Copilot, AI Studio, Mistral, and ChatGPT. Easily switch between models or run multiple conversations from the menubar!  
 - **🚀 Official Apple Notarization** – PromptBar is now **notarized by Apple**, meaning smoother installation without security warnings.  
-- **📢 Upcoming App Store Release** – PromptBar will soon be available on the **Mac App Store**!  
-  - Users who **purchased PromptBar outside the App Store** will receive a **free coupon** to redeem the App Store version.  
-  - The app will **remain available on Ko-fi** for those who prefer direct downloads.  
+- **📢 Important Update on App Store Plans** – After more than 2-3 months of discussions with the App Store team, we’re saddened to announce that PromptBar will not be part of the App Store at this time. We apologize for this news and any inconvenience it may cause. The app will continue to work seamlessly, and we remain committed to its development and support.  
+- **📛 A Journey of Name Changes** – The app was originally named **MacMistral**, inspired by Mistral AI and its copyright-free work. However, Apple flagged the use of "Mac" as non-compliant. We then renamed it to **Mistralis**, but Apple still did not approve. Finally, we settled on **PromptBar**, which Apple initially approved, and we were ready for release. After a 20+ day period of silence, we received a call from their offices in Ireland assuring us the app would be released. Days later, we were met with a lengthy App Store Connect review citing reasons we believe do not hold up, ultimately rejecting the app. It’s frustrating to see that a browser allowing casual access to similar functionalities is acceptable, yet our app—despite paying for the license—faces such strict scrutiny from the Mac App Store, an authority that seems to limit freedom for developers.  
+- **📦 Distribution Moving Forward** – You can keep purchasing PromptBar via Ko-fi to support our work, and we deeply appreciate your continued support. Alternatively, you’re welcome to fork the project from our repository [here](https://github.com/peterdsp/MacMistral) and build the app on your own. For now, distribution will be handled through Ko-fi, but we’re in discussions with other marketplaces for future options.  
 - **⚡ Performance Enhancements** – Optimized AI model switching and UI responsiveness.  
 - **🔧 Minor Bug Fixes** – Addressed small issues to improve user experience.  
 
@@ -42,7 +43,7 @@ PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral A
 3. Locate the downloaded zip file in **Finder** and **double-click** to install it.
 
 ### **Apple Notarization – No More Gatekeeper Issues!**  
-PromptBar 1.2.5 has been **notarized by Apple**, so macOS will no longer flag it as from an "unidentified developer."  
+PromptBar 1.3.0 has been **notarized by Apple**, so macOS will no longer flag it as from an "unidentified developer."  
 
 💡 If you are using an older version, you may still need to **right-click** → **Open** on first launch.
 
@@ -74,11 +75,9 @@ Now, PromptBar will start up and be ready in your menubar whenever you log in!
 
 ---
 
-## 🔜 App Store Release & Free Coupons!  
-
-- PromptBar will soon launch on the **Mac App Store** for even easier updates.  
-- If you **already purchased PromptBar on Ko-fi**, you will receive a **free App Store coupon** via email.  
-- The app will **still be available for direct download on Ko-fi** for users who prefer it.
+## 🙌 Thank You to Our Supporters  
+- A heartfelt thank you to all our more than 700 supporters who have bought the app from Ko-fi!  
+- Your continuous support means the world to us, and we’re grateful for every one of you.  
 
 ---
 
