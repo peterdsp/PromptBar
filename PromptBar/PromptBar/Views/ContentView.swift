@@ -141,6 +141,38 @@ extension ContentView: WKNavigationDelegate {
                 }
             }
         }
+
+        // ✅ Get the "subscriptions" list from AppDelegate
+        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+            let removeTextsJSArray = appDelegate.removeTexts
+                .map { "\"\($0)\"" }
+                .joined(separator: ", ")
+
+            let removeUpgradeButtonsJS = """
+                    (function() {
+                        const removeTexts = [\(removeTextsJSArray)];
+
+                        function removeUpgradeElements() {
+                            let upgradeElements = [...document.querySelectorAll("a, button, li")]
+                                .filter(el => removeTexts.some(text => el.innerText.includes(text)));
+                            upgradeElements.forEach(el => el.remove());
+                        }
+
+                        // Run immediately in case elements are already present
+                        removeUpgradeElements();
+
+                        // Set up a MutationObserver to handle dynamically loaded elements
+                        let observer = new MutationObserver(() => removeUpgradeElements());
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    })();
+                """
+
+            webView.evaluateJavaScript(removeUpgradeButtonsJS) { _, error in
+                if let error = error {
+                    print("⚠️ Failed to remove subscription items: \(error)")
+                }
+            }
+        }
     }
 
     // ✅ Helper function to update the WebViewState
@@ -291,27 +323,31 @@ public struct WebViewConfig {
             self.htmlInState = htmlInState
             self.schemeHandlers = schemeHandlers
         }
-        private static let sharedConfiguration: WKWebViewConfiguration = {
-            let preferences = WKWebpagePreferences()
-            preferences.allowsContentJavaScript = true
-            let configuration = WKWebViewConfiguration()
-            configuration.defaultWebpagePreferences = preferences
-            configuration.websiteDataStore = WKWebsiteDataStore.default()
-            configuration.suppressesIncrementalRendering = false
-            return configuration
-        }()
 
         public func makeCoordinator() -> ContentView {
             ContentView(webView: self)
         }
 
         public func makeNSView(context: Context) -> WKWebView {
-                let webView = WKWebView(frame: .zero, configuration: Self.sharedConfiguration)
-                webView.navigationDelegate = context.coordinator
-                webView.uiDelegate = context.coordinator
-                webView.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
-                return webView
-            }
+            let preferences = WKWebpagePreferences()
+            preferences.allowsContentJavaScript = true
+
+            let configuration = WKWebViewConfiguration()
+            configuration.defaultWebpagePreferences = preferences
+            configuration.websiteDataStore = WKWebsiteDataStore.default()
+            configuration.suppressesIncrementalRendering = false
+
+            let webView = WKWebView(
+                frame: CGRect.zero,
+                configuration: configuration
+            )
+            webView.navigationDelegate = context.coordinator
+            webView.uiDelegate = context.coordinator
+            webView.allowsBackForwardNavigationGestures =
+                config.allowsBackForwardNavigationGestures
+
+            return webView
+        }
 
         public func updateNSView(_ uiView: WKWebView, context: Context) {
             if action == .idle {
