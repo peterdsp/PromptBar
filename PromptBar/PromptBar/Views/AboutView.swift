@@ -65,10 +65,10 @@ struct AboutView: View {
                 }
                 .buttonStyle(.borderedProminent)
             } else {
-//                Button(action: checkForUpdate) {
-//                    Text("Check for Updates")
-//                }
-//                .disabled(isChecking)
+                Button(action: checkForUpdate) {
+                    Text("Check for Updates")
+                }
+                .disabled(isChecking)
             }
 
             if showError {
