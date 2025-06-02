@@ -11,43 +11,22 @@ import WebKit
 
 class PromptBarPopup: NSViewController {
     var hostingController: NSHostingController<MainUI>?
+    private var isLoaded = false
 
-    override func loadView() {
-        let appDelegate = NSApp.delegate as? AppDelegate
-        let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
-        let initialAddress: String?
-        if let selectedAIChatTitle = selectedAIChatTitle,
-            let chatOptions = appDelegate?.chatOptions,
-            let url = chatOptions[selectedAIChatTitle]
-        {
-            initialAddress = url
-        } else if let chatOptions = appDelegate?.chatOptions,
-            let firstUrl = chatOptions.values.first
-        {
-            initialAddress = firstUrl
-        } else {
-            initialAddress = nil
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        if !isLoaded {
+            loadWebView()
+            isLoaded = true
         }
-
-        // Preload WebView before showing the UI
-        self.hostingController = NSHostingController(
-            rootView: MainUI(initialAddress: initialAddress ?? ""))
-        self.view = self.hostingController!.view
-        self.view.frame = CGRect(
-            origin: .zero,
-            size: appDelegate?.windowSizeOptions["Medium"]
-                ?? CGSize(width: 500, height: 600))
     }
 
-    override func mouseDragged(with event: NSEvent) {
-        guard
-            let appDelegate: AppDelegate = NSApplication.shared.delegate
-                as? AppDelegate
-        else { return }
-        var size = appDelegate.popover?.contentSize ?? CGSize.zero
-        size.width += event.deltaX
-        size.height += event.deltaY
-        appDelegate.popover?.contentSize = size
+    private func loadWebView() {
+        let appDelegate = NSApp.delegate as? AppDelegate
+        let initialAddress = appDelegate?.chatOptions[appDelegate?.selectedAIChatTitle ?? ""] ?? "https://chat.mistral.ai/chat/"
+        hostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress))
+        view = hostingController!.view
+        view.frame = CGRect(origin: .zero, size: appDelegate?.windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600))
     }
 }
 

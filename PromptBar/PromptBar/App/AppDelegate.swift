@@ -9,93 +9,79 @@ import Cocoa
 import FirebaseCore
 import FirebaseInstallations
 import FirebaseRemoteConfig
-import HotKey
 import SwiftUI
 import SystemConfiguration
 import WebKit
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    // MARK: - Properties
     private var statusItem: NSStatusItem!
-    private var alwaysOnTop: Bool = false
-    var removeTexts: [String] = []
+    private var popover: NSPopover!
+    private var menu: NSMenu!
     private var loadingView: NSView?
-    var errorOverlay: NSView?
-    var isCheckingInternet = false
-
+    private var errorOverlay: NSView?
+    private var isCheckingInternet = false
+    private var alwaysOnTop: Bool = false
+    
     var selectedAIChatTitle: String = "PromptBar"
     private var aiChatOptions: [String: String] = [:]
-
+    private var selectedFileURL: URL?
+    
+    private let windowSizeKey = "selectedWindowSize"
+    private let defaultChatURL = "https://chat.mistral.ai/chat/"
+    
     internal var windowSizeOptions: [String: CGSize] = [
         "Small": CGSize(width: 400, height: 300),
-        "Medium": CGSize(width: 500, height: 600),
-        "Large": CGSize(width: 700, height: 800),
+        "Medium": CGSize(width: 600, height: 700),
+        "Large": CGSize(width: 800, height: 900),
+        "Extra Large": CGSize(width: 1000, height: 1000)
     ]
-
+    
     var chatOptions: [String: String] {
         return aiChatOptions
     }
 
-    public var popover: NSPopover!
-    private var menu: NSMenu!
-    private let windowSizeKey = "selectedWindowSize"
-
-    let hotKey = HotKey(key: .c, modifiers: [.shift, .command])  // Global hotkey
-
-    var hotCKey: HotKey?
-    var hotVKey: HotKey?
-    var hotZKey: HotKey?
-    var hotXKey: HotKey?
-    var hotAKey: HotKey?
-
+    // MARK: - Application Lifecycle
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        FirebaseApp.configure()
-        fetchSubscriptionConfig()
-        statusItem = NSStatusBar.system.statusItem(
-            withLength: NSStatusItem.variableLength)
+        configureFirebase()
+        setupStatusItem()
+        setupInitialAIChat()
+        setupWindowSize()
+        constructPopover()
+        constructMenu()
         NSApp.setActivationPolicy(.accessory)
-
+    }
+    
+    // MARK: - Setup Methods
+    private func configureFirebase() {
+        FirebaseApp.configure()
+        fetchRemoteConfig()
+    }
+    
+    private func setupStatusItem() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            let icon = NSImage(named: "MenuBarIcon")!.resized(
-                to: CGSize(width: 14, height: 14))
-            icon.isTemplate = true
+            let icon = NSImage(named: "MenuBarIcon")?.resized(to: CGSize(width: 14, height: 14))
+            icon?.isTemplate = true
             button.image = icon
             button.action = #selector(handleMenuIconAction(sender:))
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
-
-        // Check if there is a saved AI chat title, set default to "Mistral" if not
-        if let savedAIChatTitle = UserDefaults.standard.string(
-            forKey: "selectedAIChatTitle")
-        {
-            selectedAIChatTitle = savedAIChatTitle
-        } else {
-            selectedAIChatTitle = "Mistral"
-            UserDefaults.standard.set(
-                selectedAIChatTitle, forKey: "selectedAIChatTitle")
-        }
-
-        constructPopover()
-        constructMenu()
-
-        // ---> NEW: Apply previously saved window size or default to Medium
-        if let savedSizeName = UserDefaults.standard.string(
-            forKey: windowSizeKey),
-            let savedSize = windowSizeOptions[savedSizeName]
-        {
-            popover.contentSize = savedSize
-        } else {
-            let defaultSizeName = "Medium"
-            popover.contentSize = windowSizeOptions[defaultSizeName]!
-            UserDefaults.standard.set(defaultSizeName, forKey: windowSizeKey)
-        }
-
-        hotKey.keyUpHandler = {  // Global hotkey handler
-            self.togglePopover()
-        }
-
-        NSApp.setActivationPolicy(.accessory)
     }
-
+    
+    private func setupInitialAIChat() {
+        selectedAIChatTitle = UserDefaults.standard.string(forKey: "selectedAIChatTitle") ?? "Mistral"
+        UserDefaults.standard.set(selectedAIChatTitle, forKey: "selectedAIChatTitle")
+    }
+    
+    private func setupWindowSize() {
+        let defaultSizeName = "Medium"
+        let savedSizeName = UserDefaults.standard.string(forKey: windowSizeKey) ?? defaultSizeName
+        popover?.contentSize = windowSizeOptions[savedSizeName] ?? windowSizeOptions[defaultSizeName]!
+        UserDefaults.standard.set(savedSizeName, forKey: windowSizeKey)
+    }
+    
+    // MARK: - Menu Handling
     @objc func handleMenuIconAction(sender: NSStatusBarButton) {
         let event = NSApp.currentEvent!
         if event.type == .rightMouseUp {
@@ -105,605 +91,445 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             togglePopover()
         }
     }
-
+    
+    func showMenu() {
+        updateMenuItemsState()
+        statusItem.menu = menu
+        statusItem.popUpMenu(menu)
+    }
+    
+    func removeMenu() {
+        statusItem.menu = nil
+    }
+    
+    // MARK: - File Selection
+    @objc func selectFile() {
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.canChooseFiles = true
+        openPanel.allowedContentTypes = [.pdf, .text, .plainText, .html]
+        
+        openPanel.begin { [weak self] response in
+            guard response == .OK, let url = openPanel.url else { return }
+            self?.selectedFileURL = url
+            self?.loadFileContent(url: url)
+        }
+    }
+    
+    private func loadFileContent(url: URL) {
+        guard isInternetAvailable() else {
+            showNoInternetMessage()
+            return
+        }
+        
+        // Use MainUI to load the file as a local URL
+        let fileURLString = url.absoluteString
+        let hostingController = NSHostingController(rootView: MainUI(initialAddress: fileURLString))
+        let popupContentViewController = PromptBarPopup()
+        popupContentViewController.hostingController = hostingController
+        
+        popover.contentViewController = popupContentViewController
+        popover.contentSize = hostingController.view.fittingSize
+        
+        showLoadingView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.hideLoadingView()
+        }
+    }
+    
+    // MARK: - Loading View
     func showLoadingView() {
-        guard let window = popover.contentViewController?.view.window else {
-            return
-        }
-
-        // 🔥 If loading is already shown, don't add another one
-        if loadingView != nil {
-            return
-        }
-
-        hideLoadingView()  // Remove any existing loading overlay first
-
-        // Check internet connectivity
+        guard let window = popover.contentViewController?.view.window, loadingView == nil else { return }
+        
         if !isInternetAvailable() {
-            showNoInternetMessage(in: window)
+            showNoInternetMessage()
             return
         }
-
-        // Create loading overlay
-        let loadingOverlay = NSView(frame: window.contentView!.bounds)
-        loadingOverlay.wantsLayer = true
-        loadingOverlay.layer?.backgroundColor =
-            NSColor.black.withAlphaComponent(0.7).cgColor
-        loadingOverlay.alphaValue = 0  // Start invisible for fade-in
-        loadingOverlay.identifier = NSUserInterfaceItemIdentifier(
-            "loadingOverlay")
-
-        // Create spinning progress indicator
+        
+        let loadingOverlay = createLoadingOverlay(for: window)
+        window.contentView?.addSubview(loadingOverlay)
+        self.loadingView = loadingOverlay
+        
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.3
+            loadingOverlay.animator().alphaValue = 1
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            self?.hideLoadingView()
+        }
+    }
+    
+    private func createLoadingOverlay(for window: NSWindow) -> NSView {
+        let overlay = NSView(frame: window.contentView!.bounds)
+        overlay.wantsLayer = true
+        overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.7).cgColor
+        overlay.alphaValue = 0
+        overlay.identifier = NSUserInterfaceItemIdentifier("loadingOverlay")
+        
         let spinner = NSProgressIndicator()
         spinner.style = .spinning
         spinner.controlSize = .large
         spinner.isIndeterminate = true
         spinner.startAnimation(nil)
         spinner.translatesAutoresizingMaskIntoConstraints = false
-
-        // Create loading label
-        let label = NSTextField(
-            labelWithString: "Loading \(selectedAIChatTitle)...")
+        
+        let label = NSTextField(labelWithString: "Loading \(selectedAIChatTitle)...")
         label.font = NSFont.boldSystemFont(ofSize: 18)
-        label.textColor = NSColor.white
+        label.textColor = .white
         label.alignment = .center
         label.isBezeled = false
         label.isEditable = false
         label.drawsBackground = false
         label.translatesAutoresizingMaskIntoConstraints = false
-
-        // Add views to overlay
-        loadingOverlay.addSubview(spinner)
-        loadingOverlay.addSubview(label)
-
+        
+        overlay.addSubview(spinner)
+        overlay.addSubview(label)
+        
         NSLayoutConstraint.activate([
-            spinner.centerXAnchor.constraint(
-                equalTo: loadingOverlay.centerXAnchor),
-            spinner.centerYAnchor.constraint(
-                equalTo: loadingOverlay.centerYAnchor, constant: -30),
-
-            label.topAnchor.constraint(
-                equalTo: spinner.bottomAnchor, constant: 15),
-            label.centerXAnchor.constraint(
-                equalTo: loadingOverlay.centerXAnchor),
+            spinner.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: overlay.centerYAnchor, constant: -30),
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 15),
+            label.centerXAnchor.constraint(equalTo: overlay.centerXAnchor)
         ])
-
-        // Add overlay to window
-        window.contentView?.addSubview(loadingOverlay)
-        self.loadingView = loadingOverlay
-
-        // Fade-in effect
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.3
-                loadingOverlay.animator().alphaValue = 1
-            }, completionHandler: nil)
-
-        // 🔥 Ensure it disappears after loading (adjust time as needed)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.hideLoadingView()
-        }
+        
+        return overlay
     }
+    
     func hideLoadingView() {
         guard let loadingView = self.loadingView else { return }
-
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.5
-                loadingView.animator().alphaValue = 0
-            },
-            completionHandler: {
-                loadingView.removeFromSuperview()
-                self.loadingView = nil
-            }
-        )
+        
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.5
+            loadingView.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            loadingView.removeFromSuperview()
+            self?.loadingView = nil
+        })
     }
-
-    // ✅ Show an error message and **keep checking** for internet availability
-    func showNoInternetMessage(in window: NSWindow) {
-        if errorOverlay != nil { return }  // Prevent multiple overlays
-
-        errorOverlay = NSView(frame: window.contentView!.bounds)
-        errorOverlay?.wantsLayer = true
-        errorOverlay?.layer?.backgroundColor =
-            NSColor.black.withAlphaComponent(0.7).cgColor
-        errorOverlay?.identifier = NSUserInterfaceItemIdentifier("errorOverlay")
-
-        let errorLabel = NSTextField(
-            labelWithString:
-                "No internet connection.\nPlease check your network and try again."
-        )
+    
+    // MARK: - Internet Connectivity
+    func showNoInternetMessage() {
+        guard let window = popover.contentViewController?.view.window, errorOverlay == nil else { return }
+        
+        let overlay = NSView(frame: window.contentView!.bounds)
+        overlay.wantsLayer = true
+        overlay.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.7).cgColor
+        overlay.identifier = NSUserInterfaceItemIdentifier("errorOverlay")
+        
+        let errorLabel = NSTextField(labelWithString: "No internet connection.\nPlease check your network and try again.")
         errorLabel.font = NSFont.boldSystemFont(ofSize: 16)
-        errorLabel.textColor = NSColor.white
+        errorLabel.textColor = .white
         errorLabel.alignment = .center
         errorLabel.isBezeled = false
         errorLabel.isEditable = false
         errorLabel.drawsBackground = false
-        errorLabel.translatesAutoresizingMaskIntoConstraints = false
         errorLabel.lineBreakMode = .byWordWrapping
         errorLabel.maximumNumberOfLines = 2
-
-        errorOverlay?.addSubview(errorLabel)
-
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        overlay.addSubview(errorLabel)
+        
         NSLayoutConstraint.activate([
-            errorLabel.centerXAnchor.constraint(
-                equalTo: errorOverlay!.centerXAnchor),
-            errorLabel.centerYAnchor.constraint(
-                equalTo: errorOverlay!.centerYAnchor),
+            errorLabel.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            errorLabel.centerYAnchor.constraint(equalTo: overlay.centerYAnchor)
         ])
-
-        window.contentView?.addSubview(errorOverlay!)
-
+        
+        window.contentView?.addSubview(overlay)
+        self.errorOverlay = overlay
+        
         if !isCheckingInternet {
             isCheckingInternet = true
             checkInternetConnectionRepeatedly()
         }
     }
-
-    // ✅ Keep checking if internet is back and remove the message when available
+    
     func checkInternetConnectionRepeatedly() {
-        DispatchQueue.global(qos: .background).async {
-            while !self.isInternetAvailable() {
-                sleep(3)  // Wait for 3 seconds before rechecking
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            while !(self?.isInternetAvailable() ?? false) {
+                sleep(3)
             }
-
-            DispatchQueue.main.async {
-                self.hideNoInternetMessage()
-
-                // 🔥 Only show the loading screen if it's not already being shown
-                if self.loadingView == nil {
-                    self.showLoadingView()
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.hideNoInternetMessage()
+                if self?.loadingView == nil {
+                    self?.showLoadingView()
                 }
-
-                // 🔥 Reload the AI Chat properly
-                self.reloadAIChat()
-                self.isCheckingInternet = false
+                self?.reloadAIChat()
+                self?.isCheckingInternet = false
             }
         }
     }
-
-    func reloadAIChat() {
-        let initialAddress =
-            aiChatOptions[selectedAIChatTitle]
-            ?? "https://chat.mistral.ai/chat/"
-
-        let newHostingController = NSHostingController(
-            rootView: MainUI(initialAddress: initialAddress))
-        let newPopupContentViewController = PromptBarPopup()
-        newPopupContentViewController.hostingController = newHostingController
-
-        popover.contentViewController = newPopupContentViewController
-        popover.contentSize = newHostingController.view.fittingSize
-
-        // 🔥 Automatically remove loading screen after a delay (adjust as needed)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.hideLoadingView()
-        }
-    }
-
-    // ✅ Remove error message when internet is back
+    
     func hideNoInternetMessage() {
         guard let errorOverlay = self.errorOverlay else { return }
-
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.5
-                errorOverlay.animator().alphaValue = 0
-            },
-            completionHandler: {
-                errorOverlay.removeFromSuperview()
-                self.errorOverlay = nil
-            }
-        )
+        
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.5
+            errorOverlay.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            errorOverlay.removeFromSuperview()
+            self?.errorOverlay = nil
+        })
     }
-
-    // ✅ Check if the internet is available
+    
     func isInternetAvailable() -> Bool {
         var zeroAddress = sockaddr_in()
         zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
         zeroAddress.sin_family = sa_family_t(AF_INET)
-
-        guard
-            let defaultRouteReachability = withUnsafePointer(
-                to: &zeroAddress,
-                {
-                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                        SCNetworkReachabilityCreateWithAddress(nil, $0)
-                    }
-                })
-        else {
+        
+        let reachability = withUnsafePointer(to: &zeroAddress) { pointer in
+            pointer.withMemoryRebound(to: sockaddr.self, capacity: 1) { address in
+                SCNetworkReachabilityCreateWithAddress(nil, address)
+            }
+        }
+        
+        guard let reachability else {
             return false
         }
-
+        
         var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+        guard SCNetworkReachabilityGetFlags(reachability, &flags) else {
             return false
         }
-
+        
         let isReachable = flags.contains(.reachable)
         let needsConnection = flags.contains(.connectionRequired)
-
-        return (isReachable && !needsConnection)
+        return isReachable && !needsConnection
     }
-
-    func menuDidClose(_ menu: NSMenu) {
-        removeMenu()
-    }
-
-    func fetchSubscriptionConfig() {
+    
+    // MARK: - AI Chat Management
+    func fetchRemoteConfig() {
         let remoteConfig = RemoteConfig.remoteConfig()
         let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0  // Adjust for production
+        settings.minimumFetchInterval = 0
         remoteConfig.configSettings = settings
-
-        remoteConfig.fetchAndActivate { status, error in
-            if let error = error {
-                print(
-                    "⚠️ Error fetching remote config: \(error.localizedDescription)"
-                )
+        
+        remoteConfig.fetchAndActivate { [weak self] status, error in
+            guard error == nil else {
+                print("⚠️ Failed to fetch remote config: \(error!.localizedDescription)")
                 return
             }
-
-            if status == .successFetchedFromRemote
-                || status == .successUsingPreFetchedData
-            {
-                // Fetch subscriptions
-                let removeTextsJSON =
-                    remoteConfig.configValue(forKey: "subscriptions")
-                    .stringValue ?? ""
-                if !removeTextsJSON.isEmpty {
-                    do {
-                        let removeTextsData = Data(removeTextsJSON.utf8)
-                        self.removeTexts = try JSONDecoder().decode(
-                            [String].self, from: removeTextsData)
-                        print(
-                            "✅ Successfully fetched subscriptions: \(self.removeTexts)"
-                        )
-                    } catch {
-                        print(
-                            "⚠️ Failed to decode subscriptions JSON: \(error.localizedDescription)"
-                        )
+            
+            let aiChatsJSON = remoteConfig.configValue(forKey: "ai_chats").stringValue
+            if !aiChatsJSON.isEmpty {
+                do {
+                    let aiChatsData = Data(aiChatsJSON.utf8)
+                    self?.aiChatOptions = try JSONDecoder().decode([String: String].self, from: aiChatsData)
+                    print("✅ Successfully fetched AI chats: \(self?.aiChatOptions ?? [:])")
+                    
+                    DispatchQueue.main.async { [weak self] in
+                        self?.constructMenu()
+                        self?.statusItem.menu = self?.menu
                     }
-                }
-
-                // Fetch ai_chats
-                let aiChatsJSON =
-                    remoteConfig.configValue(forKey: "ai_chats").stringValue
-                    ?? ""
-                if !aiChatsJSON.isEmpty {
-                    do {
-                        let aiChatsData = Data(aiChatsJSON.utf8)
-                        self.aiChatOptions = try JSONDecoder().decode(
-                            [String: String].self, from: aiChatsData)
-                        print(
-                            "✅ Successfully fetched AI chats: \(self.aiChatOptions)"
-                        )
-
-                        // 🔥 Rebuild menu dynamically when AI Chat options are fetched
-                        DispatchQueue.main.async {
-                            self.constructMenu()
-                            self.statusItem.menu = self.menu
-                        }
-                    } catch {
-                        print(
-                            "⚠️ Failed to decode ai_chats JSON: \(error.localizedDescription)"
-                        )
-                    }
+                } catch {
+                    print("⚠️ Failed to decode ai_chats JSON: \(error.localizedDescription)")
                 }
             }
         }
     }
-
+    
+    func reloadAIChat() {
+        let initialAddress = aiChatOptions[selectedAIChatTitle] ?? defaultChatURL
+        let newHostingController = NSHostingController(rootView: MainUI(initialAddress: initialAddress))
+        let newPopupContentViewController = PromptBarPopup()
+        newPopupContentViewController.hostingController = newHostingController
+        
+        popover.contentViewController = newPopupContentViewController
+        popover.contentSize = newHostingController.view.fittingSize
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.hideLoadingView()
+        }
+    }
+    
+    @objc func changeAIChat(sender: NSMenuItem) {
+        guard isInternetAvailable() else {
+            showNoInternetMessage()
+            return
+        }
+        
+        guard let urlString = sender.representedObject as? String else { return }
+        
+        selectedAIChatTitle = sender.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let newHostingController = NSHostingController(rootView: MainUI(initialAddress: urlString))
+        let newPopupContentViewController = PromptBarPopup()
+        newPopupContentViewController.hostingController = newHostingController
+        
+        popover.contentViewController = newPopupContentViewController
+        popover.contentSize = newHostingController.view.fittingSize
+        
+        UserDefaults.standard.set(selectedAIChatTitle, forKey: "selectedAIChatTitle")
+        updateMenuItemsState()
+    }
+    
+    // MARK: - Window Management
+    @objc func changeWindowSize(sender: NSMenuItem) {
+        guard let newSize = windowSizeOptions[sender.title] else { return }
+        
+        popover.contentSize = newSize
+        UserDefaults.standard.set(sender.title, forKey: windowSizeKey)
+        updateWindowSizeMenuItemsState()
+    }
+    
     func updateWindowLevel() {
-        if let window = popover.contentViewController?.view.window {
-            window.level = alwaysOnTop ? .statusBar : .normal
-            if alwaysOnTop {
-                window.collectionBehavior = [
-                    .canJoinAllSpaces, .fullScreenAuxiliary,
-                ]
-            } else {
-                window.level = .floating
-            }
-        }
+        guard let window = popover.contentViewController?.view.window else { return }
+        
+        window.level = alwaysOnTop ? .statusBar : .floating
+        window.collectionBehavior = alwaysOnTop ? [.canJoinAllSpaces, .fullScreenAuxiliary] : []
     }
-
-    func applicationDidBecomeActive(_ notification: Notification) {
-        updateWindowLevel()
-    }
-
-    func applicationDidResignActive(_ notification: Notification) {
-        if alwaysOnTop, let window = popover.contentViewController?.view.window
-        {
-            window.level = .floating
-            window.orderFrontRegardless()
-        }
-    }
-
+    
     @objc func toggleAlwaysOnTop(sender: NSMenuItem) {
         alwaysOnTop.toggle()
         sender.state = alwaysOnTop ? .on : .off
         updateWindowLevel()
         updatePopoverBehavior()
     }
-
-    @objc func didTapOne() {
-        let aboutView = AboutView()
-        let aboutWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false
-        )
-
-        // Set window level to floating to keep it above other windows
-        aboutWindow.level = .floating
-        aboutWindow.center()
-        aboutWindow.contentView = NSHostingView(rootView: aboutView)
-
-        let aboutWindowController = AboutWindowController(window: aboutWindow)
-        aboutWindowController.showWindow(nil)
-
-        // Bring to front and maintain position
-        aboutWindow.orderFrontRegardless()
-    }
-
-    @objc func didTapTwo() {
-        WebViewHelper.clean()
-    }
-
-    @objc func changeAIChat(sender: NSMenuItem) {
-        if let urlString = sender.representedObject as? String {
-            // 🔥 Check for internet BEFORE changing AI chat
-            if !isInternetAvailable() {
-                if let window = popover.contentViewController?.view.window {
-                    showNoInternetMessage(in: window)
-                }
-                return  // Prevent white screen
-            }
-
-            selectedAIChatTitle = sender.title.trimmingCharacters(
-                in: .whitespacesAndNewlines)
-            let initialAddress =
-                aiChatOptions[selectedAIChatTitle]
-                ?? "https://chat.mistral.ai/chat/"
-
-            // 🔥 Reload UI with new chat
-            let newHostingController = NSHostingController(
-                rootView: MainUI(initialAddress: initialAddress))
-            let newPopupContentViewController = PromptBarPopup()
-            newPopupContentViewController.hostingController =
-                newHostingController
-
-            popover.contentViewController = newPopupContentViewController
-            popover.contentSize = newHostingController.view.fittingSize
-
-            updateMenuItemsState()
-            UserDefaults.standard.set(
-                selectedAIChatTitle, forKey: "selectedAIChatTitle")
-        }
-    }
-
-    @objc func changeWindowSize(sender: NSMenuItem) {
-        if let newSize = windowSizeOptions[sender.title] {
-            popover.contentSize = newSize
-
-            // ---> NEW: Save the size name in UserDefaults
-            UserDefaults.standard.set(sender.title, forKey: windowSizeKey)
-
-            // Update the checkmark states
-            updateWindowSizeMenuItemsState()
-        }
-    }
-
-    func updateMenuItemsState() {
-        if let changeChatAIMenuItem = menu.item(withTitle: "Change AI Chat"),
-            let changeChatAISubmenu = changeChatAIMenuItem.submenu
-        {
-            for item in changeChatAISubmenu.items {
-                item.state = (item.title == selectedAIChatTitle) ? .on : .off
-            }
-        }
-    }
-
-    func updateWindowSizeMenuItemsState() {
-        if let windowSizeMenuItem = menu.item(withTitle: "Change Window Size"),
-            let windowSizeSubmenu = windowSizeMenuItem.submenu
-        {
-            for item in windowSizeSubmenu.items {
-                item.state =
-                    (popover.contentSize == windowSizeOptions[item.title])
-                    ? .on
-                    : .off
-            }
-        }
-    }
-
+    
+    // MARK: - Menu Construction
     func constructMenu() {
         menu = NSMenu()
-
+        menu.delegate = self
+        
         // About
-        let aboutMenuItem = NSMenuItem(
-            title: "About",
-            action: #selector(didTapOne),
-            keyEquivalent: "1"
-        )
-        menu.addItem(aboutMenuItem)
-
+        menu.addItem(NSMenuItem(title: "About", action: #selector(didTapOne), keyEquivalent: "1"))
+        
         // Clean Cookies
-        let cleanCookiesMenuItem = NSMenuItem(
-            title: "Clean Cookies",
-            action: #selector(didTapTwo),
-            keyEquivalent: "2"
-        )
-        menu.addItem(cleanCookiesMenuItem)
-
-        // Separator
-        menu.addItem(NSMenuItem.separator())
-
+        menu.addItem(NSMenuItem(title: "Clean Cookies", action: #selector(didTapTwo), keyEquivalent: "2"))
+        
+        menu.addItem(.separator())
+        
         // Change AI Chat Submenu
-        let changeChatAIMenuItem = NSMenuItem(
-            title: "Change AI Chat", action: nil, keyEquivalent: "")
+        let changeChatAIMenuItem = NSMenuItem(title: "Change AI Chat", action: nil, keyEquivalent: "")
         let changeChatAISubmenu = NSMenu()
-
+        
         if aiChatOptions.isEmpty {
-            let placeholderItem = NSMenuItem(
-                title: "Loading...", action: nil, keyEquivalent: "")
+            let placeholderItem = NSMenuItem(title: "Loading...", action: nil, keyEquivalent: "")
             placeholderItem.isEnabled = false
             changeChatAISubmenu.addItem(placeholderItem)
         } else {
-            for (title, url) in aiChatOptions {
-                let menuItem = NSMenuItem(
-                    title: title, action: #selector(changeAIChat(sender:)),
-                    keyEquivalent: "")
+            for (title, url) in aiChatOptions.sorted(by: { $0.key < $1.key }) {
+                let menuItem = NSMenuItem(title: title, action: #selector(changeAIChat(sender:)), keyEquivalent: "")
                 menuItem.representedObject = url
                 changeChatAISubmenu.addItem(menuItem)
             }
         }
-
+        
         changeChatAIMenuItem.submenu = changeChatAISubmenu
         menu.addItem(changeChatAIMenuItem)
-
+        
         // Change Window Size Submenu
-        let changeWindowSizeMenuItem = NSMenuItem(
-            title: "Change Window Size", action: nil, keyEquivalent: "")
+        let changeWindowSizeMenuItem = NSMenuItem(title: "Change Window Size", action: nil, keyEquivalent: "")
         let changeWindowSizeSubmenu = NSMenu()
-
-        let sortedWindowSizeKeys = ["Small", "Medium", "Large"]
-        for size in sortedWindowSizeKeys {
-            if windowSizeOptions[size] != nil {
-                let menuItem = NSMenuItem(
-                    title: size,
-                    action: #selector(changeWindowSize(sender:)),
-                    keyEquivalent: ""
-                )
-                changeWindowSizeSubmenu.addItem(menuItem)
-            }
+        
+        for size in windowSizeOptions.keys.sorted() {
+            let menuItem = NSMenuItem(title: size, action: #selector(changeWindowSize(sender:)), keyEquivalent: "")
+            changeWindowSizeSubmenu.addItem(menuItem)
         }
-
+        
         changeWindowSizeMenuItem.submenu = changeWindowSizeSubmenu
         menu.addItem(changeWindowSizeMenuItem)
-
+        
         // Always on Top
-        let alwaysOnTopMenuItem = NSMenuItem(
-            title: "Always on Top",
-            action: #selector(toggleAlwaysOnTop),
-            keyEquivalent: ""
-        )
+        let alwaysOnTopMenuItem = NSMenuItem(title: "Always on Top", action: #selector(toggleAlwaysOnTop), keyEquivalent: "")
         alwaysOnTopMenuItem.state = alwaysOnTop ? .on : .off
         menu.addItem(alwaysOnTopMenuItem)
-
-        // Separator
-        menu.addItem(NSMenuItem.separator())
-
+        
+        menu.addItem(.separator())
+        
         // Quit
-        menu.addItem(
-            NSMenuItem(
-                title: "Quit",
-                action: #selector(NSApplication.terminate(_:)),
-                keyEquivalent: "q"
-            )
-        )
-
-        menu.delegate = self
-
-        // 🔥 Update Menu State (only call this once aiChatOptions is fetched)
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        
         updateMenuItemsState()
+        updateWindowSizeMenuItemsState()
     }
+    
+    func updateMenuItemsState() {
+        if let changeChatAIMenuItem = menu.item(withTitle: "Change AI Chat"),
+           let submenu = changeChatAIMenuItem.submenu {
+            for item in submenu.items {
+                item.state = (item.title == selectedAIChatTitle) ? .on : .off
+            }
+        }
+    }
+    
+    func updateWindowSizeMenuItemsState() {
+        if let windowSizeMenuItem = menu.item(withTitle: "Change Window Size"),
+           let submenu = windowSizeMenuItem.submenu {
+            for item in submenu.items {
+                item.state = (popover.contentSize == windowSizeOptions[item.title]) ? .on : .off
+            }
+        }
+    }
+    
+    // MARK: - Popover Management
     func constructPopover() {
         popover = NSPopover()
         popover.contentViewController = PromptBarPopup()
-        popover.delegate = self
-        popover.contentSize =
-            windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600)
-
-        // Adjust behavior based on `alwaysOnTop`
+        popover.contentSize = windowSizeOptions[UserDefaults.standard.string(forKey: windowSizeKey) ?? "Medium"]!
         updatePopoverBehavior()
     }
-
+    
     func updatePopoverBehavior() {
         popover.behavior = alwaysOnTop ? .applicationDefined : .transient
     }
-
-    func showMenu() {
-        statusItem.menu = menu
-        statusItem.popUpMenu(menu)
-    }
-
-    func removeMenu() {
-        statusItem.menu = nil
-    }
-
+    
     func togglePopover() {
         if popover.isShown {
             popover.performClose(nil)
-            deinitKeys()
-        } else {
-            if let button = statusItem.button {
-                NSApplication.shared.activate(ignoringOtherApps: true)
-                updateMenuItemsState()
-                updateWindowSizeMenuItemsState()
-
-                // 🚀 FIX: Reload AI chat **only if it hasn't loaded before**
-                if popover.contentViewController == nil
-                    || popover.contentViewController?.view.window == nil
-                {
-                    reloadAIChat()
-                }
-
-                popover.show(
-                    relativeTo: button.bounds, of: button, preferredEdge: .minY)
-                popover.contentViewController?.view.window?.makeKey()
-                constructKeys()
+        } else if let button = statusItem.button {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            updateMenuItemsState()
+            updateWindowSizeMenuItemsState()
+            
+            if popover.contentViewController == nil || popover.contentViewController?.view.window == nil {
+                reloadAIChat()
             }
+            
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            popover.contentViewController?.view.window?.makeKey()
         }
     }
-    private func deinitKeys() {
-        hotCKey = nil
-        hotVKey = nil
-        hotXKey = nil
-        hotZKey = nil
-        hotAKey = nil
+    
+    // MARK: - Application Delegate Methods
+    func applicationDidBecomeActive(_ notification: Notification) {
+        updateWindowLevel()
     }
-
-    private func constructKeys() {
-        hotCKey = HotKey(key: .c, modifiers: [.command])  // Global hotkey
-        hotVKey = HotKey(key: .v, modifiers: [.command])  // Global hotkey
-        hotZKey = HotKey(key: .z, modifiers: [.command])  // Global hotkey
-        hotXKey = HotKey(key: .x, modifiers: [.command])  // Global hotkey
-        hotAKey = HotKey(key: .a, modifiers: [.command])  // Global hotkey
-
-        hotCKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: self)
-        }
-
-        hotVKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: self)
-        }
-
-        hotXKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: self)
-        }
-
-        hotZKey?.keyDownHandler = {
-            NSApp.sendAction(Selector("undo:"), to: nil, from: self)
-        }
-
-        hotAKey?.keyDownHandler = {
-            NSApp.sendAction(
-                #selector(NSStandardKeyBindingResponding.selectAll(_:)),
-                to: nil, from: self)
+    
+    func applicationDidResignActive(_ notification: Notification) {
+        if alwaysOnTop, let window = popover.contentViewController?.view.window {
+            window.level = .floating
+            window.orderFrontRegardless()
         }
     }
-
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool
-    {
+    
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }
-}
-
-extension AppDelegate: NSPopoverDelegate {
-    func popoverWillClose(_ notification: Notification) {
-        deinitKeys()
+    
+    func menuDidClose(_ menu: NSMenu) {
+        removeMenu()
+    }
+    
+    @objc func didTapOne() {
+        let aboutView = AboutView()
+        let aboutWindow = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
+                                 styleMask: [.titled, .closable],
+                                 backing: .buffered,
+                                 defer: false)
+        
+        aboutWindow.level = .floating
+        aboutWindow.center()
+        aboutWindow.contentView = NSHostingView(rootView: aboutView)
+        
+        let aboutWindowController = AboutWindowController(window: aboutWindow)
+        aboutWindowController.showWindow(nil)
+        aboutWindow.orderFrontRegardless()
+    }
+    
+    @objc func didTapTwo() {
+        WebViewHelper.clean()
     }
 }
 
@@ -716,7 +542,39 @@ class AboutWindowController: NSWindowController {
 
 extension AboutWindowController: NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        sender.orderOut(nil)  // Hide the window instead of closing
-        return false  // Prevent the window from closing
+        sender.orderOut(nil)
+        return false
+    }
+}
+
+// MARK: - NSImage Extension
+extension NSImage {
+    func resized(to newSize: NSSize) -> NSImage? {
+        guard let bitmapRep = NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: Int(newSize.width),
+            pixelsHigh: Int(newSize.height),
+            bitsPerSample: 8,
+            samplesPerPixel: 4,
+            hasAlpha: true,
+            isPlanar: false,
+            colorSpaceName: .calibratedRGB,
+            bytesPerRow: 0,
+            bitsPerPixel: 0
+        ) else { return nil }
+        
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: bitmapRep)
+        
+        draw(in: NSRect(origin: .zero, size: newSize),
+             from: NSRect(origin: .zero, size: size),
+             operation: .copy,
+             fraction: 1.0)
+        
+        NSGraphicsContext.restoreGraphicsState()
+        
+        let resizedImage = NSImage(size: newSize)
+        resizedImage.addRepresentation(bitmapRep)
+        return resizedImage
     }
 }
