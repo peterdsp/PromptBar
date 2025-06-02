@@ -7,21 +7,18 @@
 
 import WebKit
 
-@objc class WebViewHelper: NSObject {  // Add @objc to expose to Objective-C
+@objc class WebViewHelper: NSObject {
     static let reloadState = ReloadState()
 
-    @objc static func clean() {  // Add @objc to make it accessible to #selector
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-
-        WKWebsiteDataStore.default().fetchDataRecords(
-            ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()
-        ) { records in
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(
-                    ofTypes: record.dataTypes, for: [record],
-                    completionHandler: {})
+    @objc static func clean(domains: [String] = []) {
+        let dataStore = WKWebsiteDataStore.default()
+        dataStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            let filteredRecords = domains.isEmpty ? records : records.filter { record in
+                domains.contains { record.displayName.contains($0) }
             }
-            self.reloadState.shouldReload = true
+            dataStore.removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), for: filteredRecords) {
+                self.reloadState.shouldReload = true
+            }
         }
     }
 }
