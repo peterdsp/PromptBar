@@ -1,17 +1,22 @@
-# <p align="center"> <img src="https://github.com/peterdsp/PromptBar/blob/7f8a906a4cde518d8ab00868d7aeba51a2528570/Mistralis/Mistralis/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> PromptBar 1.3.1 </p>
+# <p align="center"> <img src="https://github.com/peterdsp/PromptBar/blob/7f8a906a4cde518d8ab00868d7aeba51a2528570/Mistralis/Mistralis/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> PromptBar 1.3.2 </p>
 
 **PromptBar – AI Chat Simplified for macOS**
 
-PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, and Meta AI** into a single **menubar app** for quick and seamless access.
+PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, and Sophea.AI** into a single **menubar app** for quick and seamless access.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="PromptBar Interface">
 </p>
 
-## ✨ What’s New in Version 1.3.1?
+## ✨ What’s New in Version 1.3.2?
 
-- **🆕 NotebookLM & Meta AI Added** – Chat with **Google’s NotebookLM** and **Meta’s latest AI** right from PromptBar.  
-- **🔍 Version Check in About Window** – Tap **“Check for Updates”** in *About* to grab the newest build instantly.  
+- **🆕 Sophea.AI Added** – Chat with **Sophea.AI**, the first large language model (LLM) trained natively in Greek, developed on NVIDIA DGX B200 systems and DGX Cloud. Purpose-built for infrastructure and enterprise environments, it delivers semantic precision and real-time adaptability in Greek-language applications. Sophea powers:  
+  - Regulatory document analysis  
+  - AI accounting agents  
+  - Voice-based customer support  
+  - Upcoming AI-powered travel assistance  
+  With a foundation in ethical AI, Sophea is trained exclusively on 100% green energy—reinforcing KIEFER’s commitment to sustainability, language equity, and next-gen tech.  
+- **🔍 Enhanced Version Check** – Tap **“Check for Updates”** in *About* to procure the latest `.pkg` file for a more robust experience.  
 - **🚀 Official Apple Notarization** – PromptBar remains **notarized by Apple**, ensuring smooth installation without Gatekeeper warnings.  
 - **📢 App Store Update** – After 2+ months of review and name changes (**MacMistral → Mistralis → PromptBar**), Apple officially **rejected** our listing. Despite assurances, the app was declined with unclear justification—even as browsers with similar AI features remain.  
 - **📦 Distribution Moving Forward** – Keep buying PromptBar via **Ko-fi** or **fork & build** from GitHub; we’re exploring other marketplaces.  
@@ -23,7 +28,7 @@ PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral A
 ## 📌 Features
 
 - **Instant AI Access** – Open PromptBar from the menubar with a **single click**.  
-- **Multi-Model Support** – Choose between **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, and Meta AI** for diverse AI-powered assistance.  
+- **Multi-Model Support** – Choose between **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, and Sophea.AI** for diverse AI-powered assistance.  
 - **Minimal and Lightweight** – Designed to run efficiently without consuming unnecessary system resources.  
 - **Privacy-Focused** – No login credentials are stored locally; users sign in **directly through the AI provider of their choice**.  
 - **Customizable Experience** – Resize the chat window, switch AI models, and adjust settings for an optimized workflow.  
@@ -47,7 +52,7 @@ PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral A
 
 ### Apple Notarization – No More Gatekeeper Issues!
 
-PromptBar 1.3.1 is **notarized by Apple**, so macOS will no longer flag it as from an “unidentified developer.”  
+PromptBar 1.3.2 is **notarized by Apple**, so macOS will no longer flag it as from an “unidentified developer.”  
 
 💡 If you’re using an older version, you may still need to **right-click → Open** on first launch.
 
@@ -56,7 +61,7 @@ PromptBar 1.3.1 is **notarized by Apple**, so macOS will no longer flag it as fr
 ## 🔧 Usage
 
 1. **Click** the PromptBar icon in your menubar.  
-2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, or Meta AI**).  
+2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, or Sophea.AI**).  
 3. **Chat instantly**—no extra apps, no distractions!  
 4. **Customize** your experience:  
    - Resize the chat window (**Small, Medium, Large**).  
@@ -96,6 +101,6 @@ See **LICENSE.md** for details.
 ### 🚀 Download PromptBar Now!
 
 💡 **One-click AI access, right from your Mac’s menubar!**  
-🔗 **[Get PromptBar 1.3.1 Now](https://ko-fi.com/s/b1ef047a6f)**  
+🔗 **[Get PromptBar 1.3.2 Now](https://ko-fi.com/s/b1ef047a6f)**  
 
 Want to support future updates? **Buy me a coffee on Ko-fi!** ☕💙
