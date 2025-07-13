@@ -21,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var loadingView: NSView?
     var errorOverlay: NSView?
     var isCheckingInternet = false
+    var pendingDownload: (filename: String, handler: (URL?) -> Void, download: WKDownload)? = nil
 
     var selectedAIChatTitle: String = "PromptBar"
     private var aiChatOptions: [String: String] = [:]
@@ -184,6 +185,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.hideLoadingView()
         }
     }
+    
     func hideLoadingView() {
         guard let loadingView = self.loadingView else { return }
 
@@ -197,6 +199,39 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 self.loadingView = nil
             }
         )
+    }
+    
+    func showDownloadSavePanel() {
+        guard let pending = pendingDownload else { return }
+
+        // Close popover if needed
+        popover?.performClose(nil)
+
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = pending.filename
+        panel.canCreateDirectories = true
+
+        if let window = NSApp.windows.first(where: { $0.isVisible && $0.level == .normal }) {
+            panel.beginSheetModal(for: window) { result in
+                if result == .OK {
+                    pending.handler(panel.url)
+                } else {
+                    pending.download.cancel()
+                    pending.handler(nil)
+                }
+                self.pendingDownload = nil
+            }
+        } else {
+            // fallback if no window available (shouldn’t happen in PromptBar)
+            let result = panel.runModal()
+            if result == .OK {
+                pending.handler(panel.url)
+            } else {
+                pending.download.cancel()
+                pending.handler(nil)
+            }
+            self.pendingDownload = nil
+        }
     }
 
     // ✅ Show an error message and **keep checking** for internet availability
