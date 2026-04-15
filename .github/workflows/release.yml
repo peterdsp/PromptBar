@@ -1,0 +1,133 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  SCHEME: PromptBar
+  PROJECT: PromptBar/PromptBar.xcodeproj
+  CONFIGURATION: Release
+
+jobs:
+  validate:
+    runs-on: macos-15
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Resolve SPM dependencies
+        run: xcodebuild -resolvePackageDependencies -project "$PROJECT" -scheme "$SCHEME"
+
+      # ── Debug build (warnings as errors) ──────────────────────────
+      - name: Build Debug
+        run: |
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES
+
+      # ── Release build ─────────────────────────────────────────────
+      - name: Build Release
+        run: |
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO
+
+      # ── Verify app bundle ─────────────────────────────────────────
+      - name: Verify app bundle structure
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -name "PromptBar.app" -path "*/Release/*" | head -1)
+
+          if [ -z "$APP" ]; then
+            echo "::error::PromptBar.app not found in build output"
+            exit 1
+          fi
+
+          echo "Found app at: $APP"
+
+          if [ ! -f "$APP/Contents/MacOS/PromptBar" ]; then
+            echo "::error::Missing main binary"
+            exit 1
+          fi
+
+          if [ ! -f "$APP/Contents/Info.plist" ]; then
+            echo "::error::Missing Info.plist"
+            exit 1
+          fi
+
+          if [ ! -f "$APP/Contents/Resources/GoogleService-Info.plist" ]; then
+            echo "::error::Missing GoogleService-Info.plist"
+            exit 1
+          fi
+
+          if [ ! -d "$APP/Contents/Resources/Assets.car" ]; then
+            echo "::error::Missing compiled assets"
+            exit 1
+          fi
+
+          LINKED=$(otool -L "$APP/Contents/MacOS/PromptBar")
+          for fw in WebKit AppKit SwiftUI; do
+            if ! echo "$LINKED" | grep -q "$fw"; then
+              echo "::error::Binary not linked against $fw"
+              exit 1
+            fi
+          done
+
+          echo "App bundle validation passed"
+
+      # ── Smoke test ────────────────────────────────────────────────
+      - name: Smoke test (launch and quit)
+        run: |
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -name "PromptBar.app" -path "*/Release/*" | head -1)
+
+          open "$APP"
+          sleep 3
+
+          if pgrep -x "PromptBar" > /dev/null; then
+            echo "App launched successfully"
+            pkill -x "PromptBar"
+            echo "App terminated cleanly"
+          else
+            echo "::error::App failed to launch or crashed on startup"
+            exit 1
+          fi
+
+  release:
+    needs: validate
+    runs-on: macos-15
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      # ── GitHub Release (source-only) ──────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PromptBar ${{ steps.version.outputs.VERSION }}
+          generate_release_notes: true
