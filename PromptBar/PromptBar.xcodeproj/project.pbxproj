@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AF8700C3BFA4E4F56762B45 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 		2C0BA4D52BA6055E0050C66B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4D42BA6055E0050C66B /* main.swift */; };
 		2C0BA4D72BA6055E0050C66B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4D62BA6055E0050C66B /* ContentView.swift */; };
 		2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */; };
@@ -14,15 +15,15 @@
 		2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */; };
 		2C0BA4EE2BA60F690050C66B /* PromptBarPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4ED2BA60F690050C66B /* PromptBarPopup.swift */; };
 		2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E816D2BA6751F0047A31C /* ObservableObject.swift */; };
-		2C76E1992E2454E700313B23 /* DownloadDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C76E1982E2454E700313B23 /* DownloadDelegate.swift */; };
 		2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */; };
 		2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */; };
 		2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */; };
 		2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB42D312E0200F6B4F5 /* AboutView.swift */; };
-		2C9F85EB2D831CB800CB74F4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C9F85EA2D831CB800CB74F4 /* Info.plist */; };
+		7B079DCB74527762365792BE /* VersionComparatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */; };
 		AA00000100000000000000AB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002000000000000000AB /* FirebaseAnalytics */; };
 		AA00000200000000000000AB /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002100000000000000AB /* FirebaseRemoteConfig */; };
 		AA00000300000000000000AB /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002200000000000000AB /* HotKey */; };
+		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +34,6 @@
 		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C0BA4ED2BA60F690050C66B /* PromptBarPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptBarPopup.swift; sourceTree = "<group>"; };
 		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
-		2C76E1982E2454E700313B23 /* DownloadDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDelegate.swift; sourceTree = "<group>"; };
 		2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHelper.swift; sourceTree = "<group>"; };
@@ -41,9 +41,19 @@
 		2C9F85E92D831C7800CB74F4 /* PromptBar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PromptBar.entitlements; sourceTree = "<group>"; };
 		2C9F85EA2D831CB800CB74F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C9F85EC2D8428B500CB74F4 /* PromptBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PromptBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparator.swift; sourceTree = "<group>"; };
+		CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparatorTests.swift; sourceTree = "<group>"; };
+		FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		25ECF4D0807BCD81208650AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2C0BA4CE2BA6055E0050C66B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -62,6 +72,8 @@
 			children = (
 				2C0BA4D32BA6055E0050C66B /* PromptBar */,
 				2C9F85EC2D8428B500CB74F4 /* PromptBar.app */,
+				FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */,
+				49219E16E5A5EAB7A4DC58FD /* PromptBarTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,17 +122,43 @@
 		2C98EFB72D312E5500F6B4F5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				2C76E1982E2454E700313B23 /* DownloadDelegate.swift */,
 				2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */,
 				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
 				2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */,
+				2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		49219E16E5A5EAB7A4DC58FD /* PromptBarTests */ = {
+			isa = PBXGroup;
+			children = (
+				CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */,
+			);
+			name = PromptBarTests;
+			path = PromptBarTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		19A7DEA390D5D8467B95B174 /* PromptBarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBEA660FDC6A1430F62AEB1F /* Build configuration list for PBXNativeTarget "PromptBarTests" */;
+			buildPhases = (
+				D4DED88584B5050E508320E7 /* Sources */,
+				25ECF4D0807BCD81208650AD /* Frameworks */,
+				A041F5A425E0D3B8505DE716 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PromptBarTests;
+			productName = PromptBarTests;
+			productReference = FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		2C0BA4D02BA6055E0050C66B /* PromptBar */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2C0BA4E22BA6055F0050C66B /* Build configuration list for PBXNativeTarget "PromptBar" */;
@@ -176,6 +214,7 @@
 			projectRoot = "";
 			targets = (
 				2C0BA4D02BA6055E0050C66B /* PromptBar */,
+				19A7DEA390D5D8467B95B174 /* PromptBarTests */,
 			);
 		};
 /* End PBXProject section */
@@ -185,10 +224,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C9F85EB2D831CB800CB74F4 /* Info.plist in Resources */,
 				2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */,
 				2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */,
 				2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F5A425E0D3B8505DE716 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,7 +244,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C76E1992E2454E700313B23 /* DownloadDelegate.swift in Sources */,
 				2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */,
 				2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */,
 				2C0BA4EE2BA60F690050C66B /* PromptBarPopup.swift in Sources */,
@@ -208,6 +252,16 @@
 				2C0BA4D52BA6055E0050C66B /* main.swift in Sources */,
 				2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */,
 				2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */,
+				2AF8700C3BFA4E4F56762B45 /* VersionComparator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4DED88584B5050E508320E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7B079DCB74527762365792BE /* VersionComparatorTests.swift in Sources */,
+				DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,6 +458,42 @@
 			};
 			name = Release;
 		};
+		70EAB0274AB73164E55B0955 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A235B097AC9AD2BD6759C3A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -421,6 +511,15 @@
 			buildConfigurations = (
 				2C0BA4E32BA6055F0050C66B /* Debug */,
 				2C0BA4E42BA6055F0050C66B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBEA660FDC6A1430F62AEB1F /* Build configuration list for PBXNativeTarget "PromptBarTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				70EAB0274AB73164E55B0955 /* Release */,
+				A235B097AC9AD2BD6759C3A9 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
