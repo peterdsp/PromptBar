@@ -20,7 +20,6 @@
 		2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */; };
 		2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB42D312E0200F6B4F5 /* AboutView.swift */; };
 		7B079DCB74527762365792BE /* VersionComparatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */; };
-		AA00000100000000000000AB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002000000000000000AB /* FirebaseAnalytics */; };
 		AA00000200000000000000AB /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002100000000000000AB /* FirebaseRemoteConfig */; };
 		AA00000300000000000000AB /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002200000000000000AB /* HotKey */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
@@ -58,7 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA00000100000000000000AB /* FirebaseAnalytics in Frameworks */,
 				AA00000200000000000000AB /* FirebaseRemoteConfig in Frameworks */,
 				AA00000300000000000000AB /* HotKey in Frameworks */,
 			);
@@ -173,7 +171,6 @@
 			);
 			name = PromptBar;
 			packageProductDependencies = (
-				AA00002000000000000000AB /* FirebaseAnalytics */,
 				AA00002100000000000000AB /* FirebaseRemoteConfig */,
 				AA00002200000000000000AB /* HotKey */,
 			);
@@ -546,11 +543,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AA00002000000000000000AB /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA00001000000000000000AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
 		AA00002100000000000000AB /* FirebaseRemoteConfig */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA00001000000000000000AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

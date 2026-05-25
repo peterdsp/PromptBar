@@ -1,25 +1,33 @@
 # User Privacy Choices
 
-PromptBar is committed to ensuring transparency and user control over privacy. Below are your privacy choices when using the app:
+PromptBar gives you control over local app preferences and WebKit website data stored on your Mac.
 
-## 🔹 Data Collection
-PromptBar **does not collect, store, or process any personal data**. The app acts solely as a **client for AI services** (e.g., Mistral, ChatGPT, Gemini, DeepSeek, Grok), and authentication is handled externally by those services.
+## Data Collection
 
-## 🔹 AI Model Authentication  
-Some AI models **require authentication** (e.g., ChatGPT, Gemini), while others (e.g., Grok) **do not require a login**. **PromptBar does not store or manage any login credentials**—all authentication is handled directly by the AI providers.
+PromptBar does not ask for provider API keys and does not collect or upload chat messages. AI interactions happen on third-party provider websites loaded in the app.
 
-## 🔹 Privacy Settings & Third-Party Services  
-- **Data Retention**: AI interactions are processed externally by the AI providers and are **not stored by PromptBar**.  
-- **No Tracking**: PromptBar does not track, collect, or analyze any user interactions.  
-- **Optional Preferences**: Users can select their preferred AI model and customize UI settings, which are stored locally on their Mac.  
+PromptBar uses Firebase Remote Config for app configuration. Firebase Analytics is not linked in the app target.
 
-## 🔹 Managing Your Privacy  
-To manage your privacy settings or data preferences, visit the privacy policies of the AI providers you use with PromptBar:
+## AI Provider Authentication
 
-- [Mistral AI](https://mistral.ai/privacy-policy/)  
-- [OpenAI (ChatGPT)](https://openai.com/terms)  
-- [Google Gemini](https://policies.google.com/privacy)  
-- [DeepSeek](https://deepseek.com/privacy-policy)  
-- [Grok (X AI)](https://x.ai/privacy)  
+Some providers require sign-in. PromptBar does not store or manage provider credentials. You sign in directly inside the provider website shown by WebKit.
 
-By using PromptBar, you acknowledge that all AI interactions occur through third-party services, and their respective privacy policies apply.
+## Local Website Data
+
+WebKit may store provider cookies, local storage, IndexedDB, caches, and other website data locally on your Mac. This local website data supports normal browser behavior such as staying signed in.
+
+PromptBar can clear WebKit cookies and website data from the app's default data store through its clean cookies action. Clearing data may sign you out of providers.
+
+## Preferences
+
+PromptBar stores app preferences locally on your Mac, including selected provider and window size.
+
+## Third-Party Provider Policies
+
+To manage provider-side account data, chat history, retention, or training settings, use the privacy controls offered by each provider:
+
+- [Mistral AI](https://mistral.ai/privacy-policy/)
+- [OpenAI](https://openai.com/policies/privacy-policy)
+- [Google Gemini](https://policies.google.com/privacy)
+- [DeepSeek](https://deepseek.com/privacy-policy)
+- [xAI](https://x.ai/privacy)

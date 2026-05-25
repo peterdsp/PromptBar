@@ -7,7 +7,6 @@
 
 import Cocoa
 import FirebaseCore
-import FirebaseInstallations
 import FirebaseRemoteConfig
 import HotKey
 import SwiftUI

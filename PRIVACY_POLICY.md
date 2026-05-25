@@ -1,38 +1,45 @@
-# Privacy Policy  
+# Privacy Policy
 
-Last Updated: 10/03/2025
+Last Updated: 25/05/2026
 
-## 1. Introduction  
-Welcome to **PromptBar**. Your privacy is important to us. This Privacy Policy explains what data is (or isn’t) collected when you use the app.
+## 1. Introduction
 
-## 2. Data Collection & Processing  
-PromptBar **does not collect, store, or share any personal data**. The app functions solely as a **client for third-party AI chat services**, and all interactions occur directly between you and the AI provider.
+PromptBar is a macOS menu bar client for third-party AI chat websites. This policy explains what PromptBar itself handles and what is handled by the AI providers you choose to use.
 
-### 2.1 Authentication & Accounts  
-- Some AI models require user authentication (e.g., ChatGPT, Gemini).  
-- PromptBar **does not manage or store login credentials**—authentication is handled externally by the AI provider.  
+## 2. Data Collection and Processing
 
-### 2.2 AI Chat Data  
-- Any messages you send and receive are processed by the respective AI model (e.g., OpenAI, Mistral, Google, etc.).  
-- PromptBar **does not log, store, or access** your conversations.  
+PromptBar does not ask for, store, or transmit provider API keys. Users authenticate only inside the provider web sessions shown in the app.
 
-### 2.3 Third-Party Services  
-PromptBar integrates with third-party AI models. Their respective privacy policies apply:  
-- [Mistral AI Privacy Policy](https://mistral.ai/privacy-policy/)  
-- [OpenAI (ChatGPT) Privacy Policy](https://openai.com/terms)  
-- [Google Gemini Privacy Policy](https://policies.google.com/privacy)  
-- [DeepSeek Privacy Policy](https://deepseek.com/privacy-policy)  
-- [Grok (X AI) Privacy Policy](https://x.ai/privacy)  
+PromptBar does not log, inspect, or upload your chat messages. Messages, account details, and provider-side history are processed by the selected AI provider under that provider's own terms and privacy policy.
 
-## 3. Local Storage  
-- Preferences such as AI model selection and UI settings are stored locally on your Mac.  
-- **No chat data is stored on your device by PromptBar.**  
+PromptBar currently uses Firebase Remote Config to fetch app configuration such as available chat providers and update metadata. Firebase Analytics is not linked in the app target.
 
-## 4. Security & Data Protection  
-Since PromptBar does not process or store personal data, there are **no user data security risks** within the app itself. However, we recommend reviewing the security policies of the AI providers you use.
+## 3. Authentication and Accounts
 
-## 5. Changes to This Policy  
-This Privacy Policy may be updated periodically. Any significant changes will be communicated via the project repository.
+Some providers require sign-in. Authentication is handled inside the provider website loaded in WebKit. PromptBar does not manage provider accounts and does not store provider passwords.
 
-## 6. Contact  
-For questions or concerns, please visit the [GitHub repository](https://github.com/peterdsp/PromptBar) or contact the project maintainer.
+## 4. Local Storage
+
+PromptBar stores local preferences on your Mac, such as selected provider and window size.
+
+Because PromptBar uses `WKWebView` with the default website data store, WebKit may store provider cookies, local storage, IndexedDB, caches, and other website data locally on your Mac. This is how provider sign-in sessions can remain available between launches.
+
+PromptBar includes a cookie and website data clearing action. Using it removes WebKit website data from the app's default data store and reloads the web view.
+
+## 5. Third-Party Services
+
+PromptBar integrates with third-party AI websites. Their privacy policies apply to data you enter into those services:
+
+- [Mistral AI Privacy Policy](https://mistral.ai/privacy-policy/)
+- [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
+- [Google Privacy Policy](https://policies.google.com/privacy)
+- [DeepSeek Privacy Policy](https://deepseek.com/privacy-policy)
+- [xAI Privacy Policy](https://x.ai/privacy)
+
+## 6. Changes to This Policy
+
+This Privacy Policy may be updated periodically. Significant changes will be communicated through the project repository.
+
+## 7. Contact
+
+For questions or concerns, visit the [GitHub repository](https://github.com/peterdsp/PromptBar) or contact the project maintainer.
