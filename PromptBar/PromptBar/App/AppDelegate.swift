@@ -14,6 +14,21 @@ import SystemConfiguration
 import WebKit
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    static let defaultAIChatURL = "https://chat.mistral.ai/chat/"
+    static let defaultAIChatOptions: [String: String] = [
+        "AI Studio": "https://aistudio.google.com/",
+        "ChatGPT": "https://chatgpt.com/",
+        "Copilot": "https://copilot.microsoft.com/",
+        "DeepSeek": "https://chat.deepseek.com/",
+        "Gemini": "https://gemini.google.com/app",
+        "Grok": "https://grok.com/",
+        "Meta AI": "https://www.meta.ai/",
+        "Mistral": "https://chat.mistral.ai/chat/",
+        "NotebookLM": "https://notebooklm.google.com/",
+        "Perplexity": "https://www.perplexity.ai/",
+        "Sophea.AI": "https://sophea.ai/",
+    ]
+
     private var statusItem: NSStatusItem!
     private var alwaysOnTop: Bool = false
     var removeTexts: [String] = []
@@ -23,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     var pendingDownload: (filename: String, handler: (URL?) -> Void, download: WKDownload)? = nil
 
     var selectedAIChatTitle: String = "PromptBar"
-    private var aiChatOptions: [String: String] = [:]
+    private var aiChatOptions: [String: String] = AppDelegate.defaultAIChatOptions
 
     internal var windowSizeOptions: [String: CGSize] = [
         "Small": CGSize(width: 400, height: 300),
@@ -69,6 +84,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         {
             selectedAIChatTitle = savedAIChatTitle
         } else {
+            selectedAIChatTitle = "Mistral"
+            UserDefaults.standard.set(
+                selectedAIChatTitle, forKey: "selectedAIChatTitle")
+        }
+        if aiChatOptions[selectedAIChatTitle] == nil {
             selectedAIChatTitle = "Mistral"
             UserDefaults.standard.set(
                 selectedAIChatTitle, forKey: "selectedAIChatTitle")
@@ -299,7 +319,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func reloadAIChat() {
         let initialAddress =
             aiChatOptions[selectedAIChatTitle]
-            ?? "https://chat.mistral.ai/chat/"
+            ?? Self.defaultAIChatURL
 
         let newHostingController = NSHostingController(
             rootView: MainUI(initialAddress: initialAddress))
@@ -373,8 +393,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         remoteConfig.fetchAndActivate { status, error in
             if let error = error {
                 print(
-                    "⚠️ Error fetching remote config: \(error.localizedDescription)"
+                    "PromptBar: Remote Config fetch error: \(error.localizedDescription)"
                 )
+                DispatchQueue.main.async {
+                    self.constructMenu()
+                    self.statusItem.menu = self.menu
+                }
                 return
             }
 
@@ -415,14 +439,34 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
                         // 🔥 Rebuild menu dynamically when AI Chat options are fetched
                         DispatchQueue.main.async {
+                            if self.aiChatOptions[self.selectedAIChatTitle] == nil,
+                                let firstTitle = self.aiChatOptions.keys.sorted().first
+                            {
+                                self.selectedAIChatTitle = firstTitle
+                                UserDefaults.standard.set(
+                                    firstTitle, forKey: "selectedAIChatTitle")
+                            }
                             self.constructMenu()
                             self.statusItem.menu = self.menu
+                            if self.popover.isShown {
+                                self.reloadAIChat()
+                            }
                         }
                     } catch {
                         print(
                             "⚠️ Failed to decode ai_chats JSON: \(error.localizedDescription)"
                         )
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self.constructMenu()
+                        self.statusItem.menu = self.menu
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.constructMenu()
+                    self.statusItem.menu = self.menu
                 }
             }
         }
@@ -499,7 +543,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 in: .whitespacesAndNewlines)
             let initialAddress =
                 aiChatOptions[selectedAIChatTitle]
-                ?? "https://chat.mistral.ai/chat/"
+                ?? Self.defaultAIChatURL
 
             // 🔥 Reload UI with new chat
             let newHostingController = NSHostingController(
@@ -585,7 +629,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             placeholderItem.isEnabled = false
             changeChatAISubmenu.addItem(placeholderItem)
         } else {
-            for (title, url) in aiChatOptions {
+            for title in aiChatOptions.keys.sorted() {
+                guard let url = aiChatOptions[title] else { continue }
                 let menuItem = NSMenuItem(
                     title: title, action: #selector(changeAIChat(sender:)),
                     keyEquivalent: "")

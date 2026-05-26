@@ -15,7 +15,7 @@ class PromptBarPopup: NSViewController {
     override func loadView() {
         let appDelegate = NSApp.delegate as? AppDelegate
         let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
-        let initialAddress: String?
+        let initialAddress: String
         if let selectedAIChatTitle = selectedAIChatTitle,
             let chatOptions = appDelegate?.chatOptions,
             let url = chatOptions[selectedAIChatTitle]
@@ -26,12 +26,12 @@ class PromptBarPopup: NSViewController {
         {
             initialAddress = firstUrl
         } else {
-            initialAddress = nil
+            initialAddress = AppDelegate.defaultAIChatURL
         }
 
         // Preload WebView before showing the UI
         self.hostingController = NSHostingController(
-            rootView: MainUI(initialAddress: initialAddress ?? ""))
+            rootView: MainUI(initialAddress: initialAddress))
         self.view = self.hostingController!.view
         self.view.frame = CGRect(
             origin: .zero,
@@ -52,6 +52,8 @@ class PromptBarPopup: NSViewController {
 }
 
 struct MainUI: View {
+    static let defaultInitialAddress = AppDelegate.defaultAIChatURL
+
     @State private var action = WebViewAction.idle
     @State private var state = WebViewState.empty
     @State private var address: String
@@ -63,7 +65,7 @@ struct MainUI: View {
     }
 
     init(
-        initialAddress: String = "https://chat.mistral.ai/chat/",
+        initialAddress: String = Self.defaultInitialAddress,
         customUserAgent: String? = nil
     ) {
         self._address = State(initialValue: initialAddress)
