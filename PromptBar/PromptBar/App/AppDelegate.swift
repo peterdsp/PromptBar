@@ -70,6 +70,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         wireGlobalHotKey()
         observeStoreChanges()
 
+        // Window mode needs a real menubar (App / Edit / Window / Help).
+        if prefs.windowMode == .window {
+            constructAppMainMenu()
+        }
+
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             switch self.prefs.windowMode {
@@ -82,6 +87,151 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 NSApp.setActivationPolicy(.accessory)
                 // No window, no menubar icon, hotkey-only access.
             }
+        }
+    }
+
+    // MARK: - Main menu (window mode only)
+
+    private func constructAppMainMenu() {
+        let appName = ProcessInfo.processInfo.processName
+
+        let main = NSMenu()
+
+        // -- Application menu (first slot, displayed as the app's name in bold) --
+        let appMenuItem = NSMenuItem()
+        main.addItem(appMenuItem)
+        let appMenu = NSMenu()
+        appMenuItem.submenu = appMenu
+
+        appMenu.addItem(makeItem("About \(appName)", action: #selector(openAbout), key: ""))
+        appMenu.addItem(.separator())
+        appMenu.addItem(makeItem("Settings…", action: #selector(openSettings), key: ","))
+        appMenu.addItem(.separator())
+
+        let servicesItem = NSMenuItem(title: "Services", action: nil, keyEquivalent: "")
+        let servicesMenu = NSMenu(title: "Services")
+        servicesItem.submenu = servicesMenu
+        NSApp.servicesMenu = servicesMenu
+        appMenu.addItem(servicesItem)
+        appMenu.addItem(.separator())
+
+        let hide = NSMenuItem(title: "Hide \(appName)",
+                              action: #selector(NSApplication.hide(_:)),
+                              keyEquivalent: "h")
+        appMenu.addItem(hide)
+
+        let hideOthers = NSMenuItem(title: "Hide Others",
+                                    action: #selector(NSApplication.hideOtherApplications(_:)),
+                                    keyEquivalent: "h")
+        hideOthers.keyEquivalentModifierMask = [.command, .option]
+        appMenu.addItem(hideOthers)
+
+        appMenu.addItem(NSMenuItem(title: "Show All",
+                                   action: #selector(NSApplication.unhideAllApplications(_:)),
+                                   keyEquivalent: ""))
+        appMenu.addItem(.separator())
+        appMenu.addItem(NSMenuItem(title: "Quit \(appName)",
+                                   action: #selector(NSApplication.terminate(_:)),
+                                   keyEquivalent: "q"))
+
+        // -- File --
+        let fileMenuItem = NSMenuItem()
+        main.addItem(fileMenuItem)
+        let fileMenu = NSMenu(title: "File")
+        fileMenuItem.submenu = fileMenu
+        fileMenu.addItem(NSMenuItem(title: "Close",
+                                    action: #selector(NSWindow.performClose(_:)),
+                                    keyEquivalent: "w"))
+
+        // -- Edit --
+        let editMenuItem = NSMenuItem()
+        main.addItem(editMenuItem)
+        let editMenu = NSMenu(title: "Edit")
+        editMenuItem.submenu = editMenu
+
+        editMenu.addItem(NSMenuItem(title: "Undo",
+                                    action: Selector(("undo:")),
+                                    keyEquivalent: "z"))
+        let redo = NSMenuItem(title: "Redo",
+                              action: Selector(("redo:")),
+                              keyEquivalent: "z")
+        redo.keyEquivalentModifierMask = [.command, .shift]
+        editMenu.addItem(redo)
+        editMenu.addItem(.separator())
+        editMenu.addItem(NSMenuItem(title: "Cut",
+                                    action: #selector(NSText.cut(_:)),
+                                    keyEquivalent: "x"))
+        editMenu.addItem(NSMenuItem(title: "Copy",
+                                    action: #selector(NSText.copy(_:)),
+                                    keyEquivalent: "c"))
+        editMenu.addItem(NSMenuItem(title: "Paste",
+                                    action: #selector(NSText.paste(_:)),
+                                    keyEquivalent: "v"))
+        editMenu.addItem(NSMenuItem(title: "Delete",
+                                    action: #selector(NSText.delete(_:)),
+                                    keyEquivalent: ""))
+        editMenu.addItem(NSMenuItem(title: "Select All",
+                                    action: #selector(NSStandardKeyBindingResponding.selectAll(_:)),
+                                    keyEquivalent: "a"))
+        editMenu.addItem(.separator())
+        let findItem = NSMenuItem(title: "Find",
+                                  action: #selector(NSResponder.complete(_:)),
+                                  keyEquivalent: "f")
+        editMenu.addItem(findItem)
+
+        // -- View --
+        let viewMenuItem = NSMenuItem()
+        main.addItem(viewMenuItem)
+        let viewMenu = NSMenu(title: "View")
+        viewMenuItem.submenu = viewMenu
+
+        for entry in Self.windowSizes {
+            let item = NSMenuItem(title: "\(entry.name) Window",
+                                  action: #selector(changeWindowSize(_:)),
+                                  keyEquivalent: "")
+            item.target = self
+            viewMenu.addItem(item)
+        }
+        viewMenu.addItem(.separator())
+        viewMenu.addItem(makeItem("Reload", action: #selector(reloadCurrentWebView), key: "r"))
+
+        // -- Window --
+        let windowMenuItem = NSMenuItem()
+        main.addItem(windowMenuItem)
+        let windowMenu = NSMenu(title: "Window")
+        windowMenuItem.submenu = windowMenu
+        NSApp.windowsMenu = windowMenu
+
+        windowMenu.addItem(NSMenuItem(title: "Minimize",
+                                      action: #selector(NSWindow.performMiniaturize(_:)),
+                                      keyEquivalent: "m"))
+        windowMenu.addItem(NSMenuItem(title: "Zoom",
+                                      action: #selector(NSWindow.performZoom(_:)),
+                                      keyEquivalent: ""))
+        windowMenu.addItem(.separator())
+        windowMenu.addItem(NSMenuItem(title: "Bring All to Front",
+                                      action: #selector(NSApplication.arrangeInFront(_:)),
+                                      keyEquivalent: ""))
+
+        // -- Help --
+        let helpMenuItem = NSMenuItem()
+        main.addItem(helpMenuItem)
+        let helpMenu = NSMenu(title: "Help")
+        helpMenuItem.submenu = helpMenu
+        NSApp.helpMenu = helpMenu
+        let github = NSMenuItem(title: "PromptBar on GitHub",
+                                action: #selector(openHomepage),
+                                keyEquivalent: "")
+        github.target = self
+        helpMenu.addItem(github)
+        helpMenu.addItem(makeItem("Check for Updates", action: #selector(openAbout), key: ""))
+
+        NSApp.mainMenu = main
+    }
+
+    @objc private func openHomepage() {
+        if let url = URL(string: "https://github.com/peterdsp/PromptBar") {
+            NSWorkspace.shared.open(url)
         }
     }
 
@@ -211,8 +361,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     func refreshPopupContent() {
-        let size = popover.contentSize
-        popover.contentViewController = makePopoverHostingController(size: size)
+        if let popover = popover {
+            let size = popover.contentSize
+            popover.contentViewController = makePopoverHostingController(size: size)
+        }
         if let main = mainWindow {
             main.contentViewController = makeWindowHostingController(size: main.contentLayoutRect.size)
         }
@@ -362,7 +514,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func updateWindowSizeMenuState() {
         guard let sizeMenu = menu?.item(withTitle: "Window Size")?.submenu else { return }
-        let current = popover.contentSize
+        let current = popover?.contentSize ?? mainWindow?.frame.size ?? persistedWindowSize()
         for item in sizeMenu.items {
             if let entry = Self.windowSizes.first(where: { $0.name == item.title }) {
                 item.state = (entry.size == current) ? .on : .off
@@ -423,8 +575,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func changeWindowSize(_ sender: NSMenuItem) {
-        guard let entry = Self.windowSizes.first(where: { $0.name == sender.title }) else { return }
-        popover.contentSize = entry.size
+        let title = sender.title.replacingOccurrences(of: " Window", with: "")
+        guard let entry = Self.windowSizes.first(where: { $0.name == title }) else { return }
+        popover?.contentSize = entry.size
         if let window = mainWindow {
             window.setContentSize(entry.size)
         }
