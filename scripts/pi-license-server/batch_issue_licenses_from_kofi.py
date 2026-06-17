@@ -1,0 +1,1 @@
+../batch_issue_licenses_from_kofi.py

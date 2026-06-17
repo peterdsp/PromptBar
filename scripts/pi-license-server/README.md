@@ -154,6 +154,55 @@ curl -X POST https://licenses.yourdomain.com/webhook \
 
 Check your inbox for the test email with the `.promptbar` attachment.
 
+## Periodic batch backfill
+
+When you export a fresh Ko-fi `Transaction_All.csv` and want to mass-issue
+licenses (e.g. backfilling everyone who bought before the webhook was
+live, or re-sending after an inbox migration), use the batch script.
+It signs and optionally emails every PromptBar buyer in the CSV, in one
+command.
+
+```bash
+# 1. scp the latest Ko-fi export to the Pi
+scp ~/Downloads/Transaction_All.csv pi@RASPBERRY_PI_HOSTNAME:/home/pi/promptbar/
+
+# 2. SSH in and run the batch issuer
+ssh pi@RASPBERRY_PI_HOSTNAME
+cd /home/pi/promptbar
+source venv/bin/activate
+
+# Dry-run first to see what would happen
+python3 license-server/batch_issue_licenses_from_kofi.py \
+    --csv Transaction_All.csv \
+    --output issued/ \
+    --dry-run
+
+# Sign + email everyone, safely skipping anyone already in manifest.csv
+python3 license-server/batch_issue_licenses_from_kofi.py \
+    --csv Transaction_All.csv \
+    --output issued/ \
+    --email \
+    --env .env \
+    --skip-existing \
+    --rate-limit 1.0
+```
+
+`--rate-limit 1.0` sleeps a second between emails so Gmail doesn't
+throttle. For ~150 buyers it takes about 3 minutes.
+
+You can also use this on your Mac without the webhook server, the script
+has no Pi-specific dependencies:
+
+```bash
+python3 scripts/batch_issue_licenses_from_kofi.py \
+    --csv ~/Downloads/Transaction_All.csv \
+    --output licenses/
+```
+
+The Swift counterpart (`scripts/batch-issue-licenses-from-kofi.swift`)
+still works on macOS if you prefer not to install Python deps locally.
+Both produce identical signatures, so you can mix and match.
+
 ## Updating
 
 When the private key rotates (rare), re-copy `license-private.key` and
