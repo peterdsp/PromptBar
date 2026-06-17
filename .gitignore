@@ -6,6 +6,15 @@ docs/
 APP_STORE_CONNECT*.md
 KOFI_*.md
 
+## Release build artifacts (signed .app, .pkg, archives)
+release/build/
+release/export/
+release/pkg/
+release/*.xcarchive
+release/exportOptions.plist
+release/*.pkg
+!release/.gitkeep
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
