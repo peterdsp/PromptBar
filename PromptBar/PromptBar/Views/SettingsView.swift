@@ -12,6 +12,7 @@ struct SettingsView: View {
     enum Section: Hashable {
         case web
         case endpoints
+        case mcp
         case prompts
         case general
         case about
@@ -39,6 +40,7 @@ struct SettingsView: View {
 
             row(.web, label: "Web Chats", symbol: "globe")
             row(.endpoints, label: "API Endpoints", symbol: "key.fill")
+            row(.mcp, label: "MCP Servers", symbol: "powerplug")
             row(.prompts, label: "Prompts", symbol: "books.vertical")
             row(.general, label: "General", symbol: "gearshape")
             row(.about, label: "About", symbol: "info.circle")
@@ -75,6 +77,7 @@ struct SettingsView: View {
         switch selection {
         case .web: ServicesSettingsPane().environmentObject(store)
         case .endpoints: EndpointsSettingsPane().environmentObject(store)
+        case .mcp: MCPServersSettingsPane().environmentObject(store)
         case .prompts: PromptLibraryView().environmentObject(store)
         case .general: GeneralSettingsPane()
         case .about: AboutPane()

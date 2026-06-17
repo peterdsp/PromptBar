@@ -77,10 +77,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func presentOnboarding() {
         NSApp.setActivationPolicy(.regular)
 
-        let view = OnboardingView { [weak self] chosenMode in
+        let view = OnboardingView { [weak self] chosenMode, chosenUseCase in
             guard let self = self else { return }
             self.prefs.windowMode = chosenMode
             self.prefs.hasCompletedOnboarding = true
+            self.applyUseCase(chosenUseCase)
             self.onboardingWindow?.close()
             self.onboardingWindow = nil
             self.bootForCurrentMode()
@@ -99,6 +100,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         onboardingWindow = window
+    }
+
+    private func applyUseCase(_ useCase: UseCase) {
+        guard useCase != .custom else { return }
+        // Only seed if the user hasn't already saved their own prompts.
+        guard store.prompts.isEmpty else { return }
+        for prompt in useCase.seedPrompts {
+            store.addPrompt(prompt)
+        }
     }
 
     // MARK: Status item

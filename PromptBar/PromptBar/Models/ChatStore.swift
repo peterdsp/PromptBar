@@ -21,6 +21,7 @@ final class ChatStore: ObservableObject {
     private let selectedKey = "promptbar.selectedTarget.v1"
     private let conversationsKey = "promptbar.conversations.v1"
     private let promptsKey = "promptbar.prompts.v1"
+    private let mcpServersKey = "promptbar.mcpServers.v1"
 
     @Published private(set) var services: [ChatService] = []
     @Published private(set) var endpoints: [APIEndpoint] = []
@@ -30,6 +31,7 @@ final class ChatStore: ObservableObject {
     @Published var activeConversationID: UUID?
 
     @Published private(set) var prompts: [PromptItem] = []
+    @Published private(set) var mcpServers: [MCPServer] = []
 
     private init() {
         load()
@@ -157,6 +159,37 @@ final class ChatStore: ObservableObject {
         save()
     }
 
+    // MARK: - MCP servers
+
+    func addMCPServer(_ server: MCPServer, token: String = "") {
+        if !token.isEmpty {
+            try? KeychainHelper.save(token, account: server.keychainAccount)
+        }
+        mcpServers.append(server)
+        save()
+    }
+
+    func updateMCPServer(_ server: MCPServer, token: String? = nil) {
+        guard let i = mcpServers.firstIndex(where: { $0.id == server.id }) else { return }
+        mcpServers[i] = server
+        if let token = token, !token.isEmpty {
+            try? KeychainHelper.save(token, account: server.keychainAccount)
+        }
+        save()
+    }
+
+    func removeMCPServer(_ server: MCPServer) {
+        KeychainHelper.delete(account: server.keychainAccount)
+        mcpServers.removeAll(where: { $0.id == server.id })
+        save()
+    }
+
+    func toggleMCPServer(_ server: MCPServer) {
+        guard let i = mcpServers.firstIndex(where: { $0.id == server.id }) else { return }
+        mcpServers[i].enabled.toggle()
+        save()
+    }
+
     // MARK: - Helpers
 
     var selectedService: ChatService? {
@@ -195,6 +228,10 @@ final class ChatStore: ObservableObject {
            let decoded = try? JSONDecoder().decode([PromptItem].self, from: data) {
             prompts = decoded
         }
+        if let data = d.data(forKey: mcpServersKey),
+           let decoded = try? JSONDecoder().decode([MCPServer].self, from: data) {
+            mcpServers = decoded
+        }
         if let raw = d.string(forKey: selectedKey),
            let decoded = try? JSONDecoder().decode(ActiveTarget.self,
                                                    from: Data(raw.utf8)) {
@@ -217,6 +254,9 @@ final class ChatStore: ObservableObject {
         }
         if let data = try? JSONEncoder().encode(prompts) {
             d.set(data, forKey: promptsKey)
+        }
+        if let data = try? JSONEncoder().encode(mcpServers) {
+            d.set(data, forKey: mcpServersKey)
         }
         if let target = selectedTarget,
            let data = try? JSONEncoder().encode(target),
