@@ -13,13 +13,12 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    let onFinish: (WindowMode, UseCase) -> Void
+    let onFinish: (UseCase) -> Void
 
     @State private var page: Int = 0
-    @State private var pickedMode: WindowMode = .menubar
     @State private var pickedUseCase: UseCase = .everyday
 
-    private let totalPages = 5
+    private let totalPages = 4
 
     var body: some View {
         ZStack {
@@ -28,10 +27,9 @@ struct OnboardingView: View {
             VStack(spacing: 0) {
                 TabView(selection: $page) {
                     introPage.tag(0)
-                    modePage.tag(1)
-                    useCasePage.tag(2)
-                    refiningPage.tag(3)
-                    readyPage.tag(4)
+                    useCasePage.tag(1)
+                    refiningPage.tag(2)
+                    readyPage.tag(3)
                 }
                 .tabViewStyle(.automatic)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -67,9 +65,21 @@ struct OnboardingView: View {
             VStack(spacing: 4) {
                 Text("Welcome to PromptBar")
                     .font(.title.weight(.semibold))
-                Text("Your AI workbench in the menubar.")
+                Text("Your AI workbench, one keystroke away.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Image(systemName: "command")
+                    Text("Press ⌥⌘O from anywhere to summon PromptBar")
+                }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accentColor)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(
+                    Capsule().fill(Color.accentColor.opacity(0.15))
+                )
+                .padding(.top, 4)
             }
 
             VStack(alignment: .leading, spacing: 12) {
@@ -186,87 +196,7 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: Page 2, pick mode
-
-    private var modePage: some View {
-        VStack(spacing: 14) {
-            Spacer().frame(height: 4)
-
-            VStack(spacing: 4) {
-                Text("How do you want to use it?")
-                    .font(.title2.weight(.semibold))
-                Text("You can change this later in Settings.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.top, 8)
-
-            HStack(spacing: 14) {
-                modeCard(
-                    mode: .menubar,
-                    symbol: "menubar.dock.rectangle",
-                    title: "Menubar",
-                    body: "Lives at the top of your screen. Press ⌥⌘O from anywhere to summon the popover. No Dock icon, no window chrome."
-                )
-                modeCard(
-                    mode: .window,
-                    symbol: "macwindow",
-                    title: "Window",
-                    body: "Acts like Safari or Claude. Gets a Dock icon and its own window. The menubar icon stays as a quick toggle."
-                )
-            }
-            .padding(.horizontal, 30)
-
-            Spacer()
-        }
-    }
-
-    private func modeCard(mode: WindowMode, symbol: String, title: String, body: String) -> some View {
-        let selected = mode == pickedMode
-        return Button {
-            pickedMode = mode
-        } label: {
-            VStack(alignment: .leading, spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(selected ? Color.accentColor.opacity(0.30) : Color.gray.opacity(0.18))
-                        .frame(width: 60, height: 60)
-                    Image(systemName: symbol)
-                        .font(.system(size: 26, weight: .medium))
-                        .foregroundStyle(selected ? Color.accentColor : .primary)
-                }
-                Text(title).font(.title3.weight(.semibold))
-                Text(body)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.leading)
-                Spacer(minLength: 0)
-                HStack(spacing: 6) {
-                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(selected ? Color.accentColor : .secondary)
-                    Text(selected ? "Selected" : "Tap to pick")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(selected ? Color.accentColor : .secondary)
-                }
-            }
-            .padding(18)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(.regularMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(
-                        selected ? Color.accentColor.opacity(0.7) : Color.clear,
-                        lineWidth: 2
-                    )
-            )
-        }
-        .buttonStyle(.plain)
-    }
-
-    // MARK: Page 3, use case
+    // MARK: Page 2, use case
 
     private var useCasePage: some View {
         VStack(spacing: 14) {
@@ -411,7 +341,7 @@ struct OnboardingView: View {
                 }
                 if i == self.refineSteps.count {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                        withAnimation { self.page = 4 }
+                        withAnimation { self.page = 3 }
                     }
                 }
             }
@@ -443,16 +373,14 @@ struct OnboardingView: View {
             }
 
             VStack(alignment: .leading, spacing: 10) {
+                summaryRow("command",
+                           title: "⌥⌘O from anywhere",
+                           body: "That hotkey brings PromptBar forward, even when another app is full screen. No need to click the Dock.")
                 summaryRow("books.vertical.fill",
                            title: "\(pickedUseCase.seedPrompts.count) prompts added",
                            body: pickedUseCase.seedPrompts.isEmpty
                                 ? "Add your own from Settings → Prompts."
                                 : "Reach them with ⌘P inside any chat.")
-                summaryRow("macwindow",
-                           title: "\(pickedMode.displayName) mode",
-                           body: pickedMode == .menubar
-                                ? "⌥⌘O toggles the popover from anywhere."
-                                : "⌥⌘O brings the window forward.")
                 summaryRow("powerplug",
                            title: "MCP slots ready",
                            body: pickedUseCase.suggestedMCPURLs.isEmpty
@@ -494,7 +422,7 @@ struct OnboardingView: View {
 
             Spacer()
 
-            if page > 0 && page != 3 && page != 4 {
+            if page > 0 && page != 2 && page != 3 {
                 Button("Back") {
                     withAnimation { page -= 1 }
                 }
@@ -502,24 +430,24 @@ struct OnboardingView: View {
             }
 
             switch page {
-            case 0, 1:
+            case 0:
                 Button("Continue") {
                     withAnimation { page += 1 }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
-            case 2:
+            case 1:
                 Button(pickedUseCase == .custom ? "Skip Setup" : "Continue") {
                     withAnimation { page += 1 }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
-            case 3:
+            case 2:
                 // Auto-advances; no button.
                 Text("").frame(height: 28)
-            case 4:
+            case 3:
                 Button("Get Started") {
-                    onFinish(pickedMode, pickedUseCase)
+                    onFinish(pickedUseCase)
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)

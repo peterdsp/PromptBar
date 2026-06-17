@@ -83,9 +83,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func presentOnboarding() {
         NSApp.setActivationPolicy(.regular)
 
-        let view = OnboardingView { [weak self] chosenMode, chosenUseCase in
+        let view = OnboardingView { [weak self] chosenUseCase in
             guard let self = self else { return }
-            self.prefs.windowMode = chosenMode
+            // New users always start in window mode. The menubar mode toggle is
+            // kept in Settings for power users who want to opt in later.
+            self.prefs.windowMode = .window
             self.prefs.hasCompletedOnboarding = true
             self.applyUseCase(chosenUseCase)
             self.onboardingWindow?.close()
