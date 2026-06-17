@@ -63,6 +63,20 @@ PROMPTBAR_LINK_CODES = set(filter(
 ))
 PROMPTBAR_NAME_MATCH = os.environ.get("PROMPTBAR_NAME_MATCH", "promptbar").lower()
 
+# Admin emails get a free license auto-archived at startup so they can
+# /activate at any time. Comma-separated. Also receive BCC of every
+# license email so the operator has a permanent inbox record.
+ADMIN_EMAILS = [
+    s.strip().lower() for s in
+    os.environ.get("ADMIN_EMAILS", "info@peterdsp.dev").split(",")
+    if s.strip()
+]
+BCC_LICENSE_EMAILS = [
+    s.strip().lower() for s in
+    os.environ.get("BCC_LICENSE_EMAILS", ",".join(ADMIN_EMAILS)).split(",")
+    if s.strip()
+]
+
 
 # ---------------------------------------------------------------------------
 # Crypto: load the Ed25519 private key once at startup.
@@ -84,6 +98,34 @@ except Exception as e:
     PRIVATE_KEY = None
 
 
+def _bootstrap_admin_licenses():
+    """Ensure every email in ADMIN_EMAILS has an archived license so the
+    operator can /activate from any Mac at any time. Idempotent, safe
+    to call on every startup."""
+    if PRIVATE_KEY is None or not ADMIN_EMAILS:
+        return
+    try:
+        os.makedirs(LOG_DIR, exist_ok=True)
+    except Exception as e:
+        log.error("Cannot create LOG_DIR %s: %s", LOG_DIR, e)
+        return
+    for raw in ADMIN_EMAILS:
+        email = raw.strip().lower()
+        if not email or "@" not in email:
+            continue
+        safe = email.replace("@", "_at_").replace(".", "_").replace("+", "_plus_")
+        path = os.path.join(LOG_DIR, f"{safe}.promptbar")
+        if os.path.exists(path):
+            continue
+        blob = issue_license(email, f"admin-{email}")
+        try:
+            with open(path, "w") as f:
+                json.dump(blob, f, indent=2, sort_keys=True)
+            log.info("Bootstrapped admin license for %s", email)
+        except Exception as e:
+            log.error("Failed to write admin license for %s: %s", email, e)
+
+
 def _canonical_json(obj: dict) -> bytes:
     return json.dumps(obj, separators=(",", ":"), sort_keys=True).encode("utf-8")
 
@@ -100,6 +142,10 @@ def issue_license(email: str, order_id: str) -> dict:
     signature = PRIVATE_KEY.sign(_canonical_json(canonical))
     canonical["signature"] = b64encode(signature).decode("ascii")
     return canonical
+
+
+# Run the admin-license bootstrap once the issuer is defined.
+_bootstrap_admin_licenses()
 
 
 # ---------------------------------------------------------------------------
@@ -134,6 +180,11 @@ def send_license_email(to_email: str, license_blob: dict):
     msg = EmailMessage()
     msg["From"] = f"{SMTP_FROM_NAME} <{SMTP_FROM}>"
     msg["To"] = to_email
+    if BCC_LICENSE_EMAILS:
+        # Drop the recipient itself from the BCC list to avoid duplicates.
+        bcc = [a for a in BCC_LICENSE_EMAILS if a != to_email.lower()]
+        if bcc:
+            msg["Bcc"] = ", ".join(bcc)
     msg["Subject"] = EMAIL_SUBJECT
     msg.set_content(EMAIL_BODY)
 
@@ -150,7 +201,7 @@ def send_license_email(to_email: str, license_blob: dict):
         smtp.starttls()
         smtp.login(SMTP_USER, SMTP_PASS)
         smtp.send_message(msg)
-    log.info("Emailed license to %s", to_email)
+    log.info("Emailed license to %s (bcc=%s)", to_email, msg.get("Bcc") or "-")
 
 
 # ---------------------------------------------------------------------------
