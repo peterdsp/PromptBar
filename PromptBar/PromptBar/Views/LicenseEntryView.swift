@@ -19,6 +19,7 @@ struct LicenseEntryView: View {
     @State private var errorMessage: String?
     @State private var isDropTargeted = false
     @State private var successEmail: String?
+    @State private var showRecovery = false
 
     var body: some View {
         ZStack {
@@ -107,10 +108,86 @@ struct LicenseEntryView: View {
                     .disabled(input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
 
+                DisclosureGroup(isExpanded: $showRecovery) {
+                    recoveryCard
+                        .padding(.top, 6)
+                } label: {
+                    Text("I don't have a license file")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 30)
+                .frame(maxWidth: 460)
+
                 Spacer()
             }
         }
-        .frame(width: 580, height: 540)
+        .frame(width: 580, height: showRecovery ? 660 : 540)
+    }
+
+    private var recoveryCard: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Where the license comes from")
+                .font(.subheadline.weight(.semibold))
+            Text("Your license arrives by email within a few minutes of your Ko-fi purchase. Ko-fi delivers the installer, the email delivers the license. They come from two separate channels.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Text("Things to try")
+                .font(.subheadline.weight(.semibold))
+                .padding(.top, 6)
+            Text("• Check your spam or promotions folder.\n• Search your inbox for 'PromptBar license'.\n• Confirm the email on your Ko-fi receipt matches your usual inbox.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
+                Button {
+                    openLicenseSupportMail()
+                } label: {
+                    Label("Email the developer", systemImage: "envelope")
+                }
+                .controlSize(.small)
+                Button {
+                    if let url = URL(string: "https://ko-fi.com/peterdsp") {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
+                    Label("Re-open Ko-fi", systemImage: "arrow.up.right.square")
+                }
+                .controlSize(.small)
+            }
+            .padding(.top, 4)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(.regularMaterial)
+        )
+    }
+
+    private func openLicenseSupportMail() {
+        let recipient = "peterdsp29@gmail.com"
+        let subject = "PromptBar license help"
+        let body = """
+        Hi Petros,
+
+        I bought PromptBar on Ko-fi and can't find my license email.
+
+        Ko-fi order ID (find it in your Ko-fi receipt email):
+        Email used on Ko-fi:
+
+        Thanks
+        """
+
+        var components = URLComponents(string: "mailto:\(recipient)")
+        components?.queryItems = [
+            URLQueryItem(name: "subject", value: subject),
+            URLQueryItem(name: "body", value: body)
+        ]
+        if let url = components?.url {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     private func handleDrop(_ providers: [NSItemProvider]) -> Bool {
