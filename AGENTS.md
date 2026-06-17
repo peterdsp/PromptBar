@@ -1,10 +1,10 @@
-# AGENTS Guidelines for PromptBar
+# Contributor Guidelines for PromptBar
 
-> **This file is the authoritative rulebook for any AI agent or automated tool that
-> attempts to make changes to this project.** All agents must read and follow these
-> guidelines before modifying any code, configuration, or documentation in this
-> repository. If a guideline here conflicts with an agent's default behavior, this
-> file takes precedence.
+> **This file is the authoritative rulebook for anyone or anything making changes
+> to this project.** Read and follow these guidelines before modifying any code,
+> configuration, or documentation in this repository. If a guideline here
+> conflicts with a default convention from another source, this file takes
+> precedence.
 
 PromptBar is a macOS menubar app that wraps **user-supplied** web URLs in a
 WKWebView popover. It is intentionally a **generic container**, not a client for

@@ -23,7 +23,6 @@ struct QuickAddView: View {
         "https://gemini.google.com/app",
         "https://aistudio.google.com/",
         "https://notebooklm.google.com/",
-        "https://claude.ai/",
         "https://www.perplexity.ai/",
         "https://chat.mistral.ai/chat/",
         "https://chat.deepseek.com/",
