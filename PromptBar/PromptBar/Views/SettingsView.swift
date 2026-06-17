@@ -44,19 +44,6 @@ struct SettingsView: View {
             row(.about, label: "About", symbol: "info.circle")
 
             Spacer()
-
-            Link(destination: URL(string: "https://ko-fi.com/peterdsp")!) {
-                HStack {
-                    Image(systemName: "heart.fill").foregroundStyle(.pink)
-                    Text("Support development").font(.caption)
-                    Spacer()
-                }
-                .padding(10)
-                .background(RoundedRectangle(cornerRadius: 8).fill(.regularMaterial))
-                .padding(.horizontal, 10)
-                .padding(.bottom, 10)
-            }
-            .buttonStyle(.plain)
         }
         .frame(width: 200)
     }
