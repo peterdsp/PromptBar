@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: Hotkeys
 
-    private let globalToggleHotKey = HotKey(key: .c, modifiers: [.shift, .command])
+    private let globalToggleHotKey = HotKey(key: .o, modifiers: [.option, .command])
     private var localEditHotKeys: [HotKey] = []
 
     private var alwaysOnTop: Bool {

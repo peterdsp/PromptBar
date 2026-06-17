@@ -58,7 +58,7 @@ It ships **empty**. No bundled providers. No bundled logos. No bundled brand nam
 - 💬 **Native streaming chat**, server-sent events, multi-conversation history, cancel mid-stream.
 - 🎨 **Make every chat yours**, SF Symbol icons + color tints per service.
 - 🔐 **Keychain-backed keys**, API keys live in the macOS Keychain. Not in UserDefaults. Not in iCloud. Not in a log file.
-- 🪶 **Menubar-only**, no Dock noise. `⌘⇧C` to summon it.
+- 🪶 **Menubar-only**, no Dock noise. `⌥⌘O` to summon it.
 - 🪟 **Always-on-top mode**, pin the popover over any app.
 - 📐 **Three sizes**, Small / Medium / Large, persisted.
 - 🧹 **One-click cookie sweep**, clear all WebKit local data when you want a clean slate.
@@ -96,7 +96,7 @@ Download the latest signed and notarized `.pkg` from [GitHub Releases](https://g
 ```bash
 # After install
 open -a PromptBar
-# Click the menubar icon. Hit ⌘⇧C from anywhere to toggle it.
+# Click the menubar icon. Hit ⌥⌘O from anywhere to toggle it.
 ```
 
 ---
@@ -116,7 +116,7 @@ Full details in [PRIVACY_POLICY.md](PRIVACY_POLICY.md) and [USER_PRIVACY_CHOICES
 
 ## 🧠 Power moves
 
-- **⌘⇧C**, toggle the popover from anywhere on your system.
+- **⌥⌘O**, toggle the popover from anywhere on your system.
 - **⌘P** (inside chat), open the Prompt Library quick picker.
 - **⌘↩**, send a message in the native chat.
 - **Right-click the menubar icon**, Settings, Always-on-Top, Window Size, Clean Cookies & Cache, Quit.

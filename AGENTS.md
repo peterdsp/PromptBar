@@ -87,7 +87,7 @@ PromptBar/
 
 | Package | Purpose |
 | --- | --- |
-| `HotKey` (soffes) | Global ⌘⇧C hotkey + in-popover Cmd-C/V/X/Z/A bindings |
+| `HotKey` (soffes) | Global ⌥⌘O hotkey + in-popover Cmd-C/V/X/Z/A bindings |
 
 ## 5. Coding conventions
 
