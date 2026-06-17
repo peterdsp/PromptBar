@@ -29,32 +29,43 @@ ARCHIVE_PATH="${OUT_DIR}/${APP_NAME}.xcarchive"
 EXPORT_DIR="${OUT_DIR}/export"
 PKG_DIR="${OUT_DIR}/pkg"
 
-DEV_ID_APP_IDENTITY="Developer ID Application: PETROS DHESPOLLARI (${TEAM_ID})"
-DEV_ID_INSTALLER_IDENTITY="Developer ID Installer: PETROS DHESPOLLARI (${TEAM_ID})"
-
 # Pull marketing version out of the pbxproj so the .pkg is named correctly.
 VERSION="$(grep -E 'MARKETING_VERSION = ' "${PROJ}/project.pbxproj" | head -1 | awk -F'= ' '{print $2}' | tr -d ' ;')"
 BUILD_NUM="$(grep -E 'CURRENT_PROJECT_VERSION = ' "${PROJ}/project.pbxproj" | head -1 | awk -F'= ' '{print $2}' | tr -d ' ;')"
 echo "==> ${APP_NAME} ${VERSION} (${BUILD_NUM})"
 
-# Sanity-check the signing identities are installed.
-echo "==> Checking signing identities"
-if ! security find-identity -v -p codesigning | grep -q "${DEV_ID_APP_IDENTITY}"; then
-  echo "ERROR: Missing identity in Keychain:"
-  echo "       ${DEV_ID_APP_IDENTITY}"
+# Resolve the actual identity strings. We grep for the prefix and the team ID
+# so the script works with both classic 'Developer ID Application' and the
+# newer Apple-managed variants, without hardcoding the exact CN.
+echo "==> Resolving signing identities for team ${TEAM_ID}"
+DEV_ID_APP_IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null \
+  | grep "Developer ID Application" \
+  | grep "(${TEAM_ID})" \
+  | head -1 \
+  | sed -E 's/^[[:space:]]*[0-9]+\)[[:space:]]+[A-F0-9]+[[:space:]]+"(.+)"$/\1/')"
+
+DEV_ID_INSTALLER_IDENTITY="$(security find-identity -v 2>/dev/null \
+  | grep "Developer ID Installer" \
+  | grep "(${TEAM_ID})" \
+  | head -1 \
+  | sed -E 's/^[[:space:]]*[0-9]+\)[[:space:]]+[A-F0-9]+[[:space:]]+"(.+)"$/\1/')"
+
+if [ -z "${DEV_ID_APP_IDENTITY}" ]; then
+  echo "ERROR: No 'Developer ID Application' identity for team ${TEAM_ID} in Keychain."
   echo
-  echo "Download from https://developer.apple.com/account/resources/certificates/list"
-  echo "Pick 'Developer ID Application' and double-click the .cer to install."
+  echo "Get it from https://developer.apple.com/account/resources/certificates/list"
+  echo "Click the cert row, Download the .cer, double-click to install in Keychain."
   exit 1
 fi
-if ! security find-identity -v -p basic | grep -q "${DEV_ID_INSTALLER_IDENTITY}"; then
-  echo "ERROR: Missing identity in Keychain:"
-  echo "       ${DEV_ID_INSTALLER_IDENTITY}"
+if [ -z "${DEV_ID_INSTALLER_IDENTITY}" ]; then
+  echo "ERROR: No 'Developer ID Installer' identity for team ${TEAM_ID} in Keychain."
   echo
-  echo "Download from https://developer.apple.com/account/resources/certificates/list"
-  echo "Pick 'Developer ID Installer' and double-click the .cer to install."
+  echo "Get it from https://developer.apple.com/account/resources/certificates/list"
+  echo "Click the cert row, Download the .cer, double-click to install in Keychain."
   exit 1
 fi
+echo "    Application: ${DEV_ID_APP_IDENTITY}"
+echo "    Installer:   ${DEV_ID_INSTALLER_IDENTITY}"
 
 echo "==> Cleaning previous artifacts"
 rm -rf "${BUILD_DIR}" "${ARCHIVE_PATH}" "${EXPORT_DIR}" "${PKG_DIR}"
