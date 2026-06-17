@@ -320,12 +320,49 @@ private struct GeneralSettingsPane: View {
     @AppStorage("promptbar.alwaysOnTop.v2") private var alwaysOnTop: Bool = false
     @AppStorage("promptbar.autoUpdateEnabled.v2") private var autoUpdate: Bool = true
 
+    @ObservedObject private var prefs = AppPreferences.shared
+    @State private var showRestartHint = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Text("General").font(.title2.weight(.semibold))
 
-                box("Window") {
+                box("Window Mode") {
+                    Picker("", selection: Binding(
+                        get: { prefs.windowMode },
+                        set: { newValue in
+                            guard newValue != prefs.windowMode else { return }
+                            prefs.windowMode = newValue
+                            showRestartHint = true
+                        }
+                    )) {
+                        ForEach(WindowMode.allCases, id: \.self) { mode in
+                            Text(mode.displayName).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    Text(prefs.windowMode == .menubar
+                         ? "Menubar mode: the popover hangs from the menubar icon. No Dock icon."
+                         : "Window mode: PromptBar acts like a regular app with a Dock icon and a window. The menubar icon stays as a quick toggle.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    if showRestartHint {
+                        Label("Restart PromptBar to apply the new window mode.", systemImage: "arrow.clockwise.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(Color.orange)
+                    }
+
+                    Button("Show Onboarding Again on Next Launch") {
+                        prefs.resetOnboarding()
+                        showRestartHint = true
+                    }
+                    .controlSize(.small)
+                }
+
+                box("Window Size") {
                     HStack {
                         Text("Default size")
                         Spacer()
@@ -337,7 +374,9 @@ private struct GeneralSettingsPane: View {
                         .pickerStyle(.segmented)
                         .frame(width: 240)
                     }
-                    Toggle("Always on top", isOn: $alwaysOnTop)
+                    if prefs.windowMode == .menubar {
+                        Toggle("Always on top", isOn: $alwaysOnTop)
+                    }
                 }
 
                 box("Updates") {

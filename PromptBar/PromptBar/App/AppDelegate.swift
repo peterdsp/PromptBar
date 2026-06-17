@@ -21,14 +21,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let windowSizeKey = "promptbar.windowSize.v2"
     private let alwaysOnTopKey = "promptbar.alwaysOnTop.v2"
 
-    // MARK: Menubar state
+    // MARK: Mode state
 
     private var statusItem: NSStatusItem!
     private var menu: NSMenu!
     private(set) var popover: NSPopover!
+    private var mainWindow: NSWindow?
 
     private var settingsWindow: NSWindow?
     private var aboutWindow: NSWindow?
+    private var onboardingWindow: NSWindow?
 
     private(set) var pendingDownload: (filename: String, handler: (URL?) -> Void, download: AnyObject)? = nil
 
@@ -43,13 +45,65 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private var store: ChatStore { .shared }
+    private var prefs: AppPreferences { .shared }
     private var cancellables: Set<AnyCancellable> = []
 
     // MARK: Lifecycle
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
+        if !prefs.hasCompletedOnboarding {
+            presentOnboarding()
+            return
+        }
+        bootForCurrentMode()
+    }
 
+    private func bootForCurrentMode() {
+        NSApp.setActivationPolicy(prefs.windowMode == .window ? .regular : .accessory)
+
+        constructStatusItem()
+        constructPopover()
+        constructMenu()
+        wireGlobalHotKey()
+        observeStoreChanges()
+
+        if prefs.windowMode == .window {
+            showMainWindow()
+        }
+    }
+
+    // MARK: Onboarding
+
+    private func presentOnboarding() {
+        NSApp.setActivationPolicy(.regular)
+
+        let view = OnboardingView { [weak self] chosenMode in
+            guard let self = self else { return }
+            self.prefs.windowMode = chosenMode
+            self.prefs.hasCompletedOnboarding = true
+            self.onboardingWindow?.close()
+            self.onboardingWindow = nil
+            self.bootForCurrentMode()
+        }
+        let controller = NSHostingController(rootView: view)
+        let window = NSWindow(contentViewController: controller)
+        window.title = "Welcome to PromptBar"
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isMovableByWindowBackground = true
+        window.setContentSize(NSSize(width: 620, height: 560))
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.delegate = self
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        onboardingWindow = window
+    }
+
+    // MARK: Status item
+
+    private func constructStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
             let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
@@ -59,28 +113,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             button.action = #selector(handleMenubarClick(_:))
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
-
-        constructPopover()
-        constructMenu()
-
-        globalToggleHotKey.keyUpHandler = { [weak self] in
-            Task { @MainActor in self?.togglePopover() }
-        }
-
-        // Reload popup content whenever the user changes/adds/removes services or endpoints.
-        let serviceChange = store.$services.map { _ in () }.eraseToAnyPublisher()
-        let endpointChange = store.$endpoints.map { _ in () }.eraseToAnyPublisher()
-        let targetChange = store.$selectedTarget.map { _ in () }.eraseToAnyPublisher()
-
-        Publishers.MergeMany(serviceChange, endpointChange, targetChange)
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.refreshPopupContent()
-            }
-            .store(in: &cancellables)
     }
-
-    // MARK: Menubar click
 
     @objc private func handleMenubarClick(_ sender: NSStatusBarButton) {
         guard let event = NSApp.currentEvent else { return }
@@ -88,7 +121,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             showMenu()
         } else {
             removeMenu()
+            primaryToggle()
+        }
+    }
+
+    /// Top-level toggle, swaps based on mode.
+    private func primaryToggle() {
+        switch prefs.windowMode {
+        case .menubar:
             togglePopover()
+        case .window:
+            showMainWindow()
         }
     }
 
@@ -117,6 +160,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func refreshPopupContent() {
         let size = popover.contentSize
         popover.contentViewController = makePopoverHostingController(size: size)
+        if let main = mainWindow {
+            main.contentViewController = makeWindowHostingController(size: main.contentLayoutRect.size)
+        }
     }
 
     private func persistedWindowSize() -> CGSize {
@@ -151,13 +197,56 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    // MARK: Main window (window mode)
+
+    private func makeWindowHostingController(size: CGSize) -> NSViewController {
+        let root = PopupRootView()
+            .environmentObject(store)
+            .frame(minWidth: 380, minHeight: 420)
+        let controller = NSHostingController(rootView: AnyView(root))
+        controller.view.frame = CGRect(origin: .zero, size: size)
+        return controller
+    }
+
+    private func showMainWindow() {
+        if let window = mainWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        let size = persistedWindowSize()
+        let controller = makeWindowHostingController(size: size)
+        let window = NSWindow(contentViewController: controller)
+        window.title = "PromptBar"
+        window.styleMask = [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.setContentSize(size)
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.delegate = self
+        window.minSize = NSSize(width: 380, height: 420)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        mainWindow = window
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        if prefs.windowMode == .window {
+            showMainWindow()
+            return true
+        }
+        return false
+    }
+
     // MARK: Right-click menu
 
     func constructMenu() {
         let m = NSMenu()
         m.delegate = self
 
-        m.addItem(makeItem("Open", action: #selector(openPopoverAction), key: ""))
+        let primaryTitle = prefs.windowMode == .window ? "Show Window" : "Open"
+        m.addItem(makeItem(primaryTitle, action: #selector(primaryToggleAction), key: ""))
         m.addItem(.separator())
 
         m.addItem(makeItem("Settings…", action: #selector(openSettings), key: ","))
@@ -176,12 +265,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         sizeItem.submenu = sizeMenu
         m.addItem(sizeItem)
 
-        let aotItem = NSMenuItem(title: "Always on Top",
-                                 action: #selector(toggleAlwaysOnTop(_:)),
-                                 keyEquivalent: "")
-        aotItem.target = self
-        aotItem.state = alwaysOnTop ? .on : .off
-        m.addItem(aotItem)
+        if prefs.windowMode == .menubar {
+            let aotItem = NSMenuItem(title: "Always on Top",
+                                     action: #selector(toggleAlwaysOnTop(_:)),
+                                     keyEquivalent: "")
+            aotItem.target = self
+            aotItem.state = alwaysOnTop ? .on : .off
+            m.addItem(aotItem)
+        }
 
         m.addItem(.separator())
         m.addItem(makeItem("Reload", action: #selector(reloadCurrentWebView), key: "r"))
@@ -228,8 +319,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: Menu actions
 
-    @objc private func openPopoverAction() {
-        if !popover.isShown { togglePopover() }
+    @objc private func primaryToggleAction() {
+        primaryToggle()
     }
 
     @objc private func openSettings() {
@@ -248,7 +339,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         window.titlebarAppearsTransparent = true
         window.titleVisibility = .hidden
         window.isMovableByWindowBackground = true
-        window.setContentSize(NSSize(width: 640, height: 560))
+        window.setContentSize(NSSize(width: 720, height: 560))
         window.center()
         window.delegate = self
         window.makeKeyAndOrderFront(nil)
@@ -281,6 +372,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func changeWindowSize(_ sender: NSMenuItem) {
         guard let entry = Self.windowSizes.first(where: { $0.name == sender.title }) else { return }
         popover.contentSize = entry.size
+        if let window = mainWindow {
+            window.setContentSize(entry.size)
+        }
         UserDefaults.standard.set(entry.name, forKey: windowSizeKey)
         updateWindowSizeMenuState()
         refreshPopupContent()
@@ -299,6 +393,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func cleanCookiesAction() {
         WebViewHelper.clean()
+    }
+
+    // MARK: Hotkey
+
+    private func wireGlobalHotKey() {
+        globalToggleHotKey.keyUpHandler = { [weak self] in
+            Task { @MainActor in self?.primaryToggle() }
+        }
+    }
+
+    // MARK: Combine wiring
+
+    private func observeStoreChanges() {
+        let serviceChange = store.$services.map { _ in () }.eraseToAnyPublisher()
+        let endpointChange = store.$endpoints.map { _ in () }.eraseToAnyPublisher()
+        let targetChange = store.$selectedTarget.map { _ in () }.eraseToAnyPublisher()
+
+        Publishers.MergeMany(serviceChange, endpointChange, targetChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.refreshPopupContent()
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: Network reachability (used by popup)
@@ -363,5 +480,7 @@ extension AppDelegate: NSWindowDelegate {
         guard let window = notification.object as? NSWindow else { return }
         if window === settingsWindow { settingsWindow = nil }
         if window === aboutWindow { aboutWindow = nil }
+        if window === mainWindow { mainWindow = nil }
+        if window === onboardingWindow { onboardingWindow = nil }
     }
 }

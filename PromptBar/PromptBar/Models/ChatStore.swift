@@ -12,7 +12,6 @@ enum ActiveTarget: Equatable, Hashable, Codable {
     case api(UUID)
 }
 
-@MainActor
 final class ChatStore: ObservableObject {
     static let shared = ChatStore()
 

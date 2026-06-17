@@ -34,6 +34,8 @@
 		AA10010B00000000000000AB /* NativeChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010C00000000000000AB /* NativeChatView.swift */; };
 		AA10010D00000000000000AB /* APIEndpointForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010E00000000000000AB /* APIEndpointForm.swift */; };
 		AA10010F00000000000000AB /* PromptLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10011000000000000000AB /* PromptLibraryView.swift */; };
+		AA10020100000000000000AB /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10020200000000000000AB /* AppPreferences.swift */; };
+		AA10020300000000000000AB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10020400000000000000AB /* OnboardingView.swift */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,8 @@
 		AA10010C00000000000000AB /* NativeChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeChatView.swift; sourceTree = "<group>"; };
 		AA10010E00000000000000AB /* APIEndpointForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpointForm.swift; sourceTree = "<group>"; };
 		AA10011000000000000000AB /* PromptLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptLibraryView.swift; sourceTree = "<group>"; };
+		AA10020200000000000000AB /* AppPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
+		AA10020400000000000000AB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparatorTests.swift; sourceTree = "<group>"; };
 		FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -142,6 +146,7 @@
 				AA10010C00000000000000AB /* NativeChatView.swift */,
 				AA10010E00000000000000AB /* APIEndpointForm.swift */,
 				AA10011000000000000000AB /* PromptLibraryView.swift */,
+				AA10020400000000000000AB /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -177,6 +182,7 @@
 				AA10010200000000000000AB /* APIEndpoint.swift */,
 				AA10010400000000000000AB /* Conversation.swift */,
 				AA10010600000000000000AB /* PromptItem.swift */,
+				AA10020200000000000000AB /* AppPreferences.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -305,6 +311,8 @@
 				AA10010B00000000000000AB /* NativeChatView.swift in Sources */,
 				AA10010D00000000000000AB /* APIEndpointForm.swift in Sources */,
 				AA10010F00000000000000AB /* PromptLibraryView.swift in Sources */,
+				AA10020100000000000000AB /* AppPreferences.swift in Sources */,
+				AA10020300000000000000AB /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
