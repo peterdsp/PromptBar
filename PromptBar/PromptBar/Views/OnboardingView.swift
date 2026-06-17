@@ -39,7 +39,7 @@ struct OnboardingView: View {
                 footer
             }
         }
-        .frame(width: 660, height: 620)
+        .frame(width: 660, height: 720)
     }
 
     // MARK: Page 1, intro
@@ -89,9 +89,85 @@ struct OnboardingView: View {
             .padding(.horizontal, 36)
             .frame(maxWidth: 600)
 
+            kujtoCallout
+                .padding(.horizontal, 36)
+                .frame(maxWidth: 600)
+
             Spacer()
         }
         .padding(.top, 16)
+    }
+
+    @State private var copiedInstall = false
+
+    private var kujtoCallout: some View {
+        HStack(alignment: .top, spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(LinearGradient(
+                        colors: [Color(hex: "#FFB347"), Color(hex: "#FF7A8A")],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .frame(width: 36, height: 36)
+                Image(systemName: "brain.head.profile")
+                    .foregroundStyle(.white)
+                    .font(.system(size: 16, weight: .semibold))
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    Text("Companion project: Kujto")
+                        .font(.headline)
+                    Text("open source")
+                        .font(.caption2.weight(.semibold))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Capsule().fill(Color.gray.opacity(0.25)))
+                        .foregroundStyle(.secondary)
+                }
+                Text("A tiny repo-versioned memory framework. Drop it in your project and every AI you use, including PromptBar, reads your conventions in every session.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 8) {
+                    Button {
+                        if let url = URL(string: "https://github.com/peterdsp/kujto") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    } label: {
+                        Label("View on GitHub", systemImage: "arrow.up.right.square")
+                            .font(.caption.weight(.semibold))
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+
+                    Button {
+                        let cmd = "curl -fsSL https://raw.githubusercontent.com/peterdsp/kujto/main/bin/install.sh | bash"
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(cmd, forType: .string)
+                        copiedInstall = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                            copiedInstall = false
+                        }
+                    } label: {
+                        Label(copiedInstall ? "Copied" : "Copy install command",
+                              systemImage: copiedInstall ? "checkmark" : "doc.on.doc")
+                            .font(.caption.weight(.semibold))
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.regularMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color.orange.opacity(0.35), lineWidth: 1)
+        )
     }
 
     private func bullet(_ symbol: String, title: String, body: String) -> some View {
