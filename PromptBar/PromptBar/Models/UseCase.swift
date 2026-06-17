@@ -136,32 +136,142 @@ enum UseCase: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// Generic MCP URL hints to show in the use-case summary. No brand names.
-    /// The user types what they want to call each service.
-    var suggestedMCPURLs: [String] {
+    /// Curated MCP server suggestions per use case. Real HTTP endpoints,
+    /// brand-free capability labels so the binary stays App Store safe under
+    /// guideline 4.1. The URL is what reveals the underlying service.
+    var recommendedMCPs: [MCPSuggestion] {
         switch self {
         case .coding: return [
-            "https://mcp.example.com/git",
-            "https://mcp.example.com/issues",
-            "http://localhost:7331/mcp"
+            MCPSuggestion(
+                label: "Source control",
+                urlString: "https://api.githubcopilot.com/mcp/",
+                blurb: "Read repositories, search code, manage issues and pull requests.",
+                symbol: "chevron.left.forwardslash.chevron.right",
+                tintHex: "#5BC0EB",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Issue tracker",
+                urlString: "https://mcp.linear.app/sse",
+                blurb: "Pull, create, and update tickets across your workspace.",
+                symbol: "checklist",
+                tintHex: "#7A7AFF",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Error monitoring",
+                urlString: "https://mcp.sentry.dev/sse",
+                blurb: "Query crashes, performance traces, and release health.",
+                symbol: "exclamationmark.triangle.fill",
+                tintHex: "#FF7A8A",
+                needsAuth: true
+            )
         ]
         case .design: return [
-            "https://mcp.example.com/design",
-            "https://mcp.example.com/storage"
+            MCPSuggestion(
+                label: "Design files",
+                urlString: "https://mcp.figma.com/sse",
+                blurb: "Read frames, components, and dev-mode metadata from your files.",
+                symbol: "paintbrush.pointed.fill",
+                tintHex: "#FF7A8A",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Asset storage",
+                urlString: "https://mcp.cloudflare.com/sse",
+                blurb: "Browse and reference your hosted images, videos, and files.",
+                symbol: "shippingbox.fill",
+                tintHex: "#F5A623",
+                needsAuth: true
+            )
         ]
         case .research: return [
-            "https://mcp.example.com/web-search",
-            "https://mcp.example.com/notes"
+            MCPSuggestion(
+                label: "Web search",
+                urlString: "https://mcp.tavily.com/mcp",
+                blurb: "Search the live web and pull clean snippets into your chat.",
+                symbol: "magnifyingglass",
+                tintHex: "#3DBE8B",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Documentation",
+                urlString: "https://docs.mcp.cloudflare.com/sse",
+                blurb: "Search and quote technical docs without leaving the chat.",
+                symbol: "books.vertical.fill",
+                tintHex: "#7A7AFF",
+                needsAuth: false
+            ),
+            MCPSuggestion(
+                label: "Notes & knowledge base",
+                urlString: "https://mcp.notion.com/mcp",
+                blurb: "Read and write pages, databases, and notes in your workspace.",
+                symbol: "doc.text.fill",
+                tintHex: "#9AA0A6",
+                needsAuth: true
+            )
         ]
         case .operations: return [
-            "https://mcp.example.com/tickets",
-            "https://mcp.example.com/docs",
-            "https://mcp.example.com/calendar"
+            MCPSuggestion(
+                label: "Issue tracker & docs",
+                urlString: "https://mcp.atlassian.com/v1/sse",
+                blurb: "Pull tickets, create issues, search company docs.",
+                symbol: "checklist",
+                tintHex: "#5BC0EB",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Project management",
+                urlString: "https://mcp.linear.app/sse",
+                blurb: "Read and update product tickets and projects.",
+                symbol: "list.bullet.rectangle.portrait",
+                tintHex: "#7A7AFF",
+                needsAuth: true
+            ),
+            MCPSuggestion(
+                label: "Tasks",
+                urlString: "https://mcp.asana.com/sse",
+                blurb: "Create tasks, list projects, update status.",
+                symbol: "checkmark.circle.fill",
+                tintHex: "#F5A623",
+                needsAuth: true
+            )
         ]
         case .everyday: return [
-            "https://mcp.example.com/web-search"
+            MCPSuggestion(
+                label: "Web search",
+                urlString: "https://mcp.tavily.com/mcp",
+                blurb: "Search the live web from any chat.",
+                symbol: "magnifyingglass",
+                tintHex: "#3DBE8B",
+                needsAuth: true
+            )
         ]
         case .custom: return []
         }
+    }
+}
+
+/// One row in the onboarding 'Recommended MCP servers' list.
+/// Labels are intentionally brand-free, only the URL identifies the provider.
+struct MCPSuggestion: Identifiable, Hashable {
+    let id = UUID()
+    let label: String
+    let urlString: String
+    let blurb: String
+    let symbol: String
+    let tintHex: String
+    let needsAuth: Bool
+
+    /// Maps to an MCPServer model for installation into the store.
+    func makeServer() -> MCPServer {
+        MCPServer(
+            name: label,
+            baseURL: urlString,
+            authHeader: "",
+            enabled: !needsAuth, // auto-disable until user adds auth header
+            symbolName: symbol,
+            tintHex: tintHex
+        )
     }
 }

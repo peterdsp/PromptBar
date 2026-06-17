@@ -240,12 +240,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func presentOnboarding() {
         NSApp.setActivationPolicy(.regular)
 
-        let view = OnboardingView { [weak self] chosenUseCase, showInDock, hotKeyEnabled in
+        let view = OnboardingView { [weak self] chosenUseCase, selectedMCPs, showInDock, hotKeyEnabled in
             guard let self = self else { return }
             self.prefs.windowMode = showInDock ? .window : .hidden
             self.prefs.hotKeyEnabled = hotKeyEnabled
             self.prefs.hasCompletedOnboarding = true
             self.applyUseCase(chosenUseCase)
+            self.installRecommendedMCPs(selectedMCPs)
             self.onboardingWindow?.close()
             self.onboardingWindow = nil
             self.bootForCurrentMode()
@@ -272,6 +273,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard store.prompts.isEmpty else { return }
         for prompt in useCase.seedPrompts {
             store.addPrompt(prompt)
+        }
+    }
+
+    private func installRecommendedMCPs(_ suggestions: [MCPSuggestion]) {
+        for suggestion in suggestions {
+            // Don't double-install if the user re-runs onboarding.
+            guard !store.mcpServers.contains(where: {
+                $0.baseURL.caseInsensitiveCompare(suggestion.urlString) == .orderedSame
+            }) else { continue }
+            store.addMCPServer(suggestion.makeServer())
         }
     }
 

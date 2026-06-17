@@ -13,12 +13,13 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    /// (use case, show in Dock, hot key enabled)
-    let onFinish: (UseCase, Bool, Bool) -> Void
+    /// (use case, selected MCP suggestions, show in Dock, hot key enabled)
+    let onFinish: (UseCase, [MCPSuggestion], Bool, Bool) -> Void
 
     @State private var page: Int = 0
     @State private var maxReached: Int = 0
     @State private var pickedUseCase: UseCase = .everyday
+    @State private var selectedMCPIDs: Set<UUID> = []
     @State private var showInDock: Bool = true
     @State private var hotKeyEnabled: Bool = true
 
@@ -37,6 +38,12 @@ struct OnboardingView: View {
         .frame(width: 660, height: 720)
         .onChange(of: page) { _, newValue in
             if newValue > maxReached { maxReached = newValue }
+        }
+        .onChange(of: pickedUseCase) { _, newCase in
+            selectedMCPIDs = Set(newCase.recommendedMCPs.map(\.id))
+        }
+        .onAppear {
+            selectedMCPIDs = Set(pickedUseCase.recommendedMCPs.map(\.id))
         }
     }
 
@@ -486,48 +493,142 @@ struct OnboardingView: View {
     // MARK: Page 5, ready
 
     private var readyPage: some View {
-        VStack(spacing: 18) {
-            Spacer().frame(height: 18)
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 16) {
+                Spacer().frame(height: 10)
 
-            ZStack {
-                Circle()
-                    .fill(Color.green.opacity(0.18))
-                    .frame(width: 92, height: 92)
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 56, weight: .semibold))
-                    .foregroundStyle(Color.green)
-            }
+                ZStack {
+                    Circle()
+                        .fill(Color.green.opacity(0.18))
+                        .frame(width: 84, height: 84)
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 50, weight: .semibold))
+                        .foregroundStyle(Color.green)
+                }
 
-            VStack(spacing: 4) {
-                Text("You're set")
-                    .font(.title.weight(.semibold))
-                Text("Here's what we provisioned. You can change all of it later.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
+                VStack(spacing: 4) {
+                    Text("You're set")
+                        .font(.title.weight(.semibold))
+                    Text("Pick which power-ups to install. You can change all of it later.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
 
-            VStack(alignment: .leading, spacing: 10) {
-                summaryRow("books.vertical.fill",
-                           title: "\(pickedUseCase.seedPrompts.count) prompts added",
-                           body: pickedUseCase.seedPrompts.isEmpty
-                                ? "Add your own from Settings → Prompts."
-                                : "Reach them with ⌘P inside any chat.")
-                summaryRow("powerplug",
-                           title: "MCP slots ready",
-                           body: pickedUseCase.suggestedMCPURLs.isEmpty
-                                ? "Add servers from Settings → MCP Servers when you're ready."
-                                : "Generic URL hints saved under Settings → MCP Servers.")
-            }
-            .padding(.horizontal, 30)
-            .frame(maxWidth: 460)
-
-            launchOptions
+                VStack(alignment: .leading, spacing: 10) {
+                    summaryRow("books.vertical.fill",
+                               title: "\(pickedUseCase.seedPrompts.count) prompts added",
+                               body: pickedUseCase.seedPrompts.isEmpty
+                                    ? "Add your own from Settings → Prompts."
+                                    : "Reach them with ⌘P inside any chat.")
+                }
                 .padding(.horizontal, 30)
                 .frame(maxWidth: 460)
 
-            Spacer()
+                if !pickedUseCase.recommendedMCPs.isEmpty {
+                    recommendedMCPSection
+                        .padding(.horizontal, 30)
+                        .frame(maxWidth: 480)
+                }
+
+                launchOptions
+                    .padding(.horizontal, 30)
+                    .frame(maxWidth: 460)
+
+                Spacer(minLength: 12)
+            }
+            .padding(.bottom, 16)
         }
+    }
+
+    private var recommendedMCPSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Recommended MCP servers")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(allMCPsSelected ? "Deselect all" : "Select all") {
+                    if allMCPsSelected {
+                        selectedMCPIDs.removeAll()
+                    } else {
+                        selectedMCPIDs = Set(pickedUseCase.recommendedMCPs.map(\.id))
+                    }
+                }
+                .font(.caption.weight(.semibold))
+                .buttonStyle(.plain)
+                .foregroundStyle(Color.accentColor)
+            }
+            ForEach(pickedUseCase.recommendedMCPs) { suggestion in
+                mcpSuggestionCard(suggestion)
+            }
+            Text("Most servers need an auth token. Servers needing auth install disabled, flip them on in Settings → MCP Servers after you add the token.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.top, 4)
+        }
+    }
+
+    private var allMCPsSelected: Bool {
+        let ids = pickedUseCase.recommendedMCPs.map(\.id)
+        return !ids.isEmpty && ids.allSatisfy { selectedMCPIDs.contains($0) }
+    }
+
+    private func mcpSuggestionCard(_ suggestion: MCPSuggestion) -> some View {
+        let isSelected = selectedMCPIDs.contains(suggestion.id)
+        return Button {
+            if isSelected { selectedMCPIDs.remove(suggestion.id) }
+            else { selectedMCPIDs.insert(suggestion.id) }
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color(hex: suggestion.tintHex).opacity(0.25))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: suggestion.symbol)
+                        .foregroundStyle(Color(hex: suggestion.tintHex))
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(suggestion.label).font(.callout.weight(.semibold))
+                        if suggestion.needsAuth {
+                            Text("auth")
+                                .font(.system(size: 9, weight: .semibold))
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 1)
+                                .background(Capsule().fill(Color.orange.opacity(0.25)))
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    Text(suggestion.blurb)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(suggestion.urlString)
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+                Spacer()
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 18))
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(.regularMaterial)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(
+                        isSelected ? Color.accentColor.opacity(0.55) : Color.clear,
+                        lineWidth: 1.5
+                    )
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     private var launchOptions: some View {
@@ -653,7 +754,10 @@ struct OnboardingView: View {
                 Text("").frame(height: 28)
             case 4:
                 Button("Get Started") {
-                    onFinish(pickedUseCase, showInDock, hotKeyEnabled)
+                    let picks = pickedUseCase.recommendedMCPs.filter {
+                        selectedMCPIDs.contains($0.id)
+                    }
+                    onFinish(pickedUseCase, picks, showInDock, hotKeyEnabled)
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
