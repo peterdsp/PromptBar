@@ -6,105 +6,130 @@
 > repository. If a guideline here conflicts with an agent's default behavior, this
 > file takes precedence.
 
-PromptBar is a lightweight macOS menubar AI chat client written in Swift/SwiftUI.
-It wraps multiple AI provider web interfaces (Mistral, ChatGPT, Gemini, DeepSeek,
-Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, Sophea.AI) in a single
-popover using WKWebView. The list of available AI chats is fetched dynamically via
-Firebase RemoteConfig.
+PromptBar is a macOS menubar app that wraps **user-supplied** web URLs in a
+WKWebView popover. It is intentionally a **generic container**, not a client for
+any specific third-party service. The app ships with **zero preloaded providers**,
+**no third-party logos**, and **no third-party brand names** in its UI, assets,
+metadata, or marketing materials. This is a deliberate App Store compliance
+posture (Guideline 4.1 — Design: Copycats).
 
-## 1. Project Structure
+## 0. App Store compliance rules (read this first)
+
+Any change to the app, assets, README, screenshots, or App Store metadata MUST
+preserve the following:
+
+* **No third-party brand names** in user-facing UI, asset catalogs, default
+  configurations, marketing copy, App Store description, or screenshots.
+* **No third-party logos or marks** in `Assets.xcassets` or bundled resources.
+* **No preloaded service list.** The store ships empty. Users add services by
+  pasting a URL and giving it their own name and icon.
+* **Quick Add suggestions are plain URLs only** — no brand names attached. The
+  user names the service themselves.
+* **No analytics, no tracking, no remote config.** Firebase has been removed and
+  must not be reintroduced.
+* The app must not claim to "integrate ChatGPT" or any specific provider.
+  Marketing positioning is *"Wrap any web chat in your menubar."*
+
+If a change would violate any of the above, **stop and ask the user first.**
+
+## 1. Project structure
 
 ```
 PromptBar/
+  PromptBar.xcodeproj
   PromptBar/
-    PromptBar.xcodeproj       # Open this directly (no workspace needed)
-    PromptBar/
-      App/
-        main.swift            # Entry point
-        AppDelegate.swift     # Core app logic (menubar, popover, menus, hotkeys)
-        Info.plist
-        PromptBar.entitlements
-      Views/
-        ContentView.swift     # WKWebView wrapper and navigation delegates
-        PromptBarPopup.swift  # Popup container UI
-        AboutView.swift       # About window and update checking
-      Helpers/
-        WebViewHelper.swift   # Cookie cleaning
-        Utilities.swift       # NSImage extensions
-        ObservableObject.swift # ReloadState
-        DownloadDelegate.swift # WKDownloadDelegate
-      Assets.xcassets/
-      GoogleService-Info.plist
+    App/
+      main.swift                # Entry point
+      AppDelegate.swift         # Menubar, popover lifecycle, hotkeys
+      Info.plist
+      PromptBar.entitlements
+    Models/
+      ChatService.swift         # User-defined service model
+      ChatStore.swift           # UserDefaults-backed store
+    Views/
+      PromptBarPopup.swift      # Popup root (sidebar + WebView)
+      ContentView.swift         # WKWebView + delegates
+      QuickAddView.swift        # Add-a-service sheet
+      SettingsView.swift        # Settings window
+      AboutView.swift           # About window
+    Helpers/
+      GlassStyle.swift          # Liquid Glass material helpers
+      UpdateChecker.swift       # GitHub Releases checker
+      WebViewHelper.swift       # Cookie/cache cleaner
+      VersionComparator.swift   # Semver compare
+      Utilities.swift           # NSImage helpers
+      ObservableObject.swift    # Reload state
 ```
 
-## 2. Dev Environment Setup
+## 2. Dev environment
 
-* **macOS 12.0+** is the minimum deployment target.
-* Dependencies are managed with **Swift Package Manager** (SPM). Xcode resolves
-  packages automatically on first open — no manual install step needed.
-* Open **`PromptBar.xcodeproj`** directly (no workspace required).
-* Build and run from Xcode targeting macOS.
+* macOS **26.0+** deployment target (Liquid Glass APIs).
+* Open `PromptBar.xcodeproj` directly (no workspace).
+* Swift Package Manager handles the single dependency: `HotKey`.
 
-## 3. Architecture Notes
+## 3. Architecture
 
-* **AppDelegate.swift** is the central hub (~760 lines). It manages the statusbar
-  item, popover lifecycle, menu construction, AI chat selection, window sizing,
-  connectivity checks, and global hotkey registration.
-* **ContentView.swift** wraps `WKWebView` with navigation, download, and UI
-  delegates. It injects JavaScript to remove subscription/paywall UI elements
-  fetched from RemoteConfig.
-* **Firebase RemoteConfig** drives dynamic configuration: the `ai_chats` key maps
-  chat names to URLs, and `subscriptions` lists UI text to strip from pages.
-* User preferences (selected AI chat, window size) are persisted via `UserDefaults`.
-* The app runs sandboxed with network client access and user-selected file
-  read/write (for downloads).
+* **AppDelegate.swift** owns the `NSStatusItem`, the `NSPopover`, the right-click
+  menu, and the Settings/About windows. It also wires Combine subscriptions so
+  the popup rebuilds when `ChatStore` changes.
+* **ChatStore** is a `@MainActor` `ObservableObject` singleton, persisted via
+  `UserDefaults` under keys prefixed `promptbar.*.v2`.
+* **PopupRootView** renders the Liquid Glass popup. Service pills along the top
+  switch between user-added services. Empty state when no services exist.
+* **ContentView** wraps `WKWebView` with navigation/UI/download delegates. The
+  open-panel flow pins the popover behavior to `.applicationDefined` while the
+  file picker is up, restoring it afterward — this is the fix for the paperclip
+  upload bug (Apple Review 2.1, March/April 2025).
+* **UpdateChecker** hits `api.github.com/repos/peterdsp/PromptBar/releases/latest`
+  and uses `VersionComparator` to decide whether to surface an update.
 
-## 4. Key Dependencies (Swift Package Manager)
+## 4. Dependencies
 
-| Package                 | Products Used                              | Purpose                                    |
-| ----------------------- | ------------------------------------------ | ------------------------------------------ |
-| `firebase-ios-sdk`      | `FirebaseAnalytics`, `FirebaseRemoteConfig`| Analytics + dynamic AI chat list / flags   |
-| `HotKey`                | `HotKey`                                   | Global keyboard shortcut (Cmd+Shift+C)     |
+| Package | Purpose |
+| --- | --- |
+| `HotKey` (soffes) | Global ⌘⇧C hotkey + in-popover Cmd-C/V/X/Z/A bindings |
 
-## 5. Coding Conventions
+## 5. Coding conventions
 
-* All source is **Swift** using **SwiftUI** for views and **AppKit** for menubar
-  integration.
-* Follow existing patterns: `@State`/`@Binding`/`@Published` for reactive state,
-  delegation for WebKit callbacks.
-* Keep new UI in SwiftUI; use AppKit only where required (statusbar, popover).
-* Co-locate related helpers in the `Helpers/` folder.
+* Swift / SwiftUI for views; AppKit only where required (`NSStatusItem`,
+  `NSPopover`, `NSWindow`).
+* `@MainActor` on UI state owners.
+* No `print` debugging in shipped code.
+* Reach for SF Symbols and `.regularMaterial` / `.thinMaterial` / `.thickMaterial`
+  to stay consistent with the Liquid Glass treatment.
+* User-facing copy must never name a specific third-party AI service.
 
-## 6. Testing and Validation
+## 6. Manual validation checklist
 
-* There is no automated test suite. Validate changes manually:
-  1. Build and run from Xcode.
-  2. Verify the menubar icon appears and the popover opens on click.
-  3. Switch between AI chats and confirm the WebView loads the correct URL.
-  4. Test window resizing (Small / Medium / Large) and "Always on Top" toggle.
-  5. Test the global hotkey (Cmd+Shift+C).
-  6. Test "Clean Cookies" clears session data.
-  7. Check internet-offline behavior (error overlay should appear).
+1. Build & run from Xcode on macOS 26.
+2. Menubar icon appears; left-click opens the popup; right-click opens the menu.
+3. With no services, the empty state shows; **Add a Chat** opens the Quick Add
+   sheet; adding a valid URL adds a pill and loads the page.
+4. Switching pills swaps the WebView destination.
+5. Settings window opens, lists services, allows reorder/edit/delete.
+6. About window's "Check for Updates" hits GitHub and reports a sensible result.
+7. **Paperclip upload** works: trigger a file upload in a web chat and confirm
+   the open panel appears and the popover stays open.
+8. Window size and Always-on-Top persist across launches.
+9. Clean Cookies & Cache clears `WKWebsiteDataStore` and reloads.
 
-## 7. Common Tasks
+## 7. Common tasks
 
-| Task                        | How                                                              |
-| --------------------------- | ---------------------------------------------------------------- |
-| Add a new AI chat           | Add it to `ai_chats` in Firebase RemoteConfig (no code change)   |
-| Change default window size  | Edit size constants in `AppDelegate.swift`                       |
-| Modify WebView behavior     | Edit `ContentView.swift` (navigation delegate methods)           |
-| Update dependencies         | In Xcode: File > Packages > Update to Latest Package Versions    |
-| Build for release           | Archive from Xcode, notarize with `xcrun notarytool`             |
+| Task | How |
+| --- | --- |
+| Add a UI surface | New SwiftUI file under `Views/`, register it in the pbxproj `Sources` build phase. |
+| Add a hotkey | Append to `setupLocalEditHotKeys` (popover-scoped) or register a new global `HotKey` in `applicationDidFinishLaunching`. |
+| Update version | Bump `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` in `project.pbxproj`. |
+| Cut a release | Tag `vX.Y.Z` on GitHub and publish a release; `UpdateChecker` will pick it up. |
 
-## 8. PR and Contribution Guidelines
+## 8. PR rules
 
-* Keep PRs focused on a single change.
-* Ensure the app builds without warnings before submitting.
-* Test all items in section 6 for any UI-facing change.
-* The app is distributed under CC BY-SA 4.0. Contributions must be compatible
-  with this license.
+* One change per PR.
+* Build must compile without warnings.
+* Walk through section 6 before submitting.
+* Never reintroduce Firebase, analytics, telemetry, or hard-coded provider names.
 
 ---
 
-Following these guidelines ensures that AI coding agents can work on PromptBar
-effectively without needing to scan the entire codebase for context.
+Following these rules keeps the app shippable on the App Store and preserves the
+generic-container positioning that earned approval.

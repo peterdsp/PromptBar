@@ -2,124 +2,311 @@
 //  PromptBarPopup.swift
 //  PromptBar
 //
-//  Created by Petros Dhespollari on 16/3/24.
-//
 
 import AppKit
 import SwiftUI
 import WebKit
 
-class PromptBarPopup: NSViewController {
-    var hostingController: NSHostingController<MainUI>?
+/// Popup root displayed inside the menubar NSPopover.
+/// Hosts either a WebView (for user-added web chats) or a native chat view
+/// (for user-added OpenAI-compatible API endpoints) — whichever target is selected.
+struct PopupRootView: View {
+    @EnvironmentObject private var store: ChatStore
+    @State private var showingQuickAdd = false
+    @State private var showingAPIAdd = false
 
-    override func loadView() {
-        let appDelegate = NSApp.delegate as? AppDelegate
-        let selectedAIChatTitle = appDelegate?.selectedAIChatTitle
-        let initialAddress: String
-        if let selectedAIChatTitle = selectedAIChatTitle,
-            let chatOptions = appDelegate?.chatOptions,
-            let url = chatOptions[selectedAIChatTitle]
-        {
-            initialAddress = url
-        } else if let chatOptions = appDelegate?.chatOptions,
-            let firstUrl = chatOptions.values.first
-        {
-            initialAddress = firstUrl
-        } else {
-            initialAddress = AppDelegate.defaultAIChatURL
-        }
-
-        // Preload WebView before showing the UI
-        self.hostingController = NSHostingController(
-            rootView: MainUI(initialAddress: initialAddress))
-        self.view = self.hostingController!.view
-        self.view.frame = CGRect(
-            origin: .zero,
-            size: appDelegate?.windowSizeOptions["Medium"]
-                ?? CGSize(width: 500, height: 600))
-    }
-
-    override func mouseDragged(with event: NSEvent) {
-        guard
-            let appDelegate: AppDelegate = NSApplication.shared.delegate
-                as? AppDelegate
-        else { return }
-        var size = appDelegate.popover?.contentSize ?? CGSize.zero
-        size.width += event.deltaX
-        size.height += event.deltaY
-        appDelegate.popover?.contentSize = size
-    }
-}
-
-struct MainUI: View {
-    static let defaultInitialAddress = AppDelegate.defaultAIChatURL
-
-    @State private var action = WebViewAction.idle
-    @State private var state = WebViewState.empty
-    @State private var address: String
+    @State private var address: String = ""
+    @State private var webAction: WebViewAction = .idle
+    @State private var webState: WebViewState = .empty
     @ObservedObject private var reloadState = WebViewHelper.reloadState
-    private let customUserAgent: String?
 
-    public func reloadWebView() {
-        self.action = .reload
-    }
-
-    init(
-        initialAddress: String = Self.defaultInitialAddress,
-        customUserAgent: String? = nil
-    ) {
-        self._address = State(initialValue: initialAddress)
-        self.customUserAgent = customUserAgent
-    }
-
-    public func navigate(to newAddress: String) {
-        self.address = newAddress
-        if let url = URL(string: newAddress) {
-            self.action = .load(URLRequest(url: url))
-        }
-    }
-
-    var webConfig: WebViewConfig {
-        return WebViewConfig(customUserAgent: customUserAgent)
-    }
     var body: some View {
-        VStack(spacing: 0.0) {
-            WebView(
-                config: self.webConfig,
-                action: self.$action,
-                state: self.$state,
-                restrictedPages: nil
-            )
-            .onReceive(self.reloadState.$shouldReload) { shouldReload in
-                if shouldReload {
-                    if let url = URL(string: address) {
-                        self.action = .load(URLRequest(url: url))
-                    }
-                    self.reloadState.shouldReload = false
-                }
+        ZStack {
+            GlassBackdrop()
+            VStack(spacing: 0) {
+                topBar
+                Divider().opacity(0.3)
+                content
             }
         }
-        .onAppear {
+        .onAppear { syncAddressToSelection() }
+        .onChange(of: store.selectedTarget) { _, _ in
+            syncAddressToSelection()
+        }
+        .onReceive(reloadState.$shouldReload) { reload in
+            guard reload else { return }
             if let url = URL(string: address) {
-                self.action = .load(URLRequest(url: url))
+                webAction = .load(URLRequest(url: url))
+            }
+            reloadState.shouldReload = false
+        }
+        .sheet(isPresented: $showingQuickAdd) {
+            QuickAddView().environmentObject(store)
+        }
+        .sheet(isPresented: $showingAPIAdd) {
+            APIEndpointForm(mode: .add).environmentObject(store)
+        }
+    }
+
+    // MARK: Top bar
+
+    private var topBar: some View {
+        HStack(spacing: 8) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(store.services) { service in
+                        webPill(service)
+                    }
+                    ForEach(store.endpoints) { endpoint in
+                        apiPill(endpoint)
+                    }
+                    addMenu
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+            }
+            Spacer(minLength: 0)
+            actionsCluster
+                .padding(.trailing, 10)
+        }
+        .frame(height: 44)
+        .background(.thinMaterial)
+    }
+
+    private func webPill(_ service: ChatService) -> some View {
+        let isActive: Bool = {
+            if case .web(let id) = store.selectedTarget { return id == service.id }
+            return false
+        }()
+        return Button {
+            store.select(service)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: service.symbolName)
+                    .font(.system(size: 11, weight: .semibold))
+                Text(service.name).lineLimit(1)
             }
         }
-        .background(Color(nsColor: .windowBackgroundColor))
-        .overlay(
-            Button(
-                "r",
-                action: {
-                    self.reloadWebView()
-                }
+        .buttonStyle(GlassPillStyle(
+            isActive: isActive,
+            tint: Color(hex: service.tintHex)
+        ))
+        .contextMenu {
+            Button("Remove", role: .destructive) { store.remove(service) }
+        }
+    }
+
+    private func apiPill(_ endpoint: APIEndpoint) -> some View {
+        let isActive: Bool = {
+            if case .api(let id) = store.selectedTarget { return id == endpoint.id }
+            return false
+        }()
+        return Button {
+            store.select(endpoint)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: endpoint.symbolName)
+                    .font(.system(size: 11, weight: .semibold))
+                Text(endpoint.name).lineLimit(1)
+                Image(systemName: "key.fill")
+                    .font(.system(size: 8))
+                    .opacity(0.6)
+            }
+        }
+        .buttonStyle(GlassPillStyle(
+            isActive: isActive,
+            tint: Color(hex: endpoint.tintHex)
+        ))
+        .contextMenu {
+            Button("Remove", role: .destructive) { store.remove(endpoint) }
+        }
+    }
+
+    private var addMenu: some View {
+        Menu {
+            Button {
+                showingQuickAdd = true
+            } label: {
+                Label("Web Chat", systemImage: "globe")
+            }
+            Button {
+                showingAPIAdd = true
+            } label: {
+                Label("API Endpoint (BYO Key)", systemImage: "key.fill")
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "plus")
+                    .font(.system(size: 11, weight: .bold))
+                Text(store.services.isEmpty && store.endpoints.isEmpty ? "Add" : "")
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 8).fill(Color.accentColor.opacity(0.2))
             )
-            .keyboardShortcut(KeyEquivalent("r"), modifiers: [.command])
-            .opacity(0.0)
+            .foregroundStyle(Color.accentColor)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+    }
+
+    private var actionsCluster: some View {
+        HStack(spacing: 4) {
+            if case .web = store.selectedTarget {
+                actionButton(symbol: "arrow.clockwise", help: "Reload") {
+                    if let url = URL(string: address) {
+                        webAction = .load(URLRequest(url: url))
+                    }
+                }
+                actionButton(symbol: "arrow.left", help: "Back") {
+                    webAction = .goBack
+                }
+                .disabled(!webState.canGoBack)
+                actionButton(symbol: "arrow.right", help: "Forward") {
+                    webAction = .goForward
+                }
+                .disabled(!webState.canGoForward)
+            }
+            actionButton(symbol: "gearshape", help: "Settings") {
+                (NSApp.delegate as? AppDelegate)?
+                    .perform(NSSelectorFromString("openSettings"))
+            }
+        }
+    }
+
+    private func actionButton(symbol: String, help: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 28, height: 28)
+                .background(Circle().fill(.thickMaterial))
+        }
+        .buttonStyle(.plain)
+        .help(help)
+    }
+
+    // MARK: Content
+
+    @ViewBuilder
+    private var content: some View {
+        switch store.selectedTarget {
+        case .web(let id):
+            if let service = store.services.first(where: { $0.id == id }) {
+                webContent(service)
+            } else {
+                emptyState
+            }
+        case .api(let id):
+            if let endpoint = store.endpoints.first(where: { $0.id == id }) {
+                NativeChatView(endpoint: endpoint)
+                    .environmentObject(store)
+                    .id(endpoint.id)
+            } else {
+                emptyState
+            }
+        case .none:
+            emptyState
+        }
+    }
+
+    @ViewBuilder
+    private func webContent(_ service: ChatService) -> some View {
+        if URL(string: service.urlString) != nil {
+            ZStack {
+                WebView(
+                    config: WebViewConfig(),
+                    action: $webAction,
+                    state: $webState
+                )
+                if webState.isLoading {
+                    ProgressView()
+                        .controlSize(.small)
+                        .padding(8)
+                        .background(.regularMaterial, in: Capsule())
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .padding(10)
+                }
+            }
+        } else {
+            emptyState
+        }
+    }
+
+    private var emptyState: some View {
+        EmptyStateView(
+            addWebAction: { showingQuickAdd = true },
+            addAPIAction: { showingAPIAdd = true }
         )
     }
+
+    // MARK: Sync
+
+    private func syncAddressToSelection() {
+        guard case .web(let id) = store.selectedTarget,
+              let service = store.services.first(where: { $0.id == id }) else {
+            address = ""
+            return
+        }
+        address = service.urlString
+        if let target = URL(string: address) {
+            webAction = .load(URLRequest(url: target))
+        }
+    }
 }
 
-struct MainUI_Previews: PreviewProvider {
-    static var previews: some View {
-        MainUI()
+private struct EmptyStateView: View {
+    let addWebAction: () -> Void
+    let addAPIAction: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(.regularMaterial)
+                    .frame(width: 110, height: 110)
+                Image(systemName: "bubble.left.and.bubble.right")
+                    .font(.system(size: 44, weight: .light))
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(spacing: 6) {
+                Text("Two ways to chat")
+                    .font(.title3.weight(.semibold))
+                Text("Wrap any web chat in your menubar, or bring your own API key for a native streaming chat. Both are private, both are yours.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+                    .padding(.horizontal, 28)
+            }
+
+            HStack(spacing: 10) {
+                Button(action: addWebAction) {
+                    Label("Add Web Chat", systemImage: "globe")
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                }
+                .buttonStyle(.bordered)
+                Button(action: addAPIAction) {
+                    Label("Add API Endpoint", systemImage: "key.fill")
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .controlSize(.large)
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+}
+
+/// Legacy NSViewController kept for compatibility; not used by the new hosting flow.
+class PromptBarPopup: NSViewController {
+    override func loadView() { view = NSView() }
 }

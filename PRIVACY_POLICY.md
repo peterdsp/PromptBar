@@ -1,45 +1,77 @@
 # Privacy Policy
 
-Last Updated: 25/05/2026
+Last Updated: 2026-06-13
 
 ## 1. Introduction
 
-PromptBar is a macOS menu bar client for third-party AI chat websites. This policy explains what PromptBar itself handles and what is handled by the AI providers you choose to use.
+PromptBar is a generic macOS menubar **web-chat container**. It lets you wrap any
+web URL you choose in a fast menubar popover. PromptBar does not provide chat
+services itself — it only renders the websites you add inside `WKWebView`.
 
-## 2. Data Collection and Processing
+This policy describes what PromptBar handles and what is handled by the
+third-party websites you choose to load.
 
-PromptBar does not ask for, store, or transmit provider API keys. Users authenticate only inside the provider web sessions shown in the app.
+## 2. Data Collection by PromptBar
 
-PromptBar does not log, inspect, or upload your chat messages. Messages, account details, and provider-side history are processed by the selected AI provider under that provider's own terms and privacy policy.
+PromptBar **does not collect, transmit, or store** any of the following:
 
-PromptBar currently uses Firebase Remote Config to fetch app configuration such as available chat providers and update metadata. Firebase Analytics is not linked in the app target.
+* User accounts or identifiers
+* Chat messages or page contents
+* Usage analytics, telemetry, or tracking events
+* IP addresses (beyond what `WKWebView` itself sends to the sites you load)
+* Crash reports
+
+The app **does not include** any analytics SDK, advertising SDK, telemetry
+framework, or remote configuration service. (As of version 2.0, Firebase
+Analytics and Firebase Remote Config have been removed entirely.)
 
 ## 3. Authentication and Accounts
 
-Some providers require sign-in. Authentication is handled inside the provider website loaded in WebKit. PromptBar does not manage provider accounts and does not store provider passwords.
+PromptBar does not create user accounts. There is nothing to sign up for and
+nothing to delete on our side.
+
+If a website you add to PromptBar requires sign-in, that authentication happens
+**inside the website itself**, hosted by the third party. PromptBar never sees,
+stores, or transmits your credentials. To delete a third-party account, follow
+the instructions on that third party's own site.
 
 ## 4. Local Storage
 
-PromptBar stores local preferences on your Mac, such as selected provider and window size.
+PromptBar stores the following on your Mac only, never transmitted anywhere:
 
-Because PromptBar uses `WKWebView` with the default website data store, WebKit may store provider cookies, local storage, IndexedDB, caches, and other website data locally on your Mac. This is how provider sign-in sessions can remain available between launches.
+* Your list of services (names, URLs, icons, colors) — `UserDefaults`
+* Your window-size preference — `UserDefaults`
+* Your "always on top" preference — `UserDefaults`
 
-PromptBar includes a cookie and website data clearing action. Using it removes WebKit website data from the app's default data store and reloads the web view.
+Because PromptBar uses `WKWebView` with the default website data store, WebKit
+may store cookies, local storage, IndexedDB, caches, and other website data
+locally for the sites you visit. This is how those sites remember your sign-in
+between launches.
 
-## 5. Third-Party Services
+You can wipe all WebKit local website data at any time via
+**Menu → Clean Cookies & Cache**.
 
-PromptBar integrates with third-party AI websites. Their privacy policies apply to data you enter into those services:
+## 5. Updates
 
-- [Mistral AI Privacy Policy](https://mistral.ai/privacy-policy/)
-- [OpenAI Privacy Policy](https://openai.com/policies/privacy-policy)
-- [Google Privacy Policy](https://policies.google.com/privacy)
-- [DeepSeek Privacy Policy](https://deepseek.com/privacy-policy)
-- [xAI Privacy Policy](https://x.ai/privacy)
+PromptBar checks for new versions by sending an anonymous HTTPS request to the
+GitHub Releases API endpoint
+`https://api.github.com/repos/peterdsp/PromptBar/releases/latest`. No identifying
+data is included in this request beyond what GitHub itself receives from any
+public HTTP client.
 
-## 6. Changes to This Policy
+## 6. Third-Party Sites
 
-This Privacy Policy may be updated periodically. Significant changes will be communicated through the project repository.
+When you add a URL to PromptBar, that site's privacy policy applies to anything
+you do inside it. Common examples (this is a generic list — PromptBar does not
+endorse, integrate with, or have a business relationship with any of them):
+visit each provider's website for their own privacy policy.
 
-## 7. Contact
+## 7. Changes to This Policy
 
-For questions or concerns, visit the [GitHub repository](https://github.com/peterdsp/PromptBar) or contact the project maintainer.
+Significant changes will be communicated through the project repository.
+
+## 8. Contact
+
+For questions, open an issue on the
+[GitHub repository](https://github.com/peterdsp/PromptBar) or contact the
+project maintainer.

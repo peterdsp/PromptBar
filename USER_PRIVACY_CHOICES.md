@@ -1,33 +1,42 @@
 # User Privacy Choices
 
-PromptBar gives you control over local app preferences and WebKit website data stored on your Mac.
+PromptBar gives you full control over the local data the app keeps on your Mac.
+This document explains what is stored, where, and how to clear it.
 
-## Data Collection
+## What PromptBar Does Not Do
 
-PromptBar does not ask for provider API keys and does not collect or upload chat messages. AI interactions happen on third-party provider websites loaded in the app.
+PromptBar does not request or store any login credentials. It does not collect
+analytics, telemetry, or crash reports. It does not include any tracking SDK,
+advertising SDK, or remote-configuration framework.
 
-PromptBar uses Firebase Remote Config for app configuration. Firebase Analytics is not linked in the app target.
+## Authentication Inside Web Chats
 
-## AI Provider Authentication
-
-Some providers require sign-in. PromptBar does not store or manage provider credentials. You sign in directly inside the provider website shown by WebKit.
+When you add a URL that requires sign-in, authentication happens entirely inside
+that website's own pages, loaded in `WKWebView`. PromptBar never sees or stores
+your credentials. To delete an account on a third-party site, follow that
+site's own deletion instructions.
 
 ## Local Website Data
 
-WebKit may store provider cookies, local storage, IndexedDB, caches, and other website data locally on your Mac. This local website data supports normal browser behavior such as staying signed in.
+`WKWebView` may store cookies, local storage, IndexedDB, caches, and other
+website data on your Mac for the sites you load. This keeps your sign-in
+sessions across launches.
 
-PromptBar can clear WebKit cookies and website data from the app's default data store through its clean cookies action. Clearing data may sign you out of providers.
+You can erase all of this at any time from **Menu → Clean Cookies & Cache**.
 
-## Preferences
+## App Preferences
 
-PromptBar stores app preferences locally on your Mac, including selected provider and window size.
+PromptBar stores the following on your Mac only:
 
-## Third-Party Provider Policies
+- Your list of services (names, URLs, icons, colors)
+- Your window size preference
+- Your "always on top" preference
 
-To manage provider-side account data, chat history, retention, or training settings, use the privacy controls offered by each provider:
+All of these live in `UserDefaults` for the PromptBar app. Resetting the app
+(or removing it via Finder) deletes them.
 
-- [Mistral AI](https://mistral.ai/privacy-policy/)
-- [OpenAI](https://openai.com/policies/privacy-policy)
-- [Google Gemini](https://policies.google.com/privacy)
-- [DeepSeek](https://deepseek.com/privacy-policy)
-- [xAI](https://x.ai/privacy)
+## Third-Party Sites
+
+When you add a URL to PromptBar, the privacy policy of that site governs any
+data you enter there. PromptBar does not endorse, integrate with, or have any
+business relationship with the operators of the sites you choose to load.

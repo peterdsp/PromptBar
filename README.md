@@ -1,106 +1,165 @@
-# <p align="center"> <img src="https://github.com/peterdsp/PromptBar/blob/7f8a906a4cde518d8ab00868d7aeba51a2528570/Mistralis/Mistralis/Assets.xcassets/AppIcon.appiconset/icon_512x512%402x.png" width="150" height="150" /> <br> PromptBar 1.3.2 </p>
+<div align="center">
 
-**PromptBar – AI Chat Simplified for macOS**
+# 💬 PromptBar 2.0
 
-PromptBar is a **lightweight AI chat client** for macOS, integrating **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, and Sophea.AI** into a single **menubar app** for quick and seamless access.
+### Any chat. Any model. One keystroke away.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/7c717514-b1e8-461c-8329-6743218682e8" width="500" alt="PromptBar Interface">
-</p>
+**The macOS menubar chat container that's yours to shape.**
+**Kontejneri i bisedave ne menubar te macOS qe e formon ti vete.**
 
-## ✨ What’s New in Version 1.3.2?
+[![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-orange.svg)](LICENSE)
+[![macOS](https://img.shields.io/badge/macOS-26%20Tahoe-blue?logo=apple)](https://www.apple.com/macos/)
+[![Liquid Glass](https://img.shields.io/badge/UI-Liquid%20Glass-9cf)](#)
+[![No Tracking](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)](PRIVACY_POLICY.md)
+[![Bring Your Own Key](https://img.shields.io/badge/BYO-API%20Key-purple?logo=openai)](#-bring-your-own-key)
+[![Star this repo](https://img.shields.io/github/stars/peterdsp/PromptBar?style=social)](https://github.com/peterdsp/PromptBar/stargazers)
 
-- **🆕 Sophea.AI Added** – Chat with **Sophea.AI**, the first large language model (LLM) trained natively in Greek, developed on NVIDIA DGX B200 systems and DGX Cloud. Purpose-built for infrastructure and enterprise environments, it delivers semantic precision and real-time adaptability in Greek-language applications. Sophea powers:  
-  - Regulatory document analysis  
-  - AI accounting agents  
-  - Voice-based customer support  
-  - Upcoming AI-powered travel assistance  
-  With a foundation in ethical AI, Sophea is trained exclusively on 100% green energy—reinforcing KIEFER’s commitment to sustainability, language equity, and next-gen tech.  
-- **🔍 Enhanced Version Check** – Tap **“Check for Updates”** in *About* to procure the latest `.pkg` file for a more robust experience.  
-- **🚀 Official Apple Notarization** – PromptBar remains **notarized by Apple**, ensuring smooth installation without Gatekeeper warnings.  
-- **📢 App Store Update** – After 2+ months of review and name changes (**MacMistral → Mistralis → PromptBar**), Apple officially **rejected** our listing. Despite assurances, the app was declined with unclear justification—even as browsers with similar AI features remain.  
-- **📦 Distribution Moving Forward** – Keep buying PromptBar via **Ko-fi** or **fork & build** from GitHub; we’re exploring other marketplaces.  
-- **⚡ Performance Enhancements** – Faster model switching and UI responsiveness.  
-- **🔧 Minor Bug Fixes** – Squashed small issues for a smoother experience.  
+[Features](#-features) · [Why 2.0 is different](#-why-20-is-different) · [Install](#-install) · [BYO Key](#-bring-your-own-key) · [Privacy](#-privacy) · [Support](#-support)
+
+</div>
 
 ---
 
-## 📌 Features
+> **You bring the URL. You bring the key. You bring the prompts.**
+> **PromptBar gives them a home in your menubar — fast, glassy, private.**
 
-- **Instant AI Access** – Open PromptBar from the menubar with a **single click**.  
-- **Multi-Model Support** – Choose between **Mistral AI, ChatGPT, Gemini, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, and Sophea.AI** for diverse AI-powered assistance.  
-- **Minimal and Lightweight** – Designed to run efficiently without consuming unnecessary system resources.  
-- **Privacy-Focused** – No login credentials are stored locally; users sign in **directly through the AI provider of their choice**.  
-- **Customizable Experience** – Resize the chat window, switch AI models, and adjust settings for an optimized workflow.  
-- **Dynamic AI Expansion** – New AI chats can be **integrated directly from the server**, so you get fresh models without frequent app updates.  
+---
+
+## 🇬🇧 English
+
+### What is PromptBar
+
+PromptBar is a **lightweight macOS menubar app** that lives one keystroke away. It does two things, and it does them well:
+
+1. **Wraps any web-based chat** you point it at in a clean, distraction-free popover.
+2. **Talks natively to any OpenAI-compatible API endpoint** you configure — your key, your model, your endpoint, your data.
+
+It ships **empty**. No bundled providers. No bundled logos. No bundled brand names. You decide what goes in the menubar, and the app stays out of your way.
+
+### Why 2.0 is different
+
+| Before | After |
+|---|---|
+| Hard-coded list of providers | **Empty by default — you add what you want** |
+| Web-only, hidden iframe | **Native streaming chat with BYO API key** |
+| Firebase analytics + remote config | **Zero tracking, zero remote config** |
+| macOS 12 baseline | **macOS 26 Liquid Glass, top to bottom** |
+| Brand names in the UI | **No third-party brand names, anywhere** |
+| Paperclip uploads broken | **Fixed — popover stays put for the file picker** |
+
+---
+
+## ✨ Features
+
+- 🪟 **Liquid Glass UI** — built top-to-bottom on macOS 26's Liquid Glass material system.
+- 🌐 **Wrap any web chat** — paste a URL, pick a name, an icon, a color. Done.
+- 🔑 **Bring your own API key** — connect any OpenAI-compatible chat-completions endpoint and stream natively.
+- 📚 **Prompt Library** — save your best prompts once; reuse them in any chat. Search, tag, ship.
+- 💬 **Native streaming chat** — server-sent events, multi-conversation history, cancel mid-stream.
+- 🎨 **Make every chat yours** — SF Symbol icons + color tints per service.
+- 🔐 **Keychain-backed keys** — API keys live in the macOS Keychain. Not in UserDefaults. Not in iCloud. Not in a log file.
+- 🪶 **Menubar-only** — no Dock noise. `⌘⇧C` to summon it.
+- 🪟 **Always-on-top mode** — pin the popover over any app.
+- 📐 **Three sizes** — Small / Medium / Large, persisted.
+- 🧹 **One-click cookie sweep** — clear all WebKit local data when you want a clean slate.
+- 🚫 **No analytics, no telemetry, no remote config.** Updates check GitHub Releases directly.
+
+---
+
+## 🔑 Bring your own key
+
+PromptBar speaks the **OpenAI-compatible `POST /chat/completions` schema** — the de-facto standard supported by the vast majority of inference services and local runtimes. If your endpoint understands it, PromptBar can chat with it.
+
+You configure:
+
+- **Display name** — whatever you want it called
+- **Base URL** — e.g. `https://api.example.com/v1`
+- **Model** — e.g. `gpt-4o-mini`, `llama-3.1-70b`, anything your endpoint serves
+- **API key** — stored in the macOS Keychain
+- **System prompt** — optional, persisted per endpoint
+- **Streaming** — on by default, can be disabled
+
+Your messages go **straight from your Mac to your endpoint URL**. No relay, no middleman, no proxy.
 
 ---
 
 ## 💻 Requirements
 
-- macOS **12.0+**
+- macOS **26.0+** (Liquid Glass APIs)
 
 ---
 
-## 📥 Installation
+## 📥 Install
 
-### How to Install PromptBar on Your Mac
+Download the latest signed and notarized `.pkg` from [GitHub Releases](https://github.com/peterdsp/PromptBar/releases) — or grab it from the [Ko-fi shop](https://ko-fi.com/peterdsp) and help fund the next version.
 
-1. Visit the **PromptBar Ko-fi page** by clicking [**here**](https://ko-fi.com/s/b1ef047a6f).  
-2. Buy the latest version (`.pkg` file).  
-3. Locate the downloaded zip file in **Finder** and **double-click** to install it.
-
-### Apple Notarization – No More Gatekeeper Issues!
-
-PromptBar 1.3.2 is **notarized by Apple**, so macOS will no longer flag it as from an “unidentified developer.”  
-
-💡 If you’re using an older version, you may still need to **right-click → Open** on first launch.
+```bash
+# After install
+open -a PromptBar
+# Click the menubar icon. Hit ⌘⇧C from anywhere to toggle it.
+```
 
 ---
 
-## 🔧 Usage
+## 🔒 Privacy
 
-1. **Click** the PromptBar icon in your menubar.  
-2. **Select** your AI model (**Mistral, Gemini, ChatGPT, DeepSeek, Grok, Perplexity, Copilot, AI Studio, NotebookLM, Meta AI, or Sophea.AI**).  
-3. **Chat instantly**—no extra apps, no distractions!  
-4. **Customize** your experience:  
-   - Resize the chat window (**Small, Medium, Large**).  
-   - Keep the chat window **Always on Top**.  
-   - Switch AI models on the fly.  
+- **No accounts.** PromptBar creates none.
+- **No analytics, no telemetry, no crash reports.** None.
+- **No remote config.** Firebase is gone for good.
+- **API keys live in the Keychain.** Not in UserDefaults, not in iCloud.
+- **Updates** check `api.github.com` directly. Same anonymous HTTP any browser would send.
+- **Web chats** run inside `WKWebView`. Cookies live on this Mac only. Clear them at any time.
 
----
-
-## 🔄 Auto-Start on Login
-
-Want PromptBar to launch automatically when you log in?
-
-1. Open **System Settings**.  
-2. Click **General → Login Items**.  
-3. Click the **+** button to add an app.  
-4. Navigate to **PromptBar.app** in your Applications folder.  
-5. Select it and click **Open**.
-
-PromptBar will now be ready in your menubar whenever you log in!
+Full details in [PRIVACY_POLICY.md](PRIVACY_POLICY.md) and [USER_PRIVACY_CHOICES.md](USER_PRIVACY_CHOICES.md).
 
 ---
 
-## 🙌 Thank You to Our Supporters
+## 🧠 Power moves
 
-- A heartfelt thank you to our **700+ supporters** who have bought the app on Ko-fi!  
-- Your continuous support powers PromptBar’s evolution — we’re grateful for every one of you.  
+- **⌘⇧C** — toggle the popover from anywhere on your system.
+- **⌘P** (inside chat) — open the Prompt Library quick picker.
+- **⌘↩** — send a message in the native chat.
+- **Right-click the menubar icon** — Settings, Always-on-Top, Window Size, Clean Cookies & Cache, Quit.
+
+---
+
+## 🛠️ Build from source
+
+```bash
+git clone https://github.com/peterdsp/PromptBar.git
+cd PromptBar
+open PromptBar/PromptBar.xcodeproj
+# Xcode 26+, build & run
+```
+
+Read [AGENTS.md](AGENTS.md) before contributing — it's the rulebook (especially the App Store compliance section).
+
+---
+
+## ❤️ Support
+
+PromptBar is **single-developer software**. Every coffee and every star keeps it shipping.
+
+- ☕ [Buy PromptBar 2.0 on Ko-fi](https://ko-fi.com/peterdsp)
+- ⭐ [Star the repo](https://github.com/peterdsp/PromptBar/stargazers)
+- 🐦 Share what you built with PromptBar's Prompt Library
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **Creative Commons Attribution-ShareAlike 4.0 International License**.  
-See **LICENSE.md** for details.
+[Creative Commons Attribution-ShareAlike 4.0 International](LICENSE).
 
 ---
 
-### 🚀 Download PromptBar Now!
+<div align="center">
 
-💡 **One-click AI access, right from your Mac’s menubar!**  
-🔗 **[Get PromptBar 1.3.2 Now](https://ko-fi.com/s/b1ef047a6f)**  
+### If PromptBar saved you a tab, drop a ⭐
+### Nese PromptBar te kurseu nje tab, lere nje ⭐
 
-Want to support future updates? **Buy me a coffee on Ko-fi!** ☕💙
+[![Star History Chart](https://api.star-history.com/svg?repos=peterdsp/PromptBar&type=Date)](https://star-history.com/#peterdsp/PromptBar&Date)
+
+Built with 💎 in Tirana and Athens by [@peterdsp](https://github.com/peterdsp).
+Ndertuar me 💎 ne Tirane dhe Athine nga [@peterdsp](https://github.com/peterdsp).
+
+</div>

@@ -2,39 +2,32 @@
 //  ContentView.swift
 //  PromptBar
 //
-//  Created by Petros Dhespollari on 16/3/24.
-//
 
 import Foundation
 import SwiftUI
 @preconcurrency import WebKit
 
+// MARK: - WebView action / state
+
 public enum WebViewAction: Equatable {
     case idle
-    case
-        load(URLRequest)
-    case
-        loadHTML(String)
-    case
-        reload,
-        goBack,
-        goForward
-    case
-        evaluateJS(String, (Result<Any?, Error>) -> Void)
+    case load(URLRequest)
+    case loadHTML(String)
+    case reload
+    case goBack
+    case goForward
+    case evaluateJS(String, (Result<Any?, Error>) -> Void)
 
     public static func == (lhs: WebViewAction, rhs: WebViewAction) -> Bool {
         switch (lhs, rhs) {
-        case (.idle, .idle),
-            (.reload, .reload),
-            (.goBack, .goBack),
-            (.goForward, .goForward):
+        case (.idle, .idle), (.reload, .reload), (.goBack, .goBack), (.goForward, .goForward):
             return true
-        case let (.load(requestLHS), .load(requestRHS)):
-            return requestLHS == requestRHS
-        case let (.loadHTML(htmlLHS), .loadHTML(htmlRHS)):
-            return htmlLHS == htmlRHS
-        case let (.evaluateJS(commandLHS, _), .evaluateJS(commandRHS, _)):
-            return commandLHS == commandRHS
+        case let (.load(a), .load(b)):
+            return a == b
+        case let (.loadHTML(a), .loadHTML(b)):
+            return a == b
+        case let (.evaluateJS(a, _), .evaluateJS(b, _)):
+            return a == b
         default:
             return false
         }
@@ -42,385 +35,261 @@ public enum WebViewAction: Equatable {
 }
 
 public struct WebViewState: Equatable {
-    public internal(set) var isLoading: Bool
-    public internal(set) var pageURL: String?
-    public internal(set) var pageTitle: String?
-    public internal(set) var pageHTML: String?
-    public internal(set) var error: Error?
-    public internal(set) var canGoBack: Bool
-    public internal(set) var canGoForward: Bool
+    public var isLoading: Bool
+    public var pageURL: String?
+    public var pageTitle: String?
+    public var canGoBack: Bool
+    public var canGoForward: Bool
+    public var error: String?
 
     public static let empty = WebViewState(
         isLoading: false,
         pageURL: nil,
         pageTitle: nil,
-        pageHTML: nil,
-        error: nil,
         canGoBack: false,
-        canGoForward: false
+        canGoForward: false,
+        error: nil
     )
-
-    public static func == (lhs: WebViewState, rhs: WebViewState) -> Bool {
-        return lhs.isLoading == rhs.isLoading
-            && lhs.pageURL == rhs.pageURL
-            && lhs.pageTitle == rhs.pageTitle
-            && lhs.pageHTML == rhs.pageHTML
-            && lhs.error?.localizedDescription
-                == rhs.error?.localizedDescription
-            && lhs.canGoBack == rhs.canGoBack
-            && lhs.canGoForward == rhs.canGoForward
-    }
 }
 
-public class ContentView: NSObject {
-    private let webView: WebView
-    var actionInProgress = false
-
-    init(webView: WebView) {
-        self.webView = webView
-    }
-
-    func setLoading(
-        _ isLoading: Bool,
-        canGoBack: Bool? = nil,
-        canGoForward: Bool? = nil,
-        error: Error? = nil
-    ) {
-        var newState = webView.state
-        newState.isLoading = isLoading
-        if let canGoBack = canGoBack {
-            newState.canGoBack = canGoBack
-        }
-        if let canGoForward = canGoForward {
-            newState.canGoForward = canGoForward
-        }
-        if let error = error {
-            newState.error = error
-        }
-        webView.state = newState
-        webView.action = .idle
-        actionInProgress = false
-    }
-}
-
-extension ContentView: WKNavigationDelegate, WKDownloadDelegate {
-    // MARK: - WKDownloadDelegate Support (Download .pdf, .zip, etc.)
-    public func webView(_ webView: WKWebView,
-                        navigationResponse: WKNavigationResponse,
-                        didBecome download: WKDownload) {
-        download.delegate = self
-    }
-
-    public func webView(_ webView: WKWebView,
-                        navigationAction: WKNavigationAction,
-                        didBecome download: WKDownload) {
-        download.delegate = self
-    }
-
-    public func download(_ download: WKDownload,
-                         decideDestinationUsing response: URLResponse,
-                         suggestedFilename: String,
-                         completionHandler: @escaping (URL?) -> Void) {
-        DispatchQueue.main.async {
-            if let appDelegate = NSApp.delegate as? AppDelegate {
-                appDelegate.pendingDownload = (suggestedFilename, completionHandler, download)
-                appDelegate.showDownloadSavePanel()
-            }
-        }
-    }
-
-    public func downloadDidFinish(_ download: WKDownload) {
-        print("✅ Download finished")
-    }
-
-    public func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
-        print("❌ Download failed: \(error.localizedDescription)")
-    }
-    public func webView(
-        _ webView: WKWebView,
-        didFinish navigation: WKNavigation!
-    ) {
-        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            appDelegate.hideLoadingView()  // Hide loader when navigation finishes
-        }
-        setLoading(
-            false,
-            canGoBack: webView.canGoBack,
-            canGoForward: webView.canGoForward
-        )
-
-        // ✅ Update page title
-        webView.evaluateJavaScript("document.title") { response, _ in
-            if let title = response as? String {
-                self.updateState(pageTitle: title)
-            }
-        }
-
-        // ✅ Update page URL
-        webView.evaluateJavaScript("document.URL.toString()") { response, _ in
-            if let url = response as? String {
-                self.updateState(pageURL: url)
-            }
-        }
-
-        // ✅ Update page HTML if required
-        if self.webView.htmlInState {
-            webView.evaluateJavaScript(
-                "document.documentElement.outerHTML.toString()"
-            ) { response, _ in
-                if let html = response as? String {
-                    self.updateState(pageHTML: html)
-                }
-            }
-        }
-
-        // ✅ Get the "subscriptions" list from AppDelegate
-        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            let removeTextsJSArray = appDelegate.removeTexts
-                .map { "\"\($0)\"" }
-                .joined(separator: ", ")
-
-            let removeUpgradeButtonsJS = """
-                    (function() {
-                        const removeTexts = [\(removeTextsJSArray)];
-
-                        function removeUpgradeElements() {
-                            let upgradeElements = [...document.querySelectorAll("a, button, li")]
-                                .filter(el => removeTexts.some(text => el.innerText.includes(text)));
-                            upgradeElements.forEach(el => el.remove());
-                        }
-
-                        // Run immediately in case elements are already present
-                        removeUpgradeElements();
-
-                        // Set up a MutationObserver to handle dynamically loaded elements
-                        let observer = new MutationObserver(() => removeUpgradeElements());
-                        observer.observe(document.body, { childList: true, subtree: true });
-                    })();
-                """
-
-            webView.evaluateJavaScript(removeUpgradeButtonsJS) { _, error in
-                if let error = error {
-                    print("⚠️ Failed to remove subscription items: \(error)")
-                }
-            }
-        }
-    }
-
-    // ✅ Helper function to update the WebViewState
-    private func updateState(
-        pageTitle: String? = nil,
-        pageURL: String? = nil,
-        pageHTML: String? = nil
-    ) {
-        var newState = self.webView.state
-        if let title = pageTitle { newState.pageTitle = title }
-        if let url = pageURL { newState.pageURL = url }
-        if let html = pageHTML { newState.pageHTML = html }
-        self.webView.state = newState
-    }
-
-    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        setLoading(false)
-    }
-
-    public func webView(
-        _ webView: WKWebView,
-        runOpenPanelWith parameters: WKOpenPanelParameters,
-        initiatedByFrame frame: WKFrameInfo,
-        completionHandler: @escaping ([URL]?) -> Void
-    ) {
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = parameters.allowsMultipleSelection
-
-        let panelSize = CGSize(width: 600, height: 400)
-
-        // Delay to prevent popover dismissal (critical!)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            if let screenFrame = NSScreen.main?.visibleFrame {
-                let origin = CGPoint(
-                    x: screenFrame.midX - panelSize.width / 2,
-                    y: screenFrame.midY - panelSize.height / 2
-                )
-                panel.setFrame(CGRect(origin: origin, size: panelSize), display: false)
-            }
-
-            panel.begin { result in
-                if result == .OK {
-                    completionHandler(panel.urls)
-                } else {
-                    completionHandler(nil)
-                }
-            }
-        }
-    }
-
-    public func webView(
-        _ webView: WKWebView,
-        didFail navigation: WKNavigation!,
-        withError error: Error
-    ) {
-        setLoading(false, error: error)
-    }
-
-    public func webView(
-        _ webView: WKWebView,
-        didCommit navigation: WKNavigation!
-    ) {
-        setLoading(true)
-    }
-
-    public func webView(
-        _ webView: WKWebView,
-        didStartProvisionalNavigation navigation: WKNavigation!
-    ) {
-        if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-            appDelegate.showLoadingView()  // Show loader when navigation starts
-        }
-        setLoading(
-            true,
-            canGoBack: webView.canGoBack,
-            canGoForward: webView.canGoForward
-        )
-    }
-}
-
-extension ContentView: WKUIDelegate {
-    public func webView(
-        _ webView: WKWebView,
-        createWebViewWith configuration: WKWebViewConfiguration,
-        for navigationAction: WKNavigationAction,
-        windowFeatures: WKWindowFeatures
-    ) -> WKWebView? {
-        if navigationAction.targetFrame == nil {
-            webView.load(navigationAction.request)
-        }
-        return nil
-    }
-}
+// MARK: - WebView config
 
 public struct WebViewConfig {
-    public static let `default` = WebViewConfig()
-
-    public let allowsBackForwardNavigationGestures: Bool
-    public let allowsInlineMediaPlayback: Bool
-    public let mediaTypesRequiringUserActionForPlayback: WKAudiovisualMediaTypes
-    public let isScrollEnabled: Bool
-    public let isOpaque: Bool
-    public let backgroundColor: Color
-    public var customUserAgent: String?
-    public var supportsDownloads: Bool  
+    public var allowsBackForwardNavigationGestures: Bool = true
+    public var allowsInlineMediaPlayback: Bool = true
+    public var supportsDownloads: Bool = true
+    public var customUserAgent: String? = nil
 
     public init(
         allowsBackForwardNavigationGestures: Bool = true,
         allowsInlineMediaPlayback: Bool = true,
-        mediaTypesRequiringUserActionForPlayback: WKAudiovisualMediaTypes = [],
-        isScrollEnabled: Bool = true,
-        isOpaque: Bool = true,
-        backgroundColor: Color = .clear,
-        customUserAgent: String? = nil,
-        supportsDownloads: Bool = true
+        supportsDownloads: Bool = true,
+        customUserAgent: String? = nil
     ) {
         self.allowsBackForwardNavigationGestures = allowsBackForwardNavigationGestures
         self.allowsInlineMediaPlayback = allowsInlineMediaPlayback
-        self.mediaTypesRequiringUserActionForPlayback = mediaTypesRequiringUserActionForPlayback
-        self.isScrollEnabled = isScrollEnabled
-        self.isOpaque = isOpaque
-        self.backgroundColor = backgroundColor
-        self.customUserAgent = customUserAgent
         self.supportsDownloads = supportsDownloads
+        self.customUserAgent = customUserAgent
     }
 }
 
-#if os(macOS)
+// MARK: - WebView (NSViewRepresentable)
+
 public struct WebView: NSViewRepresentable {
-    let config: WebViewConfig
-    @Binding var action: WebViewAction
-    @Binding var state: WebViewState
-    let restrictedPages: [String]?
-    let htmlInState: Bool
-    let schemeHandlers: [String: (URL) -> Void]
+    public let config: WebViewConfig
+    @Binding public var action: WebViewAction
+    @Binding public var state: WebViewState
 
     public init(
-        config: WebViewConfig = .default,
+        config: WebViewConfig = WebViewConfig(),
         action: Binding<WebViewAction>,
-        state: Binding<WebViewState>,
-        restrictedPages: [String]? = nil,
-        htmlInState: Bool = false,
-        schemeHandlers: [String: (URL) -> Void] = [:]
+        state: Binding<WebViewState>
     ) {
         self.config = config
         self._action = action
         self._state = state
-        self.restrictedPages = restrictedPages
-        self.htmlInState = htmlInState
-        self.schemeHandlers = schemeHandlers
     }
 
-    public func makeCoordinator() -> ContentView {
-        ContentView(webView: self)
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
     }
 
     public func makeNSView(context: Context) -> WKWebView {
-        let preferences = WKPreferences()
-        preferences.javaScriptEnabled = true
-
         let configuration = WKWebViewConfiguration()
-        configuration.preferences = preferences
+        configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
         configuration.websiteDataStore = .default()
         configuration.suppressesIncrementalRendering = false
 
-        let webView = WKWebView(frame: .zero, configuration: configuration)
+        // Allow uploads / form posts / inline playback
+        configuration.allowsAirPlayForMediaPlayback = true
+        configuration.mediaTypesRequiringUserActionForPlayback = []
 
+        let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
-
-        webView.uiDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = config.allowsBackForwardNavigationGestures
-
-        webView.setValue(!config.isOpaque, forKey: "drawsBackground")
-        webView.wantsLayer = true
-        webView.layer?.backgroundColor = NSColor(config.backgroundColor).cgColor
-
+        webView.setValue(false, forKey: "drawsBackground")
         if let agent = config.customUserAgent {
             webView.customUserAgent = agent
         }
-
         return webView
     }
 
-    public func updateNSView(_ uiView: WKWebView, context: Context) {
+    public func updateNSView(_ webView: WKWebView, context: Context) {
         if action == .idle { return }
-
         switch action {
         case .idle:
             break
         case let .load(request):
-            uiView.load(request)
+            webView.load(request)
         case let .loadHTML(html):
-            uiView.loadHTMLString(html, baseURL: nil)
+            webView.loadHTMLString(html, baseURL: nil)
         case .reload:
-            uiView.reload()
+            webView.reload()
         case .goBack:
-            uiView.goBack()
+            webView.goBack()
         case .goForward:
-            uiView.goForward()
-        case let .evaluateJS(command, callback):
-            uiView.evaluateJavaScript(command) { result, error in
-                if let error = error {
-                    callback(.failure(error))
-                } else {
-                    callback(.success(result))
+            webView.goForward()
+        case let .evaluateJS(script, callback):
+            webView.evaluateJavaScript(script) { result, error in
+                if let error = error { callback(.failure(error)) }
+                else { callback(.success(result)) }
+            }
+        }
+        DispatchQueue.main.async { action = .idle }
+    }
+
+    // MARK: Coordinator
+
+    public final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate {
+        private let parent: WebView
+
+        init(parent: WebView) {
+            self.parent = parent
+        }
+
+        // MARK: Loading lifecycle
+
+        public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            updateState(webView: webView, loading: true, error: nil)
+        }
+
+        public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            updateState(webView: webView, loading: false, error: nil)
+        }
+
+        public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            updateState(webView: webView, loading: false, error: error.localizedDescription)
+        }
+
+        public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            updateState(webView: webView, loading: false, error: error.localizedDescription)
+        }
+
+        // MARK: Window / target=_blank
+
+        public func webView(
+            _ webView: WKWebView,
+            createWebViewWith configuration: WKWebViewConfiguration,
+            for navigationAction: WKNavigationAction,
+            windowFeatures: WKWindowFeatures
+        ) -> WKWebView? {
+            if navigationAction.targetFrame == nil {
+                webView.load(navigationAction.request)
+            }
+            return nil
+        }
+
+        // MARK: File upload (paperclip) — Apple Review 2.1 fix
+
+        public func webView(
+            _ webView: WKWebView,
+            runOpenPanelWith parameters: WKOpenPanelParameters,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping ([URL]?) -> Void
+        ) {
+            // Pin the popover open while the panel is up. Otherwise the popover's
+            // .transient behavior dismisses the moment the panel takes key window.
+            let popover = (NSApp.delegate as? AppDelegate)?.popover
+            let previousBehavior = popover?.behavior
+            popover?.behavior = .applicationDefined
+
+            DispatchQueue.main.async {
+                let panel = NSOpenPanel()
+                panel.canChooseFiles = true
+                panel.canChooseDirectories = false
+                panel.allowsMultipleSelection = parameters.allowsMultipleSelection
+                panel.level = .modalPanel
+
+                NSApp.activate(ignoringOtherApps: true)
+                panel.begin { response in
+                    let urls: [URL]? = (response == .OK) ? panel.urls : nil
+                    completionHandler(urls)
+                    if let popover = popover, let previous = previousBehavior {
+                        popover.behavior = previous
+                    }
                 }
             }
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            action = .idle
+        // MARK: JS alerts / confirms / prompts
+
+        public func webView(
+            _ webView: WKWebView,
+            runJavaScriptAlertPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping () -> Void
+        ) {
+            let alert = NSAlert()
+            alert.messageText = message
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+            completionHandler()
+        }
+
+        public func webView(
+            _ webView: WKWebView,
+            runJavaScriptConfirmPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping (Bool) -> Void
+        ) {
+            let alert = NSAlert()
+            alert.messageText = message
+            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "Cancel")
+            let response = alert.runModal()
+            completionHandler(response == .alertFirstButtonReturn)
+        }
+
+        // MARK: Downloads
+
+        public func webView(_ webView: WKWebView,
+                            navigationResponse: WKNavigationResponse,
+                            didBecome download: WKDownload) {
+            download.delegate = self
+        }
+
+        public func webView(_ webView: WKWebView,
+                            navigationAction: WKNavigationAction,
+                            didBecome download: WKDownload) {
+            download.delegate = self
+        }
+
+        public func download(_ download: WKDownload,
+                             decideDestinationUsing response: URLResponse,
+                             suggestedFilename: String,
+                             completionHandler: @escaping (URL?) -> Void) {
+            DispatchQueue.main.async {
+                let panel = NSSavePanel()
+                panel.nameFieldStringValue = suggestedFilename
+                panel.canCreateDirectories = true
+                panel.level = .modalPanel
+                NSApp.activate(ignoringOtherApps: true)
+                panel.begin { result in
+                    if result == .OK { completionHandler(panel.url) }
+                    else {
+                        download.cancel()
+                        completionHandler(nil)
+                    }
+                }
+            }
+        }
+
+        public func downloadDidFinish(_ download: WKDownload) {}
+        public func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {}
+
+        // MARK: State update
+
+        private func updateState(webView: WKWebView, loading: Bool, error: String?) {
+            var new = parent.state
+            new.isLoading = loading
+            new.canGoBack = webView.canGoBack
+            new.canGoForward = webView.canGoForward
+            new.pageURL = webView.url?.absoluteString
+            new.pageTitle = webView.title
+            new.error = error
+            parent.state = new
+            parent.action = .idle
         }
     }
 }
-#endif
-

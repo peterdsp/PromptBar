@@ -2,122 +2,88 @@
 //  AppDelegate.swift
 //  PromptBar
 //
-//  Created by Petros Dhespollari on 16/3/24.
-//
 
-import Cocoa
-import FirebaseCore
-import FirebaseRemoteConfig
+import AppKit
+import Combine
 import HotKey
 import SwiftUI
 import SystemConfiguration
-import WebKit
 
-class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
-    static let defaultAIChatURL = "https://chat.mistral.ai/chat/"
-    static let defaultAIChatOptions: [String: String] = [
-        "AI Studio": "https://aistudio.google.com/",
-        "ChatGPT": "https://chatgpt.com/",
-        "Copilot": "https://copilot.microsoft.com/",
-        "DeepSeek": "https://chat.deepseek.com/",
-        "Gemini": "https://gemini.google.com/app",
-        "Grok": "https://grok.com/",
-        "Meta AI": "https://www.meta.ai/",
-        "Mistral": "https://chat.mistral.ai/chat/",
-        "NotebookLM": "https://notebooklm.google.com/",
-        "Perplexity": "https://www.perplexity.ai/",
-        "Sophea.AI": "https://sophea.ai/",
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    // MARK: Window-size presets
+
+    static let windowSizes: [(name: String, size: CGSize)] = [
+        ("Small", CGSize(width: 420, height: 520)),
+        ("Medium", CGSize(width: 520, height: 640)),
+        ("Large", CGSize(width: 720, height: 820))
     ]
+
+    private let windowSizeKey = "promptbar.windowSize.v2"
+    private let alwaysOnTopKey = "promptbar.alwaysOnTop.v2"
+
+    // MARK: Menubar state
 
     private var statusItem: NSStatusItem!
-    private var alwaysOnTop: Bool = false
-    var removeTexts: [String] = []
-    private var loadingView: NSView?
-    var errorOverlay: NSView?
-    var isCheckingInternet = false
-    var pendingDownload: (filename: String, handler: (URL?) -> Void, download: WKDownload)? = nil
+    private var menu: NSMenu!
+    private(set) var popover: NSPopover!
 
-    var selectedAIChatTitle: String = "PromptBar"
-    private var aiChatOptions: [String: String] = AppDelegate.defaultAIChatOptions
+    private var settingsWindow: NSWindow?
+    private var aboutWindow: NSWindow?
 
-    internal var windowSizeOptions: [String: CGSize] = [
-        "Small": CGSize(width: 400, height: 300),
-        "Medium": CGSize(width: 500, height: 600),
-        "Large": CGSize(width: 700, height: 800),
-    ]
+    private(set) var pendingDownload: (filename: String, handler: (URL?) -> Void, download: AnyObject)? = nil
 
-    var chatOptions: [String: String] {
-        return aiChatOptions
+    // MARK: Hotkeys
+
+    private let globalToggleHotKey = HotKey(key: .c, modifiers: [.shift, .command])
+    private var localEditHotKeys: [HotKey] = []
+
+    private var alwaysOnTop: Bool {
+        get { UserDefaults.standard.bool(forKey: alwaysOnTopKey) }
+        set { UserDefaults.standard.set(newValue, forKey: alwaysOnTopKey) }
     }
 
-    public var popover: NSPopover!
-    private var menu: NSMenu!
-    private let windowSizeKey = "selectedWindowSize"
+    private var store: ChatStore { .shared }
+    private var cancellables: Set<AnyCancellable> = []
 
-    let hotKey = HotKey(key: .c, modifiers: [.shift, .command])  // Global hotkey
+    // MARK: Lifecycle
 
-    var hotCKey: HotKey?
-    var hotVKey: HotKey?
-    var hotZKey: HotKey?
-    var hotXKey: HotKey?
-    var hotAKey: HotKey?
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        FirebaseApp.configure()
-        fetchSubscriptionConfig()
-        statusItem = NSStatusBar.system.statusItem(
-            withLength: NSStatusItem.variableLength)
+    func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
 
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            let icon = NSImage(named: "MenuBarIcon")!.resized(
-                to: CGSize(width: 14, height: 14))
-            icon.isTemplate = true
+            let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
+                               accessibilityDescription: "PromptBar")
+            icon?.isTemplate = true
             button.image = icon
-            button.action = #selector(handleMenuIconAction(sender:))
+            button.action = #selector(handleMenubarClick(_:))
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-        }
-
-        // Check if there is a saved AI chat title, set default to "Mistral" if not
-        if let savedAIChatTitle = UserDefaults.standard.string(
-            forKey: "selectedAIChatTitle")
-        {
-            selectedAIChatTitle = savedAIChatTitle
-        } else {
-            selectedAIChatTitle = "Mistral"
-            UserDefaults.standard.set(
-                selectedAIChatTitle, forKey: "selectedAIChatTitle")
-        }
-        if aiChatOptions[selectedAIChatTitle] == nil {
-            selectedAIChatTitle = "Mistral"
-            UserDefaults.standard.set(
-                selectedAIChatTitle, forKey: "selectedAIChatTitle")
         }
 
         constructPopover()
         constructMenu()
 
-        // ---> NEW: Apply previously saved window size or default to Medium
-        if let savedSizeName = UserDefaults.standard.string(
-            forKey: windowSizeKey),
-            let savedSize = windowSizeOptions[savedSizeName]
-        {
-            popover.contentSize = savedSize
-        } else {
-            let defaultSizeName = "Medium"
-            popover.contentSize = windowSizeOptions[defaultSizeName]!
-            UserDefaults.standard.set(defaultSizeName, forKey: windowSizeKey)
+        globalToggleHotKey.keyUpHandler = { [weak self] in
+            Task { @MainActor in self?.togglePopover() }
         }
 
-        hotKey.keyUpHandler = {  // Global hotkey handler
-            self.togglePopover()
-        }
+        // Reload popup content whenever the user changes/adds/removes services or endpoints.
+        let serviceChange = store.$services.map { _ in () }.eraseToAnyPublisher()
+        let endpointChange = store.$endpoints.map { _ in () }.eraseToAnyPublisher()
+        let targetChange = store.$selectedTarget.map { _ in () }.eraseToAnyPublisher()
 
-        NSApp.setActivationPolicy(.accessory)
+        Publishers.MergeMany(serviceChange, endpointChange, targetChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.refreshPopupContent()
+            }
+            .store(in: &cancellables)
     }
 
-    @objc func handleMenuIconAction(sender: NSStatusBarButton) {
-        let event = NSApp.currentEvent!
+    // MARK: Menubar click
+
+    @objc private func handleMenubarClick(_ sender: NSStatusBarButton) {
+        guard let event = NSApp.currentEvent else { return }
         if event.type == .rightMouseUp {
             showMenu()
         } else {
@@ -126,676 +92,276 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
-    func showLoadingView() {
-        guard let window = popover.contentViewController?.view.window else {
-            return
-        }
+    // MARK: Popover
 
-        // 🔥 If loading is already shown, don't add another one
-        if loadingView != nil {
-            return
-        }
+    private func constructPopover() {
+        popover = NSPopover()
+        popover.delegate = self
+        popover.behavior = .transient
+        popover.animates = true
 
-        hideLoadingView()  // Remove any existing loading overlay first
-
-        // Check internet connectivity
-        if !isInternetAvailable() {
-            showNoInternetMessage(in: window)
-            return
-        }
-
-        // Create loading overlay
-        let loadingOverlay = NSView(frame: window.contentView!.bounds)
-        loadingOverlay.wantsLayer = true
-        loadingOverlay.layer?.backgroundColor =
-            NSColor.black.withAlphaComponent(0.7).cgColor
-        loadingOverlay.alphaValue = 0  // Start invisible for fade-in
-        loadingOverlay.identifier = NSUserInterfaceItemIdentifier(
-            "loadingOverlay")
-
-        // Create spinning progress indicator
-        let spinner = NSProgressIndicator()
-        spinner.style = .spinning
-        spinner.controlSize = .large
-        spinner.isIndeterminate = true
-        spinner.startAnimation(nil)
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-
-        // Create loading label
-        let label = NSTextField(
-            labelWithString: "Loading \(selectedAIChatTitle)...")
-        label.font = NSFont.boldSystemFont(ofSize: 18)
-        label.textColor = NSColor.white
-        label.alignment = .center
-        label.isBezeled = false
-        label.isEditable = false
-        label.drawsBackground = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        // Add views to overlay
-        loadingOverlay.addSubview(spinner)
-        loadingOverlay.addSubview(label)
-
-        NSLayoutConstraint.activate([
-            spinner.centerXAnchor.constraint(
-                equalTo: loadingOverlay.centerXAnchor),
-            spinner.centerYAnchor.constraint(
-                equalTo: loadingOverlay.centerYAnchor, constant: -30),
-
-            label.topAnchor.constraint(
-                equalTo: spinner.bottomAnchor, constant: 15),
-            label.centerXAnchor.constraint(
-                equalTo: loadingOverlay.centerXAnchor),
-        ])
-
-        // Add overlay to window
-        window.contentView?.addSubview(loadingOverlay)
-        self.loadingView = loadingOverlay
-
-        // Fade-in effect
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.3
-                loadingOverlay.animator().alphaValue = 1
-            }, completionHandler: nil)
-
-        // 🔥 Ensure it disappears after loading (adjust time as needed)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.hideLoadingView()
-        }
+        let size = persistedWindowSize()
+        popover.contentSize = size
+        popover.contentViewController = makePopoverHostingController(size: size)
     }
-    
-    func hideLoadingView() {
-        guard let loadingView = self.loadingView else { return }
 
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.5
-                loadingView.animator().alphaValue = 0
-            },
-            completionHandler: {
-                loadingView.removeFromSuperview()
-                self.loadingView = nil
-            }
-        )
+    private func makePopoverHostingController(size: CGSize) -> NSViewController {
+        let root = PopupRootView()
+            .environmentObject(store)
+            .frame(width: size.width, height: size.height)
+        let controller = NSHostingController(rootView: AnyView(root))
+        controller.view.frame = CGRect(origin: .zero, size: size)
+        return controller
     }
-    
-    func showDownloadSavePanel() {
-        guard let pending = pendingDownload else { return }
 
-        // Close popover if needed
-        popover?.performClose(nil)
+    func refreshPopupContent() {
+        let size = popover.contentSize
+        popover.contentViewController = makePopoverHostingController(size: size)
+    }
 
-        let panel = NSSavePanel()
-        panel.nameFieldStringValue = pending.filename
-        panel.canCreateDirectories = true
+    private func persistedWindowSize() -> CGSize {
+        let saved = UserDefaults.standard.string(forKey: windowSizeKey) ?? "Medium"
+        return Self.windowSizes.first(where: { $0.name == saved })?.size
+            ?? CGSize(width: 520, height: 640)
+    }
 
-        if let window = NSApp.windows.first(where: { $0.isVisible && $0.level == .normal }) {
-            panel.beginSheetModal(for: window) { result in
-                if result == .OK {
-                    pending.handler(panel.url)
-                } else {
-                    pending.download.cancel()
-                    pending.handler(nil)
-                }
-                self.pendingDownload = nil
-            }
+    func togglePopover() {
+        guard let button = statusItem.button else { return }
+        if popover.isShown {
+            popover.performClose(nil)
+            teardownLocalHotKeys()
         } else {
-            // fallback if no window available (shouldn’t happen in PromptBar)
-            let result = panel.runModal()
-            if result == .OK {
-                pending.handler(panel.url)
-            } else {
-                pending.download.cancel()
-                pending.handler(nil)
-            }
-            self.pendingDownload = nil
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            popover.contentViewController?.view.window?.makeKey()
+            applyAlwaysOnTopBehavior()
+            setupLocalEditHotKeys()
         }
     }
 
-    // ✅ Show an error message and **keep checking** for internet availability
-    func showNoInternetMessage(in window: NSWindow) {
-        if errorOverlay != nil { return }  // Prevent multiple overlays
-
-        errorOverlay = NSView(frame: window.contentView!.bounds)
-        errorOverlay?.wantsLayer = true
-        errorOverlay?.layer?.backgroundColor =
-            NSColor.black.withAlphaComponent(0.7).cgColor
-        errorOverlay?.identifier = NSUserInterfaceItemIdentifier("errorOverlay")
-
-        let errorLabel = NSTextField(
-            labelWithString:
-                "No internet connection.\nPlease check your network and try again."
-        )
-        errorLabel.font = NSFont.boldSystemFont(ofSize: 16)
-        errorLabel.textColor = NSColor.white
-        errorLabel.alignment = .center
-        errorLabel.isBezeled = false
-        errorLabel.isEditable = false
-        errorLabel.drawsBackground = false
-        errorLabel.translatesAutoresizingMaskIntoConstraints = false
-        errorLabel.lineBreakMode = .byWordWrapping
-        errorLabel.maximumNumberOfLines = 2
-
-        errorOverlay?.addSubview(errorLabel)
-
-        NSLayoutConstraint.activate([
-            errorLabel.centerXAnchor.constraint(
-                equalTo: errorOverlay!.centerXAnchor),
-            errorLabel.centerYAnchor.constraint(
-                equalTo: errorOverlay!.centerYAnchor),
-        ])
-
-        window.contentView?.addSubview(errorOverlay!)
-
-        if !isCheckingInternet {
-            isCheckingInternet = true
-            checkInternetConnectionRepeatedly()
+    private func applyAlwaysOnTopBehavior() {
+        guard let window = popover.contentViewController?.view.window else { return }
+        if alwaysOnTop {
+            window.level = .statusBar
+            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+            popover.behavior = .applicationDefined
+        } else {
+            window.level = .floating
+            popover.behavior = .transient
         }
     }
 
-    // ✅ Keep checking if internet is back and remove the message when available
-    func checkInternetConnectionRepeatedly() {
-        DispatchQueue.global(qos: .background).async {
-            while !self.isInternetAvailable() {
-                sleep(3)  // Wait for 3 seconds before rechecking
-            }
+    // MARK: Right-click menu
 
-            DispatchQueue.main.async {
-                self.hideNoInternetMessage()
+    func constructMenu() {
+        let m = NSMenu()
+        m.delegate = self
 
-                // 🔥 Only show the loading screen if it's not already being shown
-                if self.loadingView == nil {
-                    self.showLoadingView()
-                }
+        m.addItem(makeItem("Open", action: #selector(openPopoverAction), key: ""))
+        m.addItem(.separator())
 
-                // 🔥 Reload the AI Chat properly
-                self.reloadAIChat()
-                self.isCheckingInternet = false
-            }
+        m.addItem(makeItem("Settings…", action: #selector(openSettings), key: ","))
+        m.addItem(makeItem("About PromptBar", action: #selector(openAbout), key: ""))
+        m.addItem(.separator())
+
+        let sizeItem = NSMenuItem(title: "Window Size", action: nil, keyEquivalent: "")
+        let sizeMenu = NSMenu()
+        for entry in Self.windowSizes {
+            let item = NSMenuItem(title: entry.name,
+                                  action: #selector(changeWindowSize(_:)),
+                                  keyEquivalent: "")
+            item.target = self
+            sizeMenu.addItem(item)
         }
+        sizeItem.submenu = sizeMenu
+        m.addItem(sizeItem)
+
+        let aotItem = NSMenuItem(title: "Always on Top",
+                                 action: #selector(toggleAlwaysOnTop(_:)),
+                                 keyEquivalent: "")
+        aotItem.target = self
+        aotItem.state = alwaysOnTop ? .on : .off
+        m.addItem(aotItem)
+
+        m.addItem(.separator())
+        m.addItem(makeItem("Reload", action: #selector(reloadCurrentWebView), key: "r"))
+        m.addItem(makeItem("Clean Cookies & Cache", action: #selector(cleanCookiesAction), key: ""))
+
+        m.addItem(.separator())
+        let quitItem = NSMenuItem(title: "Quit PromptBar",
+                                  action: #selector(NSApplication.terminate(_:)),
+                                  keyEquivalent: "q")
+        m.addItem(quitItem)
+
+        menu = m
+        updateWindowSizeMenuState()
     }
 
-    func reloadAIChat() {
-        let initialAddress =
-            aiChatOptions[selectedAIChatTitle]
-            ?? Self.defaultAIChatURL
-
-        let newHostingController = NSHostingController(
-            rootView: MainUI(initialAddress: initialAddress))
-        let newPopupContentViewController = PromptBarPopup()
-        newPopupContentViewController.hostingController = newHostingController
-
-        popover.contentViewController = newPopupContentViewController
-        popover.contentSize = newHostingController.view.fittingSize
-
-        // 🔥 Automatically remove loading screen after a delay (adjust as needed)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.hideLoadingView()
-        }
-    }
-
-    // ✅ Remove error message when internet is back
-    func hideNoInternetMessage() {
-        guard let errorOverlay = self.errorOverlay else { return }
-
-        NSAnimationContext.runAnimationGroup(
-            { context in
-                context.duration = 0.5
-                errorOverlay.animator().alphaValue = 0
-            },
-            completionHandler: {
-                errorOverlay.removeFromSuperview()
-                self.errorOverlay = nil
-            }
-        )
-    }
-
-    // ✅ Check if the internet is available
-    func isInternetAvailable() -> Bool {
-        var zeroAddress = sockaddr_in()
-        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
-        zeroAddress.sin_family = sa_family_t(AF_INET)
-
-        guard
-            let defaultRouteReachability = withUnsafePointer(
-                to: &zeroAddress,
-                {
-                    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                        SCNetworkReachabilityCreateWithAddress(nil, $0)
-                    }
-                })
-        else {
-            return false
-        }
-
-        var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-            return false
-        }
-
-        let isReachable = flags.contains(.reachable)
-        let needsConnection = flags.contains(.connectionRequired)
-
-        return (isReachable && !needsConnection)
+    private func makeItem(_ title: String, action: Selector, key: String) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
+        item.target = self
+        return item
     }
 
     func menuDidClose(_ menu: NSMenu) {
         removeMenu()
     }
 
-    func fetchSubscriptionConfig() {
-        let remoteConfig = RemoteConfig.remoteConfig()
-        let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0  // Adjust for production
-        remoteConfig.configSettings = settings
-
-        remoteConfig.fetchAndActivate { status, error in
-            if let error = error {
-                print(
-                    "PromptBar: Remote Config fetch error: \(error.localizedDescription)"
-                )
-                DispatchQueue.main.async {
-                    self.constructMenu()
-                    self.statusItem.menu = self.menu
-                }
-                return
-            }
-
-            if status == .successFetchedFromRemote
-                || status == .successUsingPreFetchedData
-            {
-                // Fetch subscriptions
-                let removeTextsJSON =
-                    remoteConfig.configValue(forKey: "subscriptions")
-                    .stringValue ?? ""
-                if !removeTextsJSON.isEmpty {
-                    do {
-                        let removeTextsData = Data(removeTextsJSON.utf8)
-                        self.removeTexts = try JSONDecoder().decode(
-                            [String].self, from: removeTextsData)
-                        print(
-                            "✅ Successfully fetched subscriptions: \(self.removeTexts)"
-                        )
-                    } catch {
-                        print(
-                            "⚠️ Failed to decode subscriptions JSON: \(error.localizedDescription)"
-                        )
-                    }
-                }
-
-                // Fetch ai_chats
-                let aiChatsJSON =
-                    remoteConfig.configValue(forKey: "ai_chats").stringValue
-                    ?? ""
-                if !aiChatsJSON.isEmpty {
-                    do {
-                        let aiChatsData = Data(aiChatsJSON.utf8)
-                        self.aiChatOptions = try JSONDecoder().decode(
-                            [String: String].self, from: aiChatsData)
-                        print(
-                            "✅ Successfully fetched AI chats: \(self.aiChatOptions)"
-                        )
-
-                        // 🔥 Rebuild menu dynamically when AI Chat options are fetched
-                        DispatchQueue.main.async {
-                            if self.aiChatOptions[self.selectedAIChatTitle] == nil,
-                                let firstTitle = self.aiChatOptions.keys.sorted().first
-                            {
-                                self.selectedAIChatTitle = firstTitle
-                                UserDefaults.standard.set(
-                                    firstTitle, forKey: "selectedAIChatTitle")
-                            }
-                            self.constructMenu()
-                            self.statusItem.menu = self.menu
-                            if self.popover.isShown {
-                                self.reloadAIChat()
-                            }
-                        }
-                    } catch {
-                        print(
-                            "⚠️ Failed to decode ai_chats JSON: \(error.localizedDescription)"
-                        )
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        self.constructMenu()
-                        self.statusItem.menu = self.menu
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.constructMenu()
-                    self.statusItem.menu = self.menu
-                }
-            }
-        }
-    }
-
-    func updateWindowLevel() {
-        if let window = popover.contentViewController?.view.window {
-            window.level = alwaysOnTop ? .statusBar : .normal
-            if alwaysOnTop {
-                window.collectionBehavior = [
-                    .canJoinAllSpaces, .fullScreenAuxiliary,
-                ]
-            } else {
-                window.level = .floating
-            }
-        }
-    }
-
-    func applicationDidBecomeActive(_ notification: Notification) {
-        updateWindowLevel()
-    }
-
-    func applicationDidResignActive(_ notification: Notification) {
-        if alwaysOnTop, let window = popover.contentViewController?.view.window
-        {
-            window.level = .floating
-            window.orderFrontRegardless()
-        }
-    }
-
-    @objc func toggleAlwaysOnTop(sender: NSMenuItem) {
-        alwaysOnTop.toggle()
-        sender.state = alwaysOnTop ? .on : .off
-        updateWindowLevel()
-        updatePopoverBehavior()
-    }
-
-    @objc func didTapOne() {
-        let aboutView = AboutView()
-        let aboutWindow = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false
-        )
-
-        // Set window level to floating to keep it above other windows
-        aboutWindow.level = .floating
-        aboutWindow.center()
-        aboutWindow.contentView = NSHostingView(rootView: aboutView)
-
-        let aboutWindowController = AboutWindowController(window: aboutWindow)
-        aboutWindowController.showWindow(nil)
-
-        // Bring to front and maintain position
-        aboutWindow.orderFrontRegardless()
-    }
-
-    @objc func didTapTwo() {
-        WebViewHelper.clean()
-    }
-
-    @objc func changeAIChat(sender: NSMenuItem) {
-        if let urlString = sender.representedObject as? String {
-            // 🔥 Check for internet BEFORE changing AI chat
-            if !isInternetAvailable() {
-                if let window = popover.contentViewController?.view.window {
-                    showNoInternetMessage(in: window)
-                }
-                return  // Prevent white screen
-            }
-
-            selectedAIChatTitle = sender.title.trimmingCharacters(
-                in: .whitespacesAndNewlines)
-            let initialAddress =
-                aiChatOptions[selectedAIChatTitle]
-                ?? Self.defaultAIChatURL
-
-            // 🔥 Reload UI with new chat
-            let newHostingController = NSHostingController(
-                rootView: MainUI(initialAddress: initialAddress))
-            let newPopupContentViewController = PromptBarPopup()
-            newPopupContentViewController.hostingController =
-                newHostingController
-
-            popover.contentViewController = newPopupContentViewController
-            popover.contentSize = newHostingController.view.fittingSize
-
-            updateMenuItemsState()
-            UserDefaults.standard.set(
-                selectedAIChatTitle, forKey: "selectedAIChatTitle")
-        }
-    }
-
-    @objc func changeWindowSize(sender: NSMenuItem) {
-        if let newSize = windowSizeOptions[sender.title] {
-            popover.contentSize = newSize
-
-            // ---> NEW: Save the size name in UserDefaults
-            UserDefaults.standard.set(sender.title, forKey: windowSizeKey)
-
-            // Update the checkmark states
-            updateWindowSizeMenuItemsState()
-        }
-    }
-
-    func updateMenuItemsState() {
-        if let changeChatAIMenuItem = menu.item(withTitle: "Change AI Chat"),
-            let changeChatAISubmenu = changeChatAIMenuItem.submenu
-        {
-            for item in changeChatAISubmenu.items {
-                item.state = (item.title == selectedAIChatTitle) ? .on : .off
-            }
-        }
-    }
-
-    func updateWindowSizeMenuItemsState() {
-        if let windowSizeMenuItem = menu.item(withTitle: "Change Window Size"),
-            let windowSizeSubmenu = windowSizeMenuItem.submenu
-        {
-            for item in windowSizeSubmenu.items {
-                item.state =
-                    (popover.contentSize == windowSizeOptions[item.title])
-                    ? .on
-                    : .off
-            }
-        }
-    }
-
-    func constructMenu() {
-        menu = NSMenu()
-
-        // About
-        let aboutMenuItem = NSMenuItem(
-            title: "About",
-            action: #selector(didTapOne),
-            keyEquivalent: "1"
-        )
-        menu.addItem(aboutMenuItem)
-
-        // Clean Cookies
-        let cleanCookiesMenuItem = NSMenuItem(
-            title: "Clean Cookies",
-            action: #selector(didTapTwo),
-            keyEquivalent: "2"
-        )
-        menu.addItem(cleanCookiesMenuItem)
-
-        // Separator
-        menu.addItem(NSMenuItem.separator())
-
-        // Change AI Chat Submenu
-        let changeChatAIMenuItem = NSMenuItem(
-            title: "Change AI Chat", action: nil, keyEquivalent: "")
-        let changeChatAISubmenu = NSMenu()
-
-        if aiChatOptions.isEmpty {
-            let placeholderItem = NSMenuItem(
-                title: "Loading...", action: nil, keyEquivalent: "")
-            placeholderItem.isEnabled = false
-            changeChatAISubmenu.addItem(placeholderItem)
-        } else {
-            for title in aiChatOptions.keys.sorted() {
-                guard let url = aiChatOptions[title] else { continue }
-                let menuItem = NSMenuItem(
-                    title: title, action: #selector(changeAIChat(sender:)),
-                    keyEquivalent: "")
-                menuItem.representedObject = url
-                changeChatAISubmenu.addItem(menuItem)
-            }
-        }
-
-        changeChatAIMenuItem.submenu = changeChatAISubmenu
-        menu.addItem(changeChatAIMenuItem)
-
-        // Change Window Size Submenu
-        let changeWindowSizeMenuItem = NSMenuItem(
-            title: "Change Window Size", action: nil, keyEquivalent: "")
-        let changeWindowSizeSubmenu = NSMenu()
-
-        let sortedWindowSizeKeys = ["Small", "Medium", "Large"]
-        for size in sortedWindowSizeKeys {
-            if windowSizeOptions[size] != nil {
-                let menuItem = NSMenuItem(
-                    title: size,
-                    action: #selector(changeWindowSize(sender:)),
-                    keyEquivalent: ""
-                )
-                changeWindowSizeSubmenu.addItem(menuItem)
-            }
-        }
-
-        changeWindowSizeMenuItem.submenu = changeWindowSizeSubmenu
-        menu.addItem(changeWindowSizeMenuItem)
-
-        // Always on Top
-        let alwaysOnTopMenuItem = NSMenuItem(
-            title: "Always on Top",
-            action: #selector(toggleAlwaysOnTop),
-            keyEquivalent: ""
-        )
-        alwaysOnTopMenuItem.state = alwaysOnTop ? .on : .off
-        menu.addItem(alwaysOnTopMenuItem)
-
-        // Separator
-        menu.addItem(NSMenuItem.separator())
-
-        // Quit
-        menu.addItem(
-            NSMenuItem(
-                title: "Quit",
-                action: #selector(NSApplication.terminate(_:)),
-                keyEquivalent: "q"
-            )
-        )
-
-        menu.delegate = self
-
-        // 🔥 Update Menu State (only call this once aiChatOptions is fetched)
-        updateMenuItemsState()
-    }
-    func constructPopover() {
-        popover = NSPopover()
-        popover.contentViewController = PromptBarPopup()
-        popover.delegate = self
-        popover.contentSize =
-            windowSizeOptions["Medium"] ?? CGSize(width: 500, height: 600)
-
-        // Adjust behavior based on `alwaysOnTop`
-        updatePopoverBehavior()
-    }
-
-    func updatePopoverBehavior() {
-        popover.behavior = alwaysOnTop ? .applicationDefined : .transient
-    }
-
-    func showMenu() {
+    private func showMenu() {
         statusItem.menu = menu
-        statusItem.popUpMenu(menu)
+        statusItem.button?.performClick(nil)
     }
 
-    func removeMenu() {
+    private func removeMenu() {
         statusItem.menu = nil
     }
 
-    func togglePopover() {
-        if popover.isShown {
-            popover.performClose(nil)
-            deinitKeys()
-        } else {
-            if let button = statusItem.button {
-                NSApplication.shared.activate(ignoringOtherApps: true)
-                updateMenuItemsState()
-                updateWindowSizeMenuItemsState()
-
-                // 🚀 FIX: Reload AI chat **only if it hasn't loaded before**
-                if popover.contentViewController == nil
-                    || popover.contentViewController?.view.window == nil
-                {
-                    reloadAIChat()
-                }
-
-                popover.show(
-                    relativeTo: button.bounds, of: button, preferredEdge: .minY)
-                popover.contentViewController?.view.window?.makeKey()
-                constructKeys()
+    private func updateWindowSizeMenuState() {
+        guard let sizeMenu = menu?.item(withTitle: "Window Size")?.submenu else { return }
+        let current = popover.contentSize
+        for item in sizeMenu.items {
+            if let entry = Self.windowSizes.first(where: { $0.name == item.title }) {
+                item.state = (entry.size == current) ? .on : .off
             }
         }
     }
-    private func deinitKeys() {
-        hotCKey = nil
-        hotVKey = nil
-        hotXKey = nil
-        hotZKey = nil
-        hotAKey = nil
+
+    // MARK: Menu actions
+
+    @objc private func openPopoverAction() {
+        if !popover.isShown { togglePopover() }
     }
 
-    private func constructKeys() {
-        hotCKey = HotKey(key: .c, modifiers: [.command])  // Global hotkey
-        hotVKey = HotKey(key: .v, modifiers: [.command])  // Global hotkey
-        hotZKey = HotKey(key: .z, modifiers: [.command])  // Global hotkey
-        hotXKey = HotKey(key: .x, modifiers: [.command])  // Global hotkey
-        hotAKey = HotKey(key: .a, modifiers: [.command])  // Global hotkey
-
-        hotCKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.copy(_:)), to: nil, from: self)
+    @objc private func openSettings() {
+        if let window = settingsWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
         }
 
-        hotVKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.paste(_:)), to: nil, from: self)
-        }
-
-        hotXKey?.keyDownHandler = {
-            NSApp.sendAction(#selector(NSText.cut(_:)), to: nil, from: self)
-        }
-
-        hotZKey?.keyDownHandler = {
-            NSApp.sendAction(Selector("undo:"), to: nil, from: self)
-        }
-
-        hotAKey?.keyDownHandler = {
-            NSApp.sendAction(
-                #selector(NSStandardKeyBindingResponding.selectAll(_:)),
-                to: nil, from: self)
-        }
+        let view = SettingsView()
+            .environmentObject(store)
+        let controller = NSHostingController(rootView: view)
+        let window = NSWindow(contentViewController: controller)
+        window.title = "PromptBar Settings"
+        window.styleMask = [.titled, .closable, .resizable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isMovableByWindowBackground = true
+        window.setContentSize(NSSize(width: 640, height: 560))
+        window.center()
+        window.delegate = self
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        settingsWindow = window
     }
 
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool
-    {
-        return true
+    @objc private func openAbout() {
+        if let window = aboutWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        let controller = NSHostingController(rootView: AboutView())
+        let window = NSWindow(contentViewController: controller)
+        window.title = "About PromptBar"
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isMovableByWindowBackground = true
+        window.setContentSize(NSSize(width: 420, height: 440))
+        window.center()
+        window.delegate = self
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        aboutWindow = window
     }
+
+    @objc private func changeWindowSize(_ sender: NSMenuItem) {
+        guard let entry = Self.windowSizes.first(where: { $0.name == sender.title }) else { return }
+        popover.contentSize = entry.size
+        UserDefaults.standard.set(entry.name, forKey: windowSizeKey)
+        updateWindowSizeMenuState()
+        refreshPopupContent()
+    }
+
+    @objc private func toggleAlwaysOnTop(_ sender: NSMenuItem) {
+        let newValue = !alwaysOnTop
+        alwaysOnTop = newValue
+        sender.state = newValue ? .on : .off
+        applyAlwaysOnTopBehavior()
+    }
+
+    @objc private func reloadCurrentWebView() {
+        WebViewHelper.reloadState.shouldReload = true
+    }
+
+    @objc private func cleanCookiesAction() {
+        WebViewHelper.clean()
+    }
+
+    // MARK: Network reachability (used by popup)
+
+    func isInternetAvailable() -> Bool {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        guard let reachability = withUnsafePointer(to: &zeroAddress, {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                SCNetworkReachabilityCreateWithAddress(nil, $0)
+            }
+        }) else { return false }
+        var flags = SCNetworkReachabilityFlags()
+        guard SCNetworkReachabilityGetFlags(reachability, &flags) else { return false }
+        return flags.contains(.reachable) && !flags.contains(.connectionRequired)
+    }
+
+    // MARK: Local edit hot keys (kept so Cmd-C/V/X/Z/A reach WebView while popover is up)
+
+    private func setupLocalEditHotKeys() {
+        teardownLocalHotKeys()
+
+        let cmd: NSEvent.ModifierFlags = [.command]
+        let pairs: [(Key, Selector)] = [
+            (.c, #selector(NSText.copy(_:))),
+            (.v, #selector(NSText.paste(_:))),
+            (.x, #selector(NSText.cut(_:))),
+            (.a, #selector(NSStandardKeyBindingResponding.selectAll(_:)))
+        ]
+
+        for (key, selector) in pairs {
+            let hk = HotKey(key: key, modifiers: cmd)
+            hk.keyDownHandler = {
+                NSApp.sendAction(selector, to: nil, from: nil)
+            }
+            localEditHotKeys.append(hk)
+        }
+
+        let undoKey = HotKey(key: .z, modifiers: cmd)
+        undoKey.keyDownHandler = {
+            NSApp.sendAction(Selector(("undo:")), to: nil, from: nil)
+        }
+        localEditHotKeys.append(undoKey)
+    }
+
+    private func teardownLocalHotKeys() {
+        localEditHotKeys.removeAll()
+    }
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool { true }
 }
 
 extension AppDelegate: NSPopoverDelegate {
     func popoverWillClose(_ notification: Notification) {
-        deinitKeys()
+        teardownLocalHotKeys()
     }
 }
 
-class AboutWindowController: NSWindowController {
-    override func windowDidLoad() {
-        super.windowDidLoad()
-        window?.delegate = self
-    }
-}
-
-extension AboutWindowController: NSWindowDelegate {
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        sender.orderOut(nil)  // Hide the window instead of closing
-        return false  // Prevent the window from closing
+extension AppDelegate: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow else { return }
+        if window === settingsWindow { settingsWindow = nil }
+        if window === aboutWindow { aboutWindow = nil }
     }
 }

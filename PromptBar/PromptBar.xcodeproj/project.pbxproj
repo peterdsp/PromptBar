@@ -15,14 +15,26 @@
 		2C0BA4EC2BA60E980050C66B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */; };
 		2C0BA4EE2BA60F690050C66B /* PromptBarPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0BA4ED2BA60F690050C66B /* PromptBarPopup.swift */; };
 		2C1E816E2BA6751F0047A31C /* ObservableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C1E816D2BA6751F0047A31C /* ObservableObject.swift */; };
-		2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */; };
 		2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */; };
 		2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */; };
 		2C98EFB52D312E0500F6B4F5 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C98EFB42D312E0200F6B4F5 /* AboutView.swift */; };
 		7B079DCB74527762365792BE /* VersionComparatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */; };
-		AA00000200000000000000AB /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002100000000000000AB /* FirebaseRemoteConfig */; };
 		AA00000300000000000000AB /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = AA00002200000000000000AB /* HotKey */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
+		AA10000100000000000000AB /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000200000000000000AB /* ChatService.swift */; };
+		AA10000300000000000000AB /* ChatStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000400000000000000AB /* ChatStore.swift */; };
+		AA10000500000000000000AB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000600000000000000AB /* SettingsView.swift */; };
+		AA10000700000000000000AB /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000800000000000000AB /* QuickAddView.swift */; };
+		AA10000900000000000000AB /* GlassStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000A00000000000000AB /* GlassStyle.swift */; };
+		AA10000B00000000000000AB /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10000C00000000000000AB /* UpdateChecker.swift */; };
+		AA10010100000000000000AB /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010200000000000000AB /* APIEndpoint.swift */; };
+		AA10010300000000000000AB /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010400000000000000AB /* Conversation.swift */; };
+		AA10010500000000000000AB /* PromptItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010600000000000000AB /* PromptItem.swift */; };
+		AA10010700000000000000AB /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010800000000000000AB /* KeychainHelper.swift */; };
+		AA10010900000000000000AB /* ChatAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010A00000000000000AB /* ChatAPIClient.swift */; };
+		AA10010B00000000000000AB /* NativeChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010C00000000000000AB /* NativeChatView.swift */; };
+		AA10010D00000000000000AB /* APIEndpointForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10010E00000000000000AB /* APIEndpointForm.swift */; };
+		AA10010F00000000000000AB /* PromptLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10011000000000000000AB /* PromptLibraryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,8 +45,21 @@
 		2C0BA4EB2BA60E980050C66B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2C0BA4ED2BA60F690050C66B /* PromptBarPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptBarPopup.swift; sourceTree = "<group>"; };
 		2C1E816D2BA6751F0047A31C /* ObservableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableObject.swift; sourceTree = "<group>"; };
-		2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		2C98EFB02D312DDB00F6B4F5 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		AA10000200000000000000AB /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
+		AA10000400000000000000AB /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
+		AA10000600000000000000AB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AA10000800000000000000AB /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
+		AA10000A00000000000000AB /* GlassStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassStyle.swift; sourceTree = "<group>"; };
+		AA10000C00000000000000AB /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
+		AA10010200000000000000AB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
+		AA10010400000000000000AB /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
+		AA10010600000000000000AB /* PromptItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptItem.swift; sourceTree = "<group>"; };
+		AA10010800000000000000AB /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		AA10010A00000000000000AB /* ChatAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPIClient.swift; sourceTree = "<group>"; };
+		AA10010C00000000000000AB /* NativeChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeChatView.swift; sourceTree = "<group>"; };
+		AA10010E00000000000000AB /* APIEndpointForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpointForm.swift; sourceTree = "<group>"; };
+		AA10011000000000000000AB /* PromptLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptLibraryView.swift; sourceTree = "<group>"; };
 		2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewHelper.swift; sourceTree = "<group>"; };
 		2C98EFB42D312E0200F6B4F5 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		2C9F85E92D831C7800CB74F4 /* PromptBar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PromptBar.entitlements; sourceTree = "<group>"; };
@@ -57,7 +82,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA00000200000000000000AB /* FirebaseRemoteConfig in Frameworks */,
 				AA00000300000000000000AB /* HotKey in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -79,13 +103,25 @@
 			isa = PBXGroup;
 			children = (
 				2C98EFA32D312B6A00F6B4F5 /* App */,
+				AA10001000000000000000AB /* Models */,
 				2C98EFA52D312B9700F6B4F5 /* Views */,
 				2C98EFB72D312E5500F6B4F5 /* Helpers */,
 				2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */,
 				2C0BA4DC2BA6055F0050C66B /* Preview Content */,
-				2C98EF4E2D31130300F6B4F5 /* GoogleService-Info.plist */,
 			);
 			path = PromptBar;
+			sourceTree = "<group>";
+		};
+		AA10001000000000000000AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA10000200000000000000AB /* ChatService.swift */,
+				AA10000400000000000000AB /* ChatStore.swift */,
+				AA10010200000000000000AB /* APIEndpoint.swift */,
+				AA10010400000000000000AB /* Conversation.swift */,
+				AA10010600000000000000AB /* PromptItem.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		2C0BA4DC2BA6055F0050C66B /* Preview Content */ = {
@@ -113,6 +149,11 @@
 				2C98EFB42D312E0200F6B4F5 /* AboutView.swift */,
 				2C0BA4ED2BA60F690050C66B /* PromptBarPopup.swift */,
 				2C0BA4D62BA6055E0050C66B /* ContentView.swift */,
+				AA10000600000000000000AB /* SettingsView.swift */,
+				AA10000800000000000000AB /* QuickAddView.swift */,
+				AA10010C00000000000000AB /* NativeChatView.swift */,
+				AA10010E00000000000000AB /* APIEndpointForm.swift */,
+				AA10011000000000000000AB /* PromptLibraryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -124,6 +165,10 @@
 				2C1E816D2BA6751F0047A31C /* ObservableObject.swift */,
 				2C98EFB22D312DEF00F6B4F5 /* WebViewHelper.swift */,
 				2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */,
+				AA10000A00000000000000AB /* GlassStyle.swift */,
+				AA10000C00000000000000AB /* UpdateChecker.swift */,
+				AA10010800000000000000AB /* KeychainHelper.swift */,
+				AA10010A00000000000000AB /* ChatAPIClient.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -171,7 +216,6 @@
 			);
 			name = PromptBar;
 			packageProductDependencies = (
-				AA00002100000000000000AB /* FirebaseRemoteConfig */,
 				AA00002200000000000000AB /* HotKey */,
 			);
 			productName = PromptBar;
@@ -203,7 +247,6 @@
 			);
 			mainGroup = 2C0BA4C82BA6055E0050C66B;
 			packageReferences = (
-				AA00001000000000000000AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				AA00001100000000000000AB /* XCRemoteSwiftPackageReference "HotKey" */,
 			);
 			productRefGroup = 2C0BA4C82BA6055E0050C66B;
@@ -222,7 +265,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */,
-				2C98EF4F2D31130300F6B4F5 /* GoogleService-Info.plist in Resources */,
 				2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -250,6 +292,20 @@
 				2C98EFB32D312DF300F6B4F5 /* WebViewHelper.swift in Sources */,
 				2C98EFB12D312DDF00F6B4F5 /* Utilities.swift in Sources */,
 				2AF8700C3BFA4E4F56762B45 /* VersionComparator.swift in Sources */,
+				AA10000100000000000000AB /* ChatService.swift in Sources */,
+				AA10000300000000000000AB /* ChatStore.swift in Sources */,
+				AA10000500000000000000AB /* SettingsView.swift in Sources */,
+				AA10000700000000000000AB /* QuickAddView.swift in Sources */,
+				AA10000900000000000000AB /* GlassStyle.swift in Sources */,
+				AA10000B00000000000000AB /* UpdateChecker.swift in Sources */,
+				AA10010100000000000000AB /* APIEndpoint.swift in Sources */,
+				AA10010300000000000000AB /* Conversation.swift in Sources */,
+				AA10010500000000000000AB /* PromptItem.swift in Sources */,
+				AA10010700000000000000AB /* KeychainHelper.swift in Sources */,
+				AA10010900000000000000AB /* ChatAPIClient.swift in Sources */,
+				AA10010B00000000000000AB /* NativeChatView.swift in Sources */,
+				AA10010D00000000000000AB /* APIEndpointForm.swift in Sources */,
+				AA10010F00000000000000AB /* PromptLibraryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,7 +374,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -375,7 +431,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -394,7 +450,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "PromptBar/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -409,8 +465,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -430,7 +486,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "PromptBar/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -445,8 +501,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 1.3.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -465,7 +521,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -483,7 +539,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				PRODUCT_BUNDLE_IDENTIFIER = peterdsp.app.PromptBarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -524,14 +580,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		AA00001000000000000000AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 11.0.0;
-			};
-		};
 		AA00001100000000000000AB /* XCRemoteSwiftPackageReference "HotKey" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/soffes/HotKey";
@@ -543,11 +591,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		AA00002100000000000000AB /* FirebaseRemoteConfig */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = AA00001000000000000000AB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseRemoteConfig;
-		};
 		AA00002200000000000000AB /* HotKey */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AA00001100000000000000AB /* XCRemoteSwiftPackageReference "HotKey" */;
