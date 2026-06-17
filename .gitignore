@@ -15,6 +15,9 @@ release/exportOptions.plist
 release/*.pkg
 !release/.gitkeep
 
+## License-issuer private key (NEVER commit)
+scripts/license-private.key
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore

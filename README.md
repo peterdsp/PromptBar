@@ -91,13 +91,33 @@ Your messages go **straight from your Mac to your endpoint URL**. No relay, no m
 
 ## 📥 Install
 
-Download the latest signed and notarized `.pkg` from [GitHub Releases](https://github.com/peterdsp/PromptBar/releases), or grab it from the [Ko-fi shop](https://ko-fi.com/peterdsp) and help fund the next version.
+PromptBar ships through two channels:
+
+| Channel | Where | What you get |
+|---|---|---|
+| 🏷️ **GitHub Releases** | [github.com/peterdsp/PromptBar/releases](https://github.com/peterdsp/PromptBar/releases) | Signed and notarized `.pkg`. Free. Source available. |
+| 🍵 **Ko-fi shop** | [ko-fi.com/peterdsp](https://ko-fi.com/peterdsp) | Same `.pkg` plus a personal license key delivered to your email after purchase. Supports development. |
+
+Both packages are byte-identical except for an `EXTERNAL_DISTRIBUTION` flag that turns on the license-key prompt on first launch for Ko-fi buyers. Source builds and GitHub Release downloads run with no key prompt.
 
 ```bash
 # After install
 open -a PromptBar
-# Click the menubar icon. Hit ⌥⌘O from anywhere to toggle it.
+# Press ⌥⌘O from anywhere to toggle the window.
 ```
+
+### 🛠️ Building from source
+
+```bash
+git clone https://github.com/peterdsp/PromptBar.git
+cd PromptBar
+open PromptBar/PromptBar.xcodeproj
+# Xcode 26+, build & run
+```
+
+### 📦 Cutting a signed release
+
+Maintainers, see [scripts/build-release-pkg.sh](scripts/build-release-pkg.sh) for the full archive → sign → package pipeline. The script verifies your Keychain has the right Developer ID identities, archives the Release configuration, runs `pkgbuild` and `productbuild` with `Developer ID Installer`, then prints the `notarytool` and `stapler` commands to finish.
 
 ---
 

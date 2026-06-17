@@ -51,12 +51,53 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Lifecycle
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        #if EXTERNAL_DISTRIBUTION
+        if !LicenseStore.shared.isLicensed {
+            presentLicenseEntry()
+            return
+        }
+        #endif
+
         if !prefs.hasCompletedOnboarding {
             presentOnboarding()
             return
         }
         bootForCurrentMode()
     }
+
+    #if EXTERNAL_DISTRIBUTION
+    private var licenseWindow: NSWindow?
+
+    private func presentLicenseEntry() {
+        NSApp.setActivationPolicy(.regular)
+
+        let view = LicenseEntryView { [weak self] _ in
+            guard let self = self else { return }
+            self.licenseWindow?.close()
+            self.licenseWindow = nil
+            if !self.prefs.hasCompletedOnboarding {
+                self.presentOnboarding()
+            } else {
+                self.bootForCurrentMode()
+            }
+        }
+
+        let controller = NSHostingController(rootView: view)
+        let window = NSWindow(contentViewController: controller)
+        window.title = "PromptBar"
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.isMovableByWindowBackground = true
+        window.setContentSize(NSSize(width: 580, height: 540))
+        window.center()
+        window.isReleasedWhenClosed = false
+        window.delegate = self
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        licenseWindow = window
+    }
+    #endif
 
     private func bootForCurrentMode() {
         // .menubar mode keeps the status item + popover (legacy power-user path).
@@ -703,5 +744,8 @@ extension AppDelegate: NSWindowDelegate {
         if window === aboutWindow { aboutWindow = nil }
         if window === mainWindow { mainWindow = nil }
         if window === onboardingWindow { onboardingWindow = nil }
+        #if EXTERNAL_DISTRIBUTION
+        if window === licenseWindow { licenseWindow = nil }
+        #endif
     }
 }

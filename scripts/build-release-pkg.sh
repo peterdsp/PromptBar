@@ -71,7 +71,7 @@ echo "==> Cleaning previous artifacts"
 rm -rf "${BUILD_DIR}" "${ARCHIVE_PATH}" "${EXPORT_DIR}" "${PKG_DIR}"
 mkdir -p "${BUILD_DIR}" "${EXPORT_DIR}" "${PKG_DIR}"
 
-echo "==> Archiving (${CONFIG})"
+echo "==> Archiving (${CONFIG}) with EXTERNAL_DISTRIBUTION flag"
 xcodebuild \
   -project "${PROJ}" \
   -scheme "${SCHEME}" \
@@ -81,6 +81,7 @@ xcodebuild \
   CODE_SIGN_IDENTITY="${DEV_ID_APP_IDENTITY}" \
   CODE_SIGN_STYLE=Manual \
   DEVELOPMENT_TEAM="${TEAM_ID}" \
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) EXTERNAL_DISTRIBUTION' \
   archive
 
 # Write an export options plist that matches Developer ID distribution.

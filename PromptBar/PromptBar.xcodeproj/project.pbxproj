@@ -41,6 +41,10 @@
 		AA10030500000000000000AB /* MCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10030600000000000000AB /* MCPClient.swift */; };
 		AA10030700000000000000AB /* MCPServersSettingsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10030800000000000000AB /* MCPServersSettingsPane.swift */; };
 		AA10030900000000000000AB /* MCPServerForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10030A00000000000000AB /* MCPServerForm.swift */; };
+		AA10040100000000000000AB /* LicenseValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040200000000000000AB /* LicenseValidator.swift */; };
+		AA10040300000000000000AB /* LicenseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040400000000000000AB /* LicenseStore.swift */; };
+		AA10040500000000000000AB /* LicenseEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040600000000000000AB /* LicenseEntryView.swift */; };
+		AA10050100000000000000AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA10050200000000000000AB /* Localizable.xcstrings */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +84,10 @@
 		AA10030600000000000000AB /* MCPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPClient.swift; sourceTree = "<group>"; };
 		AA10030800000000000000AB /* MCPServersSettingsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPServersSettingsPane.swift; sourceTree = "<group>"; };
 		AA10030A00000000000000AB /* MCPServerForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCPServerForm.swift; sourceTree = "<group>"; };
+		AA10040200000000000000AB /* LicenseValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseValidator.swift; sourceTree = "<group>"; };
+		AA10040400000000000000AB /* LicenseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseStore.swift; sourceTree = "<group>"; };
+		AA10040600000000000000AB /* LicenseEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseEntryView.swift; sourceTree = "<group>"; };
+		AA10050200000000000000AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparatorTests.swift; sourceTree = "<group>"; };
 		FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -122,6 +130,7 @@
 				2C98EFB72D312E5500F6B4F5 /* Helpers */,
 				2C0BA4DA2BA6055F0050C66B /* Assets.xcassets */,
 				2C0BA4DC2BA6055F0050C66B /* Preview Content */,
+				AA10050200000000000000AB /* Localizable.xcstrings */,
 			);
 			path = PromptBar;
 			sourceTree = "<group>";
@@ -159,6 +168,7 @@
 				AA10020400000000000000AB /* OnboardingView.swift */,
 				AA10030800000000000000AB /* MCPServersSettingsPane.swift */,
 				AA10030A00000000000000AB /* MCPServerForm.swift */,
+				AA10040600000000000000AB /* LicenseEntryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -175,6 +185,7 @@
 				AA10010800000000000000AB /* KeychainHelper.swift */,
 				AA10010A00000000000000AB /* ChatAPIClient.swift */,
 				AA10030600000000000000AB /* MCPClient.swift */,
+				AA10040200000000000000AB /* LicenseValidator.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -198,6 +209,7 @@
 				AA10020200000000000000AB /* AppPreferences.swift */,
 				AA10030200000000000000AB /* UseCase.swift */,
 				AA10030400000000000000AB /* MCPServer.swift */,
+				AA10040400000000000000AB /* LicenseStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -263,6 +275,9 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				el,
+				fr,
+				sq,
 				Base,
 			);
 			mainGroup = 2C0BA4C82BA6055E0050C66B;
@@ -286,6 +301,7 @@
 			files = (
 				2C0BA4DE2BA6055F0050C66B /* Preview Assets.xcassets in Resources */,
 				2C0BA4DB2BA6055F0050C66B /* Assets.xcassets in Resources */,
+				AA10050100000000000000AB /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +349,9 @@
 				AA10030500000000000000AB /* MCPClient.swift in Sources */,
 				AA10030700000000000000AB /* MCPServersSettingsPane.swift in Sources */,
 				AA10030900000000000000AB /* MCPServerForm.swift in Sources */,
+				AA10040100000000000000AB /* LicenseValidator.swift in Sources */,
+				AA10040300000000000000AB /* LicenseStore.swift in Sources */,
+				AA10040500000000000000AB /* LicenseEntryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
