@@ -59,16 +59,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func bootForCurrentMode() {
-        NSApp.setActivationPolicy(prefs.windowMode == .window ? .regular : .accessory)
-
+        // Create the status item BEFORE flipping the activation policy.
+        // On macOS 26 the regular -> accessory transition can drop a
+        // freshly-created status item if it happens in the wrong order.
         constructStatusItem()
         constructPopover()
         constructMenu()
         wireGlobalHotKey()
         observeStoreChanges()
 
-        if prefs.windowMode == .window {
-            showMainWindow()
+        // Defer the policy flip so the status item registers cleanly first.
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            NSApp.setActivationPolicy(self.prefs.windowMode == .window ? .regular : .accessory)
+            if self.prefs.windowMode == .window {
+                self.showMainWindow()
+            }
         }
     }
 
@@ -114,15 +120,32 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Status item
 
     private func constructStatusItem() {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        if let button = statusItem.button {
-            let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
-                               accessibilityDescription: "PromptBar")
-            icon?.isTemplate = true
+        // Use fixed length, variableLength has been flaky on macOS 26 first-launch
+        // when the activation policy was just switched from .regular to .accessory.
+        statusItem = NSStatusBar.system.statusItem(withLength: 24)
+        statusItem.isVisible = true
+        statusItem.behavior = []
+
+        guard let button = statusItem.button else { return }
+
+        if let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
+                              accessibilityDescription: "PromptBar") {
+            icon.isTemplate = true
             button.image = icon
-            button.action = #selector(handleMenubarClick(_:))
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+            button.imagePosition = .imageOnly
+        } else if let bundled = NSImage(named: "MenuBarIcon") {
+            bundled.isTemplate = true
+            button.image = bundled
+            button.imagePosition = .imageOnly
+        } else {
+            // Text fallback so the slot is never empty.
+            button.title = "PB"
+            button.imagePosition = .noImage
         }
+
+        button.toolTip = "PromptBar"
+        button.action = #selector(handleMenubarClick(_:))
+        button.sendAction(on: [.leftMouseUp, .rightMouseUp])
     }
 
     @objc private func handleMenubarClick(_ sender: NSStatusBarButton) {
