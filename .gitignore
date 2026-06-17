@@ -116,3 +116,6 @@ MacMistral/MacMistral/Assets.xcassets/.DS_Store
 MacMistral/MacMistral/Preview Content/.DS_Store
 MacMistral/.DS_Store
 .DS_Store
+
+## Generated license files for existing buyers (never commit)
+licenses/
