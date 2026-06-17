@@ -166,6 +166,47 @@ def health():
     })
 
 
+@app.route("/activate", methods=["POST"])
+def activate():
+    """
+    App-driven activation: the buyer types their Ko-fi email in PromptBar,
+    the app POSTs {"email": "..."} here, and we return the signed license
+    JSON if the email has a license on file. Zero file handling for the
+    buyer.
+
+    For privacy, we don't tell unknown emails whether the address exists,
+    just that no license was found.
+    """
+    if PRIVATE_KEY is None:
+        return jsonify({"error": "server misconfigured"}), 500
+
+    body = request.get_json(silent=True) or {}
+    raw_email = (body.get("email") or "").strip().lower()
+    if not raw_email or "@" not in raw_email:
+        return jsonify({"error": "invalid email"}), 400
+
+    # Look the email up in the archive directory. If found, hand it back.
+    safe = raw_email.replace("@", "_at_").replace(".", "_").replace("+", "_plus_")
+    archive_path = os.path.join(LOG_DIR, f"{safe}.promptbar")
+    if os.path.exists(archive_path):
+        try:
+            with open(archive_path, "r") as f:
+                license_blob = json.load(f)
+            log.info("Activated %s from archive", raw_email)
+            return jsonify(license_blob), 200
+        except Exception as e:
+            log.error("Failed to read archived license for %s: %s", raw_email, e)
+            return jsonify({"error": "archive read failed"}), 500
+
+    log.info("Activation requested for unknown email %s", raw_email)
+    return jsonify({
+        "error": "no license on file for that email",
+        "hint": "Use the email you typed on Ko-fi at checkout. If you bought "
+                "with a different one, reply to your Ko-fi receipt or contact "
+                "the developer."
+    }), 404
+
+
 @app.route("/webhook", methods=["POST"])
 def kofi_webhook():
     """
