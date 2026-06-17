@@ -25,19 +25,51 @@ struct OnboardingView: View {
             GlassBackdrop()
 
             VStack(spacing: 0) {
-                TabView(selection: $page) {
-                    introPage.tag(0)
-                    useCasePage.tag(1)
-                    refiningPage.tag(2)
-                    readyPage.tag(3)
-                }
-                .tabViewStyle(.automatic)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
+                progressStrip
+                pageContent
                 footer
             }
         }
         .frame(width: 660, height: 720)
+    }
+
+    /// Hairline progress strip across the top edge of the window.
+    /// Replaces the default TabView segmented indicator with something subtle.
+    private var progressStrip: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.05))
+                Rectangle()
+                    .fill(LinearGradient(
+                        colors: [Color.accentColor.opacity(0.95), Color.accentColor.opacity(0.55)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    ))
+                    .frame(width: geo.size.width * progressFraction)
+                    .animation(.easeOut(duration: 0.35), value: page)
+            }
+        }
+        .frame(height: 3)
+    }
+
+    private var progressFraction: CGFloat {
+        // 0 -> 0.25, 1 -> 0.5, 2 -> 0.75, 3 -> 1.0
+        return CGFloat(page + 1) / CGFloat(totalPages)
+    }
+
+    @ViewBuilder
+    private var pageContent: some View {
+        ZStack {
+            switch page {
+            case 0: introPage.transition(.opacity)
+            case 1: useCasePage.transition(.opacity)
+            case 2: refiningPage.transition(.opacity)
+            case 3: readyPage.transition(.opacity)
+            default: introPage
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: Page 1, intro
