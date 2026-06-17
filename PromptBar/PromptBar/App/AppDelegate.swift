@@ -120,30 +120,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Status item
 
     private func constructStatusItem() {
-        // Use fixed length, variableLength has been flaky on macOS 26 first-launch
-        // when the activation policy was just switched from .regular to .accessory.
-        statusItem = NSStatusBar.system.statusItem(withLength: 24)
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.isVisible = true
         statusItem.behavior = []
 
         guard let button = statusItem.button else { return }
 
-        if let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
-                              accessibilityDescription: "PromptBar") {
-            icon.isTemplate = true
-            button.image = icon
-            button.imagePosition = .imageOnly
+        // Pick the most visible icon source available. AppIcon (full color) first,
+        // then the bundled MenuBarIcon (template), then SF Symbol, then text only.
+        if let appIcon = NSImage(named: "AppIcon") {
+            let sized = NSImage(size: NSSize(width: 18, height: 18), flipped: false) { rect in
+                appIcon.draw(in: rect)
+                return true
+            }
+            button.image = sized
         } else if let bundled = NSImage(named: "MenuBarIcon") {
             bundled.isTemplate = true
             button.image = bundled
-            button.imagePosition = .imageOnly
-        } else {
-            // Text fallback so the slot is never empty.
-            button.title = "PB"
-            button.imagePosition = .noImage
+        } else if let icon = NSImage(systemSymbolName: "bubble.left.and.bubble.right.fill",
+                                     accessibilityDescription: "PromptBar") {
+            icon.isTemplate = true
+            button.image = icon
         }
 
-        button.toolTip = "PromptBar"
+        // Always set a label too so the slot is wide and impossible to miss.
+        button.title = "PromptBar"
+        button.font = NSFont.systemFont(ofSize: 13, weight: .medium)
+        button.imagePosition = button.image == nil ? .noImage : .imageLeft
+        button.imageHugsTitle = true
+        button.toolTip = "PromptBar (⌥⌘O)"
         button.action = #selector(handleMenubarClick(_:))
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
     }
