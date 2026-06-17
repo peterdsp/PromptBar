@@ -175,6 +175,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         popover.delegate = self
         popover.behavior = .transient
         popover.animates = true
+        // Match the Liquid Glass content so the system arrow doesn't look pasted on.
+        popover.appearance = NSAppearance(named: .vibrantDark)
 
         let size = persistedWindowSize()
         popover.contentSize = size

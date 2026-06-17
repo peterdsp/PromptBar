@@ -51,7 +51,7 @@ struct PopupRootView: View {
     // MARK: Top bar
 
     private var topBar: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
                     ForEach(store.services) { service in
@@ -62,15 +62,20 @@ struct PopupRootView: View {
                     }
                     addMenu
                 }
-                .padding(.horizontal, 10)
+                .padding(.leading, 14)
                 .padding(.vertical, 8)
             }
-            Spacer(minLength: 0)
+            Spacer(minLength: 8)
             actionsCluster
-                .padding(.trailing, 10)
+                .padding(.trailing, 14)
         }
-        .frame(height: 44)
-        .background(.thinMaterial)
+        .frame(height: 46)
+        .background(.regularMaterial)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(Color.primary.opacity(0.08))
+                .frame(height: 0.5)
+        }
     }
 
     private func webPill(_ service: ChatService) -> some View {
@@ -154,37 +159,60 @@ struct PopupRootView: View {
     }
 
     private var actionsCluster: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 2) {
             if case .web = store.selectedTarget {
-                actionButton(symbol: "arrow.clockwise", help: "Reload") {
+                toolbarButton(symbol: "arrow.left", help: "Back",
+                              disabled: !webState.canGoBack) {
+                    webAction = .goBack
+                }
+                toolbarButton(symbol: "arrow.right", help: "Forward",
+                              disabled: !webState.canGoForward) {
+                    webAction = .goForward
+                }
+                divider
+                toolbarButton(symbol: "arrow.clockwise", help: "Reload") {
                     if let url = URL(string: address) {
                         webAction = .load(URLRequest(url: url))
                     }
                 }
-                actionButton(symbol: "arrow.left", help: "Back") {
-                    webAction = .goBack
-                }
-                .disabled(!webState.canGoBack)
-                actionButton(symbol: "arrow.right", help: "Forward") {
-                    webAction = .goForward
-                }
-                .disabled(!webState.canGoForward)
+                divider
             }
-            actionButton(symbol: "gearshape", help: "Settings") {
+            toolbarButton(symbol: "gearshape", help: "Settings") {
                 (NSApp.delegate as? AppDelegate)?
                     .perform(NSSelectorFromString("openSettings"))
             }
         }
+        .padding(.horizontal, 4)
+        .frame(height: 28)
+        .background(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .fill(.thinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
+        )
     }
 
-    private func actionButton(symbol: String, help: String, action: @escaping () -> Void) -> some View {
+    private var divider: some View {
+        Rectangle()
+            .fill(Color.primary.opacity(0.12))
+            .frame(width: 0.5, height: 16)
+            .padding(.horizontal, 1)
+    }
+
+    private func toolbarButton(symbol: String, help: String,
+                               disabled: Bool = false,
+                               action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 12, weight: .semibold))
-                .frame(width: 28, height: 28)
-                .background(Circle().fill(.thickMaterial))
+                .frame(width: 26, height: 24)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(disabled)
+        .opacity(disabled ? 0.35 : 1.0)
         .help(help)
     }
 
