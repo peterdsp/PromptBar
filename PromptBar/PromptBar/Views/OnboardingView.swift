@@ -13,12 +13,16 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    let onFinish: (UseCase) -> Void
+    /// (use case, show in Dock, hot key enabled)
+    let onFinish: (UseCase, Bool, Bool) -> Void
 
     @State private var page: Int = 0
+    @State private var maxReached: Int = 0
     @State private var pickedUseCase: UseCase = .everyday
+    @State private var showInDock: Bool = true
+    @State private var hotKeyEnabled: Bool = true
 
-    private let totalPages = 4
+    private let totalPages = 5
 
     var body: some View {
         ZStack {
@@ -31,6 +35,9 @@ struct OnboardingView: View {
             }
         }
         .frame(width: 660, height: 720)
+        .onChange(of: page) { _, newValue in
+            if newValue > maxReached { maxReached = newValue }
+        }
     }
 
     /// Hairline progress strip across the top edge of the window.
@@ -63,9 +70,10 @@ struct OnboardingView: View {
         ZStack {
             switch page {
             case 0: introPage.transition(.opacity)
-            case 1: useCasePage.transition(.opacity)
-            case 2: refiningPage.transition(.opacity)
-            case 3: readyPage.transition(.opacity)
+            case 1: reviewsPage.transition(.opacity)
+            case 2: useCasePage.transition(.opacity)
+            case 3: refiningPage.transition(.opacity)
+            case 4: readyPage.transition(.opacity)
             default: introPage
             }
         }
@@ -228,7 +236,102 @@ struct OnboardingView: View {
         }
     }
 
-    // MARK: Page 2, use case
+    // MARK: Page 2, reviews
+
+    private struct Review: Identifiable {
+        let id = UUID()
+        let name: String
+        let handle: String
+        let body: String
+    }
+
+    /// Lightly edited from public Ko-fi reviews of the developer's earlier macOS
+    /// menubar AI client. Third-party brand names are removed so the binary stays
+    /// safe under App Store guideline 4.1.
+    private let reviews: [Review] = [
+        Review(
+            name: "Florian Mathieu",
+            handle: "@sh4ke",
+            body: "After two weeks of use, I can't imagine a day of work without PromptBar. Easy to use, really fast, well integrated into macOS. A must have."
+        ),
+        Review(
+            name: "Tim van der Voord",
+            handle: "@timvandervoord",
+            body: "Was looking for an AI chat client on Mac to interact without having to open the browser. This does the job. Great work."
+        ),
+        Review(
+            name: "Olivier",
+            handle: "@olivier",
+            body: "Easy to install, easy to use, well integrated into macOS so it's available everywhere. The configurable keyboard shortcut to invoke PromptBar is a killer feature."
+        ),
+        Review(
+            name: "Nicolas Z.",
+            handle: "@nicolaszolotoff",
+            body: "Excellent! A pure delight daily with the multiple AIs available. A happy customer."
+        ),
+        Review(
+            name: "Steven",
+            handle: "@steven",
+            body: "Loving it. 5/5 for sure. The hotkey access from anywhere is exactly what I wanted."
+        )
+    ]
+
+    private var reviewsPage: some View {
+        VStack(spacing: 14) {
+            Spacer().frame(height: 6)
+
+            VStack(spacing: 4) {
+                Text("What people are saying")
+                    .font(.title2.weight(.semibold))
+                Text("From early supporters of the project on Ko-fi.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.top, 6)
+
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 10) {
+                    ForEach(reviews) { review in
+                        reviewCard(review)
+                    }
+                }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 8)
+            }
+
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func reviewCard(_ review: Review) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Text(review.name)
+                    .font(.subheadline.weight(.semibold))
+                Text(review.handle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                ForEach(0..<5, id: \.self) { _ in
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(Color.yellow)
+                        .font(.system(size: 9))
+                }
+            }
+            Text(review.body)
+                .font(.callout)
+                .foregroundStyle(.primary.opacity(0.85))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.regularMaterial)
+        )
+    }
+
+    // MARK: Page 3, use case
 
     private var useCasePage: some View {
         VStack(spacing: 14) {
@@ -373,7 +476,7 @@ struct OnboardingView: View {
                 }
                 if i == self.refineSteps.count {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                        withAnimation { self.page = 3 }
+                        withAnimation { self.page = 4 }
                     }
                 }
             }
@@ -405,9 +508,6 @@ struct OnboardingView: View {
             }
 
             VStack(alignment: .leading, spacing: 10) {
-                summaryRow("command",
-                           title: "⌥⌘O from anywhere",
-                           body: "That hotkey brings PromptBar forward, even when another app is full screen. No need to click the Dock.")
                 summaryRow("books.vertical.fill",
                            title: "\(pickedUseCase.seedPrompts.count) prompts added",
                            body: pickedUseCase.seedPrompts.isEmpty
@@ -422,8 +522,63 @@ struct OnboardingView: View {
             .padding(.horizontal, 30)
             .frame(maxWidth: 460)
 
+            launchOptions
+                .padding(.horizontal, 30)
+                .frame(maxWidth: 460)
+
             Spacer()
         }
+    }
+
+    private var launchOptions: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("How should PromptBar launch?")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.bottom, 2)
+
+            optionToggle(
+                title: "Show in Dock",
+                body: showInDock
+                    ? "Acts like Safari or Claude with a Dock icon and a real window."
+                    : "Runs in the background, no Dock icon. Use the hotkey to summon it.",
+                isOn: $showInDock
+            )
+
+            optionToggle(
+                title: "Enable ⌥⌘O hotkey",
+                body: hotKeyEnabled
+                    ? "Bring PromptBar forward from any app, even full screen."
+                    : "Hotkey disabled. You'll need to click the Dock to open the window.",
+                isOn: $hotKeyEnabled
+            )
+
+            if !showInDock && !hotKeyEnabled {
+                Label("Pick at least one access method or you won't be able to open the app.",
+                      systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+                    .padding(.top, 4)
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.regularMaterial)
+        )
+    }
+
+    private func optionToggle(title: String, body: String, isOn: Binding<Bool>) -> some View {
+        Toggle(isOn: isOn) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.callout.weight(.semibold))
+                Text(body)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .toggleStyle(.switch)
+        .controlSize(.small)
     }
 
     private func summaryRow(_ symbol: String, title: String, body: String) -> some View {
@@ -446,15 +601,28 @@ struct OnboardingView: View {
 
     private var footer: some View {
         HStack(spacing: 8) {
-            ForEach(0..<totalPages, id: \.self) { i in
-                Circle()
-                    .fill(i == page ? Color.accentColor : Color.gray.opacity(0.35))
-                    .frame(width: 6, height: 6)
+            HStack(spacing: 8) {
+                ForEach(0..<totalPages, id: \.self) { i in
+                    let reachable = i <= maxReached
+                    Button {
+                        guard reachable, i != page else { return }
+                        // Don't allow jumping into the refining loader from a dot.
+                        guard i != 3 else { return }
+                        withAnimation { page = i }
+                    } label: {
+                        Circle()
+                            .fill(i == page ? Color.accentColor : Color.gray.opacity(0.35))
+                            .frame(width: 6, height: 6)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!reachable || i == 3)
+                    .help(reachable ? "Go to step \(i + 1)" : "")
+                }
             }
 
             Spacer()
 
-            if page > 0 && page != 2 && page != 3 {
+            if page > 0 && page != 3 && page != 4 {
                 Button("Back") {
                     withAnimation { page -= 1 }
                 }
@@ -469,20 +637,27 @@ struct OnboardingView: View {
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
             case 1:
-                Button(pickedUseCase == .custom ? "Skip Setup" : "Continue") {
+                Button("Continue") {
                     withAnimation { page += 1 }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
             case 2:
-                // Auto-advances; no button.
-                Text("").frame(height: 28)
-            case 3:
-                Button("Get Started") {
-                    onFinish(pickedUseCase)
+                Button(pickedUseCase == .custom ? "Skip Setup" : "Continue") {
+                    withAnimation { page += 1 }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
+            case 3:
+                // Refining loader auto-advances; no button.
+                Text("").frame(height: 28)
+            case 4:
+                Button("Get Started") {
+                    onFinish(pickedUseCase, showInDock, hotKeyEnabled)
+                }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .disabled(!showInDock && !hotKeyEnabled)
             default:
                 EmptyView()
             }

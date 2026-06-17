@@ -59,21 +59,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func bootForCurrentMode() {
-        // Create the status item BEFORE flipping the activation policy.
-        // On macOS 26 the regular -> accessory transition can drop a
-        // freshly-created status item if it happens in the wrong order.
-        constructStatusItem()
-        constructPopover()
-        constructMenu()
+        // .menubar mode keeps the status item + popover (legacy power-user path).
+        // .window and .hidden don't need the menubar status item, they use the
+        // window directly. We still register the global hotkey if enabled.
+        if prefs.windowMode == .menubar {
+            constructStatusItem()
+            constructPopover()
+            constructMenu()
+        }
         wireGlobalHotKey()
         observeStoreChanges()
 
-        // Defer the policy flip so the status item registers cleanly first.
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            NSApp.setActivationPolicy(self.prefs.windowMode == .window ? .regular : .accessory)
-            if self.prefs.windowMode == .window {
+            switch self.prefs.windowMode {
+            case .menubar:
+                NSApp.setActivationPolicy(.accessory)
+            case .window:
+                NSApp.setActivationPolicy(.regular)
                 self.showMainWindow()
+            case .hidden:
+                NSApp.setActivationPolicy(.accessory)
+                // No window, no menubar icon, hotkey-only access.
             }
         }
     }
@@ -83,11 +90,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func presentOnboarding() {
         NSApp.setActivationPolicy(.regular)
 
-        let view = OnboardingView { [weak self] chosenUseCase in
+        let view = OnboardingView { [weak self] chosenUseCase, showInDock, hotKeyEnabled in
             guard let self = self else { return }
-            // New users always start in window mode. The menubar mode toggle is
-            // kept in Settings for power users who want to opt in later.
-            self.prefs.windowMode = .window
+            self.prefs.windowMode = showInDock ? .window : .hidden
+            self.prefs.hotKeyEnabled = hotKeyEnabled
             self.prefs.hasCompletedOnboarding = true
             self.applyUseCase(chosenUseCase)
             self.onboardingWindow?.close()
@@ -170,8 +176,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         switch prefs.windowMode {
         case .menubar:
             togglePopover()
-        case .window:
-            showMainWindow()
+        case .window, .hidden:
+            // In both window-bearing modes the hotkey shows OR hides the window.
+            if let window = mainWindow, window.isVisible, window.isKeyWindow {
+                window.orderOut(nil)
+            } else {
+                showMainWindow()
+            }
         }
     }
 
@@ -440,6 +451,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Hotkey
 
     private func wireGlobalHotKey() {
+        guard prefs.hotKeyEnabled else {
+            globalToggleHotKey.keyUpHandler = nil
+            return
+        }
         globalToggleHotKey.keyUpHandler = { [weak self] in
             Task { @MainActor in self?.primaryToggle() }
         }
