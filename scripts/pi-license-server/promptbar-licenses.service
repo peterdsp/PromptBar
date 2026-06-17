@@ -1,0 +1,32 @@
+[Unit]
+Description=PromptBar license issuing webhook
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/promptbar/license-server
+EnvironmentFile=/home/pi/promptbar/.env
+ExecStart=/home/pi/promptbar/venv/bin/gunicorn \
+    --bind 0.0.0.0:8000 \
+    --workers 2 \
+    --threads 2 \
+    --timeout 30 \
+    --access-logfile /home/pi/promptbar/access.log \
+    --error-logfile /home/pi/promptbar/error.log \
+    app:app
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/home/pi/promptbar/stdout.log
+StandardError=append:/home/pi/promptbar/stderr.log
+
+# Lock down filesystem access
+ProtectSystem=full
+ProtectHome=read-only
+NoNewPrivileges=true
+PrivateTmp=true
+ReadWritePaths=/home/pi/promptbar
+
+[Install]
+WantedBy=multi-user.target
