@@ -52,9 +52,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         #if EXTERNAL_DISTRIBUTION
-        if !LicenseStore.shared.isLicensed {
-            presentLicenseEntry()
-            return
+        let licenseStore = LicenseStore.shared
+        if !licenseStore.isLicensed {
+            // Trial gating: start the clock on first launch, block when it
+            // runs out, allow free use in between.
+            if licenseStore.trialExpired {
+                presentLicenseEntry()
+                return
+            }
+            licenseStore.startTrialIfNeeded()
+            scheduleTrialTick()
         }
         #endif
 
@@ -63,6 +70,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return
         }
         bootForCurrentMode()
+    }
+
+    #if EXTERNAL_DISTRIBUTION
+    /// Refresh the trial ticker hourly so the "days remaining" banner stays
+    /// honest without us recomputing on every redraw. Cheap.
+    private func scheduleTrialTick() {
+        Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            let store = LicenseStore.shared
+            store.trialTick = Date()
+            // If the trial just expired this hour, block immediately.
+            if store.trialExpired && !store.isLicensed {
+                self.presentLicenseEntry()
+            }
+        }
+    }
+    #endif
+
+    @objc func openLicenseEntry() {
+        #if EXTERNAL_DISTRIBUTION
+        presentLicenseEntry()
+        #endif
     }
 
     #if EXTERNAL_DISTRIBUTION
@@ -147,6 +176,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         appMenu.addItem(makeItem("About \(appName)", action: #selector(openAbout), key: ""))
         appMenu.addItem(.separator())
         appMenu.addItem(makeItem("Settings…", action: #selector(openSettings), key: ","))
+        #if EXTERNAL_DISTRIBUTION
+        appMenu.addItem(makeItem("Activate License…", action: #selector(openLicenseEntry), key: ""))
+        #endif
         appMenu.addItem(.separator())
 
         let servicesItem = NSMenuItem(title: "Services", action: nil, keyEquivalent: "")

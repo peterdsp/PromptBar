@@ -24,6 +24,9 @@ struct PopupRootView: View {
         ZStack {
             GlassBackdrop()
             VStack(spacing: 0) {
+                #if EXTERNAL_DISTRIBUTION
+                TrialBanner()
+                #endif
                 topBar
                 Divider().opacity(0.3)
                 content

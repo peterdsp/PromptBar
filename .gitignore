@@ -119,3 +119,6 @@ MacMistral/.DS_Store
 
 ## Generated license files for existing buyers (never commit)
 licenses/
+
+## Marketing screenshots (regenerated as needed, not committed)
+marketing/

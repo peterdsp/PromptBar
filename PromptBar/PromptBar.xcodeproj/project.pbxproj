@@ -44,6 +44,7 @@
 		AA10040100000000000000AB /* LicenseValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040200000000000000AB /* LicenseValidator.swift */; };
 		AA10040300000000000000AB /* LicenseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040400000000000000AB /* LicenseStore.swift */; };
 		AA10040500000000000000AB /* LicenseEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040600000000000000AB /* LicenseEntryView.swift */; };
+		AA10040700000000000000AB /* TrialBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040800000000000000AB /* TrialBanner.swift */; };
 		AA10050100000000000000AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA10050200000000000000AB /* Localizable.xcstrings */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 /* End PBXBuildFile section */
@@ -87,6 +88,7 @@
 		AA10040200000000000000AB /* LicenseValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseValidator.swift; sourceTree = "<group>"; };
 		AA10040400000000000000AB /* LicenseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseStore.swift; sourceTree = "<group>"; };
 		AA10040600000000000000AB /* LicenseEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseEntryView.swift; sourceTree = "<group>"; };
+		AA10040800000000000000AB /* TrialBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialBanner.swift; sourceTree = "<group>"; };
 		AA10050200000000000000AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparatorTests.swift; sourceTree = "<group>"; };
 		FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +171,7 @@
 				AA10030800000000000000AB /* MCPServersSettingsPane.swift */,
 				AA10030A00000000000000AB /* MCPServerForm.swift */,
 				AA10040600000000000000AB /* LicenseEntryView.swift */,
+				AA10040800000000000000AB /* TrialBanner.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				AA10040100000000000000AB /* LicenseValidator.swift in Sources */,
 				AA10040300000000000000AB /* LicenseStore.swift in Sources */,
 				AA10040500000000000000AB /* LicenseEntryView.swift in Sources */,
+				AA10040700000000000000AB /* TrialBanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

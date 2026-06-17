@@ -55,6 +55,12 @@ struct LicenseEntryView: View {
                 }
 
                 VStack(spacing: 4) {
+                    if LicenseStore.shared.trialExpired {
+                        Label("Your 7 day trial has ended", systemImage: "hourglass.bottomhalf.filled")
+                            .font(.callout.weight(.semibold))
+                            .foregroundStyle(.orange)
+                            .padding(.bottom, 2)
+                    }
                     Text("Activate PromptBar")
                         .font(.title2.weight(.semibold))
                     Text("Type the email you used at Ko-fi checkout. We'll fetch your license automatically.")
