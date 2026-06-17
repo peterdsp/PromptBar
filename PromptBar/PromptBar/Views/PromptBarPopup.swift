@@ -9,7 +9,7 @@ import WebKit
 
 /// Popup root displayed inside the menubar NSPopover.
 /// Hosts either a WebView (for user-added web chats) or a native chat view
-/// (for user-added OpenAI-compatible API endpoints) — whichever target is selected.
+/// (for user-added OpenAI-compatible API endpoints), whichever target is selected.
 struct PopupRootView: View {
     @EnvironmentObject private var store: ChatStore
     @State private var showingQuickAdd = false

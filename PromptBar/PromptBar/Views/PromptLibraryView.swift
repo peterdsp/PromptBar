@@ -117,7 +117,7 @@ struct PromptLibraryView: View {
                 .font(.system(size: 40, weight: .light))
                 .foregroundStyle(.secondary)
             Text("No prompts saved").font(.headline)
-            Text("Add a prompt — it'll be one tap away in every chat.")
+            Text("Add a prompt, it'll be one tap away in every chat.")
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             Spacer()

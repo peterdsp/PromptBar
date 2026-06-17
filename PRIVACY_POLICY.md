@@ -6,7 +6,7 @@ Last Updated: 2026-06-13
 
 PromptBar is a generic macOS menubar **web-chat container**. It lets you wrap any
 web URL you choose in a fast menubar popover. PromptBar does not provide chat
-services itself — it only renders the websites you add inside `WKWebView`.
+services itself, it only renders the websites you add inside `WKWebView`.
 
 This policy describes what PromptBar handles and what is handled by the
 third-party websites you choose to load.
@@ -39,9 +39,9 @@ the instructions on that third party's own site.
 
 PromptBar stores the following on your Mac only, never transmitted anywhere:
 
-* Your list of services (names, URLs, icons, colors) — `UserDefaults`
-* Your window-size preference — `UserDefaults`
-* Your "always on top" preference — `UserDefaults`
+* Your list of services (names, URLs, icons, colors), `UserDefaults`
+* Your window-size preference, `UserDefaults`
+* Your "always on top" preference, `UserDefaults`
 
 Because PromptBar uses `WKWebView` with the default website data store, WebKit
 may store cookies, local storage, IndexedDB, caches, and other website data
@@ -62,7 +62,7 @@ public HTTP client.
 ## 6. Third-Party Sites
 
 When you add a URL to PromptBar, that site's privacy policy applies to anything
-you do inside it. Common examples (this is a generic list — PromptBar does not
+you do inside it. Common examples (this is a generic list, PromptBar does not
 endorse, integrate with, or have a business relationship with any of them):
 visit each provider's website for their own privacy policy.
 

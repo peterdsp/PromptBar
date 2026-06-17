@@ -180,7 +180,7 @@ public struct WebView: NSViewRepresentable {
             return nil
         }
 
-        // MARK: File upload (paperclip) — Apple Review 2.1 fix
+        // MARK: File upload (paperclip), Apple Review 2.1 fix
 
         public func webView(
             _ webView: WKWebView,

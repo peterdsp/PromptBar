@@ -12,7 +12,7 @@ struct AboutView: View {
     @State private var updateAvailable = false
 
     private var version: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ","
     }
 
     var body: some View {

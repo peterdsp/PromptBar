@@ -11,7 +11,7 @@ WKWebView popover. It is intentionally a **generic container**, not a client for
 any specific third-party service. The app ships with **zero preloaded providers**,
 **no third-party logos**, and **no third-party brand names** in its UI, assets,
 metadata, or marketing materials. This is a deliberate App Store compliance
-posture (Guideline 4.1 — Design: Copycats).
+posture (Guideline 4.1, Design: Copycats).
 
 ## 0. App Store compliance rules (read this first)
 
@@ -23,7 +23,7 @@ preserve the following:
 * **No third-party logos or marks** in `Assets.xcassets` or bundled resources.
 * **No preloaded service list.** The store ships empty. Users add services by
   pasting a URL and giving it their own name and icon.
-* **Quick Add suggestions are plain URLs only** — no brand names attached. The
+* **Quick Add suggestions are plain URLs only**, no brand names attached. The
   user names the service themselves.
 * **No analytics, no tracking, no remote config.** Firebase has been removed and
   must not be reintroduced.
@@ -78,7 +78,7 @@ PromptBar/
   switch between user-added services. Empty state when no services exist.
 * **ContentView** wraps `WKWebView` with navigation/UI/download delegates. The
   open-panel flow pins the popover behavior to `.applicationDefined` while the
-  file picker is up, restoring it afterward — this is the fix for the paperclip
+  file picker is up, restoring it afterward, this is the fix for the paperclip
   upload bug (Apple Review 2.1, March/April 2025).
 * **UpdateChecker** hits `api.github.com/repos/peterdsp/PromptBar/releases/latest`
   and uses `VersionComparator` to decide whether to surface an update.
