@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>PromptBar uses the microphone only when you start a voice message inside a chat. The audio is sent directly to the chat endpoint you configured and is never stored by PromptBar.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>PromptBar uses the camera only when you attach a live photo or video frame to a chat message. The image is sent directly to the chat endpoint you configured and is never stored by PromptBar.</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>PromptBar uses Apple Events only when an MCP server you have explicitly connected asks it to control another application on your behalf. You approve each app the first time it is targeted.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>PromptBar reads files from your Desktop only when you drag one into a chat or when a connected MCP server asks for it on your behalf.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>PromptBar reads files from Documents only when you drag one into a chat or when a connected MCP server asks for it on your behalf.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>PromptBar reads files from Downloads only when you drag one into a chat or when a connected MCP server asks for it on your behalf.</string>
+</dict>
 </plist>

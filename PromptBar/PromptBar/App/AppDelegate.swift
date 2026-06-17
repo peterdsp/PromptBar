@@ -51,6 +51,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Lifecycle
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+        MarketingSeed.runIfRequested()
+        #endif
         #if EXTERNAL_DISTRIBUTION
         let licenseStore = LicenseStore.shared
         if !licenseStore.isLicensed {

@@ -158,6 +158,18 @@ struct NativeChatView: View {
 
     // MARK: Composer
 
+    /// Composer auto-grows from 1 line to a max of 6 lines as the user types.
+    /// Approximation by line count is good enough; the chat composer doesn't
+    /// need pixel-perfect wrap-aware sizing.
+    private var composerHeight: CGFloat {
+        let lineHeight: CGFloat = 18
+        let minLines: CGFloat = 1
+        let maxLines: CGFloat = 6
+        let typedLines = CGFloat(input.components(separatedBy: "\n").count)
+        let lines = min(maxLines, max(minLines, typedLines))
+        return lines * lineHeight + 6
+    }
+
     private var composer: some View {
         VStack(spacing: 8) {
             HStack(alignment: .bottom, spacing: 6) {
@@ -172,15 +184,25 @@ struct NativeChatView: View {
                 .buttonStyle(.plain)
                 .help("Insert prompt from library")
 
-                TextEditor(text: $input)
-                    .font(.system(size: 13))
-                    .scrollContentBackground(.hidden)
-                    .frame(minHeight: 36, maxHeight: 120)
-                    .padding(8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(.regularMaterial)
-                    )
+                ZStack(alignment: .topLeading) {
+                    if input.isEmpty {
+                        Text("Message…")
+                            .font(.system(size: 13))
+                            .foregroundStyle(.tertiary)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 1)
+                            .allowsHitTesting(false)
+                    }
+                    TextEditor(text: $input)
+                        .font(.system(size: 13))
+                        .scrollContentBackground(.hidden)
+                }
+                .frame(height: composerHeight)
+                .padding(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(.regularMaterial)
+                )
 
                 Button(action: send) {
                     Image(systemName: "arrow.up")
