@@ -122,3 +122,7 @@ licenses/
 
 ## Marketing screenshots (regenerated as needed, not committed)
 marketing/
+
+## Xcode archives (not committed)
+release/appstore/
+release/*.xcarchive
