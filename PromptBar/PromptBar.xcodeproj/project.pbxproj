@@ -45,8 +45,8 @@
 		AA10040300000000000000AB /* LicenseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040400000000000000AB /* LicenseStore.swift */; };
 		AA10040500000000000000AB /* LicenseEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040600000000000000AB /* LicenseEntryView.swift */; };
 		AA10040700000000000000AB /* TrialBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10040800000000000000AB /* TrialBanner.swift */; };
-		AA10050700000000000000AB /* MarketingSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10050800000000000000AB /* MarketingSeed.swift */; };
 		AA10050100000000000000AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA10050200000000000000AB /* Localizable.xcstrings */; };
+		AA10050700000000000000AB /* MarketingSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA10050800000000000000AB /* MarketingSeed.swift */; };
 		DD1D9452E2D445D4CCF3D111 /* VersionComparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE7B0DE15B82ACECDF5EB63 /* VersionComparator.swift */; };
 /* End PBXBuildFile section */
 
@@ -90,8 +90,8 @@
 		AA10040400000000000000AB /* LicenseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseStore.swift; sourceTree = "<group>"; };
 		AA10040600000000000000AB /* LicenseEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseEntryView.swift; sourceTree = "<group>"; };
 		AA10040800000000000000AB /* TrialBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialBanner.swift; sourceTree = "<group>"; };
-		AA10050800000000000000AB /* MarketingSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingSeed.swift; sourceTree = "<group>"; };
 		AA10050200000000000000AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AA10050800000000000000AB /* MarketingSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingSeed.swift; sourceTree = "<group>"; };
 		CC65A2DC79ACCAF7B8291369 /* VersionComparatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VersionComparatorTests.swift; sourceTree = "<group>"; };
 		FCC65FD1258946C22ABCA7F0 /* PromptBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PromptBarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -504,7 +504,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "PromptBar/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -540,7 +540,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "PromptBar/Preview\\ Content";
 				DEVELOPMENT_TEAM = YTS4KJBX3P;
 				ENABLE_HARDENED_RUNTIME = YES;
