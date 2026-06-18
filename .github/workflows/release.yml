@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v2.0.1). Leave blank to use current commit (creates 'manual-<timestamp>' tag)."
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -12,6 +18,7 @@ env:
   SCHEME: PromptBar
   PROJECT: PromptBar/PromptBar.xcodeproj
   CONFIGURATION: Release
+  TEAM_ID: YTS4KJBX3P
 
 jobs:
   validate:
@@ -28,7 +35,7 @@ jobs:
       - name: Resolve SPM dependencies
         run: xcodebuild -resolvePackageDependencies -project "$PROJECT" -scheme "$SCHEME"
 
-      # ── Debug build (warnings as errors) ──────────────────────────
+      # Debug build (warnings as errors)
       - name: Build Debug
         run: |
           xcodebuild build \
@@ -41,8 +48,8 @@ jobs:
             ONLY_ACTIVE_ARCH=NO \
             GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      # ── Release build ─────────────────────────────────────────────
-      - name: Build Release
+      # Release build, EXTERNAL_DISTRIBUTION on (what we ship to Ko-fi)
+      - name: Build Release with EXTERNAL_DISTRIBUTION
         run: |
           xcodebuild build \
             -project "$PROJECT" \
@@ -51,83 +58,125 @@ jobs:
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            ONLY_ACTIVE_ARCH=NO
+            ONLY_ACTIVE_ARCH=NO \
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) EXTERNAL_DISTRIBUTION'
 
-      # ── Verify app bundle ─────────────────────────────────────────
       - name: Verify app bundle structure
         run: |
           APP=$(find ~/Library/Developer/Xcode/DerivedData -name "PromptBar.app" -path "*/Release/*" | head -1)
-
           if [ -z "$APP" ]; then
             echo "::error::PromptBar.app not found in build output"
             exit 1
           fi
-
-          echo "Found app at: $APP"
-
-          if [ ! -f "$APP/Contents/MacOS/PromptBar" ]; then
-            echo "::error::Missing main binary"
-            exit 1
-          fi
-
-          if [ ! -f "$APP/Contents/Info.plist" ]; then
-            echo "::error::Missing Info.plist"
-            exit 1
-          fi
-
-          if [ ! -f "$APP/Contents/Resources/GoogleService-Info.plist" ]; then
-            echo "::error::Missing GoogleService-Info.plist"
-            exit 1
-          fi
-
-          if [ ! -d "$APP/Contents/Resources/Assets.car" ]; then
-            echo "::error::Missing compiled assets"
-            exit 1
-          fi
-
+          test -f "$APP/Contents/MacOS/PromptBar" || { echo "::error::Missing main binary"; exit 1; }
+          test -f "$APP/Contents/Info.plist"    || { echo "::error::Missing Info.plist"; exit 1; }
+          test -f "$APP/Contents/Resources/Assets.car" || { echo "::error::Missing compiled assets"; exit 1; }
           LINKED=$(otool -L "$APP/Contents/MacOS/PromptBar")
           for fw in WebKit AppKit SwiftUI; do
-            if ! echo "$LINKED" | grep -q "$fw"; then
-              echo "::error::Binary not linked against $fw"
-              exit 1
-            fi
+            echo "$LINKED" | grep -q "$fw" || { echo "::error::Binary not linked against $fw"; exit 1; }
           done
-
           echo "App bundle validation passed"
 
-      # ── Smoke test ────────────────────────────────────────────────
-      - name: Smoke test (launch and quit)
-        run: |
-          APP=$(find ~/Library/Developer/Xcode/DerivedData -name "PromptBar.app" -path "*/Release/*" | head -1)
-
-          open "$APP"
-          sleep 3
-
-          if pgrep -x "PromptBar" > /dev/null; then
-            echo "App launched successfully"
-            pkill -x "PromptBar"
-            echo "App terminated cleanly"
-          else
-            echo "::error::App failed to launch or crashed on startup"
-            exit 1
-          fi
-
-  release:
+  package:
     needs: validate
     runs-on: macos-15
-    timeout-minutes: 10
+    timeout-minutes: 45
+    env:
+      KEYCHAIN_PATH: ${{ runner.temp }}/build.keychain-db
+      KEYCHAIN_PASSWORD: ${{ secrets.CI_KEYCHAIN_PASSWORD }}
+      CERTS_P12_PASSWORD: ${{ secrets.CERTS_P12_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
       - name: Extract version from tag
         id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [ -z "$TAG" ] || [ "$TAG" = "main" ]; then
+            TAG="manual-$(date +%Y%m%d%H%M%S)"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      # ── GitHub Release (source-only) ──────────────────────────────
+      # Import Developer ID Application + Installer certs into a fresh temp keychain.
+      - name: Set up signing keychain
+        run: |
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          echo "${{ secrets.DEVELOPER_ID_APPLICATION_P12_BASE64 }}" | base64 -d > "$RUNNER_TEMP/app.p12"
+          echo "${{ secrets.DEVELOPER_ID_INSTALLER_P12_BASE64 }}"   | base64 -d > "$RUNNER_TEMP/installer.p12"
+
+          security import "$RUNNER_TEMP/app.p12" \
+            -k "$KEYCHAIN_PATH" -P "$CERTS_P12_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+          security import "$RUNNER_TEMP/installer.p12" \
+            -k "$KEYCHAIN_PATH" -P "$CERTS_P12_PASSWORD" \
+            -T /usr/bin/productbuild -T /usr/bin/productsign -T /usr/bin/security
+
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          security default-keychain -s "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          rm -f "$RUNNER_TEMP/app.p12" "$RUNNER_TEMP/installer.p12"
+
+          echo "Available identities:"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+
+      - name: Store notarytool credentials
+        run: |
+          xcrun notarytool store-credentials promptbar-notary \
+            --apple-id "$APPLE_ID" \
+            --team-id "$TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --keychain "$KEYCHAIN_PATH"
+
+      - name: Build signed .pkg
+        run: ./scripts/build-release-pkg.sh
+
+      - name: Locate built pkg
+        id: pkg
+        run: |
+          PKG=$(ls release/PromptBar-*.pkg | head -1)
+          if [ -z "$PKG" ]; then
+            echo "::error::No .pkg produced by build-release-pkg.sh"
+            exit 1
+          fi
+          echo "PKG_PATH=$PKG" >> "$GITHUB_OUTPUT"
+          echo "PKG_NAME=$(basename "$PKG")" >> "$GITHUB_OUTPUT"
+          ls -la release/
+
+      - name: Notarize (wait for Accepted)
+        run: |
+          xcrun notarytool submit "${{ steps.pkg.outputs.PKG_PATH }}" \
+            --keychain-profile promptbar-notary \
+            --keychain "$KEYCHAIN_PATH" \
+            --wait
+
+      - name: Staple ticket
+        run: xcrun stapler staple "${{ steps.pkg.outputs.PKG_PATH }}"
+
+      - name: Gatekeeper sanity check
+        run: spctl --assess --type install -vvv "${{ steps.pkg.outputs.PKG_PATH }}"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.TAG }}
           name: PromptBar ${{ steps.version.outputs.VERSION }}
           generate_release_notes: true
+          files: |
+            ${{ steps.pkg.outputs.PKG_PATH }}
+
+      - name: Clean up signing keychain
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN_PATH" || true

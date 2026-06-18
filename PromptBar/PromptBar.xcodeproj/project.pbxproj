@@ -514,7 +514,13 @@
 				INFOPLIST_KEY_CFBundleDisplayName = PromptBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "PromptBar uses Apple Events only when an MCP server you have explicitly connected asks it to control another application on your behalf. You approve each app the first time it is targeted.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "PromptBar uses the camera only when you attach a live photo or video frame to a chat message. The image is sent directly to the chat endpoint you configured and is never stored by PromptBar.";
+				INFOPLIST_KEY_NSDesktopFolderUsageDescription = "PromptBar reads files from your Desktop only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "PromptBar reads files from Documents only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
+				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "PromptBar reads files from Downloads only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "PromptBar uses the microphone only when you start a voice message inside a chat. The audio is sent directly to the chat endpoint you configured and is never stored by PromptBar.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -550,7 +556,13 @@
 				INFOPLIST_KEY_CFBundleDisplayName = PromptBar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSAppleEventsUsageDescription = "PromptBar uses Apple Events only when an MCP server you have explicitly connected asks it to control another application on your behalf. You approve each app the first time it is targeted.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "PromptBar uses the camera only when you attach a live photo or video frame to a chat message. The image is sent directly to the chat endpoint you configured and is never stored by PromptBar.";
+				INFOPLIST_KEY_NSDesktopFolderUsageDescription = "PromptBar reads files from your Desktop only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = "PromptBar reads files from Documents only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
+				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "PromptBar reads files from Downloads only when you drag one into a chat or when a connected MCP server asks for it on your behalf.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "PromptBar uses the microphone only when you start a voice message inside a chat. The audio is sent directly to the chat endpoint you configured and is never stored by PromptBar.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

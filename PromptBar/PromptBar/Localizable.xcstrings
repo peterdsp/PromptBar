@@ -312,12 +312,6 @@
         }
       }
     },
-    "Check for Updates" : {
-
-    },
-    "Check for updates on launch" : {
-
-    },
     "Check the email you received after your Ko-fi purchase. The file ends in .promptbar." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -637,9 +631,6 @@
           }
         }
       }
-    },
-    "Download Update" : {
-
     },
     "Drop your license file here" : {
       "extractionState" : "stale",
@@ -1583,9 +1574,6 @@
           }
         }
       }
-    },
-    "Updates come from GitHub Releases. No analytics, no tracking." : {
-
     },
     "URL" : {
       "localizations" : {
