@@ -278,6 +278,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         windowMenuItem.submenu = windowMenu
         NSApp.windowsMenu = windowMenu
 
+        let promptbarWindowItem = NSMenuItem(title: "PromptBar",
+                                             action: #selector(showOrFocusMainWindow),
+                                             keyEquivalent: "0")
+        promptbarWindowItem.target = self
+        windowMenu.addItem(promptbarWindowItem)
+        windowMenu.addItem(.separator())
         windowMenu.addItem(NSMenuItem(title: "Minimize",
                                       action: #selector(NSWindow.performMiniaturize(_:)),
                                       keyEquivalent: "m"))
@@ -300,7 +306,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                                 keyEquivalent: "")
         github.target = self
         helpMenu.addItem(github)
+        #if EXTERNAL_DISTRIBUTION
         helpMenu.addItem(makeItem("Check for Updates", action: #selector(openAbout), key: ""))
+        #endif
 
         NSApp.mainMenu = main
     }
@@ -521,6 +529,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         mainWindow = window
+    }
+
+    /// Window-menu entry that re-opens the main window after the user closed it.
+    /// Required by App Store Guideline 4: there must be a way back to the main
+    /// window from the menu bar when the user dismisses it.
+    @objc func showOrFocusMainWindow() {
+        showMainWindow()
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {

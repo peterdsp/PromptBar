@@ -225,8 +225,14 @@ struct QuickAddView: View {
         var prepared = service
         prepared.symbolName = symbolName
         prepared.tintHex = tintHex
-        store.add(prepared)
+        // Dismiss first, mutate on the next runloop tick. Mutating the
+        // ObservableObject inline during dismissal trips SwiftUI's SheetBridge
+        // on macOS 26.5 (parent window content controller is swapped while the
+        // sheet is still measuring) and crashes with EXC_BREAKPOINT.
         dismiss()
+        DispatchQueue.main.async {
+            store.add(prepared)
+        }
     }
 }
 

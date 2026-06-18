@@ -179,22 +179,30 @@ struct MCPServerForm: View {
             errorMessage = "Enter a valid name and URL."
             return
         }
-        switch mode {
-        case .add:
-            var s = sanitized
-            s.authHeader = authHeader.trimmingCharacters(in: .whitespacesAndNewlines)
-            s.symbolName = symbolName
-            s.tintHex = tintHex
-            store.addMCPServer(s)
-        case .edit(let original):
-            var s = original
-            s.name = sanitized.name
-            s.baseURL = sanitized.baseURL
-            s.authHeader = authHeader.trimmingCharacters(in: .whitespacesAndNewlines)
-            s.symbolName = symbolName
-            s.tintHex = tintHex
-            store.updateMCPServer(s)
-        }
+        // Dismiss first, mutate next runloop tick. See QuickAddView.commit().
+        let pendingMode = mode
+        let pendingSanitized = sanitized
+        let pendingAuth = authHeader.trimmingCharacters(in: .whitespacesAndNewlines)
+        let pendingSymbol = symbolName
+        let pendingTint = tintHex
         dismiss()
+        DispatchQueue.main.async {
+            switch pendingMode {
+            case .add:
+                var s = pendingSanitized
+                s.authHeader = pendingAuth
+                s.symbolName = pendingSymbol
+                s.tintHex = pendingTint
+                store.addMCPServer(s)
+            case .edit(let original):
+                var s = original
+                s.name = pendingSanitized.name
+                s.baseURL = pendingSanitized.baseURL
+                s.authHeader = pendingAuth
+                s.symbolName = pendingSymbol
+                s.tintHex = pendingTint
+                store.updateMCPServer(s)
+            }
+        }
     }
 }

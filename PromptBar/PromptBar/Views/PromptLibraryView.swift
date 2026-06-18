@@ -197,16 +197,22 @@ struct PromptEditorSheet: View {
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
 
-        switch mode {
-        case .add:
-            store.addPrompt(PromptItem(title: titleText, body: bodyText, tags: tags))
-        case .edit(let item):
-            var updated = item
-            updated.title = titleText
-            updated.body = bodyText
-            updated.tags = tags
-            store.updatePrompt(updated)
-        }
+        // Dismiss first, mutate next runloop tick. See QuickAddView.commit().
+        let pendingMode = mode
+        let pendingTitle = titleText
+        let pendingBody = bodyText
         dismiss()
+        DispatchQueue.main.async {
+            switch pendingMode {
+            case .add:
+                store.addPrompt(PromptItem(title: pendingTitle, body: pendingBody, tags: tags))
+            case .edit(let item):
+                var updated = item
+                updated.title = pendingTitle
+                updated.body = pendingBody
+                updated.tags = tags
+                store.updatePrompt(updated)
+            }
+        }
     }
 }

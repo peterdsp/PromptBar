@@ -382,12 +382,14 @@ private struct GeneralSettingsPane: View {
                     }
                 }
 
+                #if EXTERNAL_DISTRIBUTION
                 box("Updates") {
                     Toggle("Check for updates on launch", isOn: $autoUpdate)
                     Text("Updates come from GitHub Releases. No analytics, no tracking.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                #endif
 
                 box("Privacy") {
                     Text("PromptBar does not create accounts and does not collect personal data. Web chats run inside isolated WebViews; API endpoints send your messages directly to the URL you configured. API keys are stored in the macOS Keychain.")

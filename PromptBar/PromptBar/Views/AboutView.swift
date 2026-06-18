@@ -61,6 +61,7 @@ struct AboutView: View {
                         Label("Developer Site", systemImage: "person.crop.circle")
                     }
 
+                    #if EXTERNAL_DISTRIBUTION
                     Group {
                         if updateAvailable {
                             Button(action: checkForUpdates) {
@@ -79,13 +80,16 @@ struct AboutView: View {
                         }
                     }
                     .disabled(isChecking)
+                    #endif
                 }
 
+                #if EXTERNAL_DISTRIBUTION
                 if let status = statusMessage {
                     Text(status)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                #endif
 
                 Spacer()
             }
@@ -93,6 +97,7 @@ struct AboutView: View {
         }
     }
 
+    #if EXTERNAL_DISTRIBUTION
     private func checkForUpdates() {
         if updateAvailable, let url = updateURL {
             NSWorkspace.shared.open(url)
@@ -118,4 +123,5 @@ struct AboutView: View {
             }
         }
     }
+    #endif
 }

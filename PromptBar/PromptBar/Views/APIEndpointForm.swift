@@ -258,30 +258,43 @@ struct APIEndpointForm: View {
             return
         }
 
-        switch mode {
-        case .add:
-            guard !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                errorMessage = "An API key is required."
-                return
-            }
-            var endpoint = sanitized
-            endpoint.symbolName = symbolName
-            endpoint.tintHex = tintHex
-            endpoint.systemPrompt = systemPrompt
-            endpoint.streamingEnabled = streamingEnabled
-            store.add(endpoint, apiKey: apiKey)
-        case .edit(let original):
-            var updated = original
-            updated.name = sanitized.name
-            updated.baseURL = sanitized.baseURL
-            updated.modelName = sanitized.modelName
-            updated.systemPrompt = systemPrompt
-            updated.symbolName = symbolName
-            updated.tintHex = tintHex
-            updated.streamingEnabled = streamingEnabled
-            store.update(updated, apiKey: apiKey.isEmpty ? nil : apiKey)
+        // Dismiss first, mutate next runloop tick. See QuickAddView.commit()
+        // for the SheetBridge crash this guards against.
+        let pendingApiKey = apiKey
+        let pendingMode = mode
+        let pendingSanitized = sanitized
+        let pendingSymbol = symbolName
+        let pendingTint = tintHex
+        let pendingSystemPrompt = systemPrompt
+        let pendingStreaming = streamingEnabled
+
+        if case .add = pendingMode,
+           pendingApiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            errorMessage = "An API key is required."
+            return
         }
 
         dismiss()
+        DispatchQueue.main.async {
+            switch pendingMode {
+            case .add:
+                var endpoint = pendingSanitized
+                endpoint.symbolName = pendingSymbol
+                endpoint.tintHex = pendingTint
+                endpoint.systemPrompt = pendingSystemPrompt
+                endpoint.streamingEnabled = pendingStreaming
+                store.add(endpoint, apiKey: pendingApiKey)
+            case .edit(let original):
+                var updated = original
+                updated.name = pendingSanitized.name
+                updated.baseURL = pendingSanitized.baseURL
+                updated.modelName = pendingSanitized.modelName
+                updated.systemPrompt = pendingSystemPrompt
+                updated.symbolName = pendingSymbol
+                updated.tintHex = pendingTint
+                updated.streamingEnabled = pendingStreaming
+                store.update(updated, apiKey: pendingApiKey.isEmpty ? nil : pendingApiKey)
+            }
+        }
     }
 }
