@@ -48,5 +48,5 @@ cp ../marketing/hero_05_prompt_library.png  assets/prompt-library.png
 ## Notes
 
 - The Ko-fi link is `https://ko-fi.com/peterdsp`.
-- The App Store link uses id `6743766769` (full URL: `https://apps.apple.com/gr/app/promptbar/id6743766769?mt=12`). If that id or storefront changes, update every occurrence in `index.html`.
+- The App Store link uses id `6743766769` (full URL: `https://apps.apple.com/app/promptbar/id6743766769?mt=12`, region-less so it auto-redirects to each visitor's storefront). If that id changes, update every occurrence in `index.html`.
 - The site respects `prefers-reduced-motion`.
