@@ -7,6 +7,7 @@
 **The macOS menubar chat container that's yours to shape.**
 **Kontejneri i bisedave ne menubar te macOS qe e formon ti vete.**
 
+[![Website](https://img.shields.io/badge/Website-promptbar.peterdsp.dev-38bdf8?logo=safari&logoColor=white)](https://promptbar.peterdsp.dev/)
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-orange.svg)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-26%20Tahoe-blue?logo=apple)](https://www.apple.com/macos/)
 [![Liquid Glass](https://img.shields.io/badge/UI-Liquid%20Glass-9cf)](#)
@@ -14,7 +15,7 @@
 [![Bring Your Own Key](https://img.shields.io/badge/BYO-API%20Key-purple?logo=openai)](#-bring-your-own-key)
 [![Star this repo](https://img.shields.io/github/stars/peterdsp/PromptBar?style=social)](https://github.com/peterdsp/PromptBar/stargazers)
 
-[Features](#-features) · [Why 2.0 is different](#-why-20-is-different) · [Install](#-install) · [BYO Key](#-bring-your-own-key) · [Privacy](#-privacy) · [Support](#-support)
+[🌐 promptbar.peterdsp.dev](https://promptbar.peterdsp.dev/) · [Features](#-features) · [Why 2.0 is different](#-why-20-is-different) · [Install](#-install) · [BYO Key](#-bring-your-own-key) · [Privacy](#-privacy) · [Support](#-support)
 
 </div>
 
