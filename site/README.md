@@ -4,11 +4,11 @@ Static, single-file landing page for [promptbar.peterdsp.dev](https://promptbar.
 
 ## Files
 
-- `index.html` — the whole page. Tailwind via CDN, no build step.
-- `404.html` — glassy 404 fallback.
-- `CNAME` — apex hostname for GitHub Pages / Cloudflare Pages custom domain.
-- `robots.txt`, `sitemap.xml` — search hygiene.
-- `assets/` — marketing screenshots and app icons (copied from `../marketing` and `../PromptBar/PromptBar/Assets.xcassets/AppIcon.appiconset`).
+- `index.html`, the whole page. Tailwind via CDN, no build step.
+- `404.html`, glassy 404 fallback.
+- `CNAME`, apex hostname for GitHub Pages / Cloudflare Pages custom domain.
+- `robots.txt`, `sitemap.xml`, search hygiene.
+- `assets/`, marketing screenshots and app icons (copied from `../marketing` and `../PromptBar/PromptBar/Assets.xcassets/AppIcon.appiconset`).
 
 ## Local preview
 
@@ -48,5 +48,5 @@ cp ../marketing/hero_05_prompt_library.png  assets/prompt-library.png
 ## Notes
 
 - The Ko-fi link is `https://ko-fi.com/peterdsp`.
-- The App Store link uses id `6746917172` — if that id changes, update every occurrence in `index.html`.
+- The App Store link uses id `6746917172`, if that id changes, update every occurrence in `index.html`.
 - The site respects `prefers-reduced-motion`.
