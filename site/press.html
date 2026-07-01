@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0b12" />
+    <meta name="color-scheme" content="dark" />
+
+    <title>PromptBar press kit</title>
+    <meta
+      name="description"
+      content="Editorial assets, boilerplate, fact sheet, and press contact for PromptBar, a macOS menubar app for AI chats."
+    />
+    <link rel="canonical" href="https://promptbar.peterdsp.dev/press.html" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://promptbar.peterdsp.dev/press.html" />
+    <meta property="og:title" content="PromptBar press kit" />
+    <meta
+      property="og:description"
+      content="Editorial assets, boilerplate, fact sheet, and press contact for PromptBar."
+    />
+    <meta property="og:image" content="https://promptbar.peterdsp.dev/assets/native-chat.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PromptBar press kit" />
+    <meta
+      name="twitter:description"
+      content="Editorial assets, boilerplate, fact sheet, and press contact for PromptBar."
+    />
+    <meta name="twitter:image" content="https://promptbar.peterdsp.dev/assets/native-chat.png" />
+
+    <link rel="icon" type="image/png" sizes="128x128" href="/assets/appicon-128.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/assets/appicon-256.png" />
+    <link rel="apple-touch-icon" sizes="256x256" href="/assets/appicon-256.png" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                '-apple-system',
+                'BlinkMacSystemFont',
+                'SF Pro Text',
+                'SF Pro Display',
+                'Inter',
+                'system-ui',
+                'Segoe UI',
+                'Helvetica',
+                'Arial',
+                'sans-serif',
+              ],
+              mono: ['SF Mono', 'ui-monospace', 'Menlo', 'Consolas', 'monospace'],
+            },
+            colors: {
+              ink: {
+                950: '#07070c',
+                900: '#0b0b12',
+                800: '#111119',
+                700: '#171722',
+                600: '#1f1f2d',
+              },
+              accent: { 400: '#7dd3fc', 500: '#38bdf8', 600: '#0ea5e9' },
+              mint: { 400: '#5eead4', 500: '#2dd4bf' },
+              lilac: { 400: '#c4b5fd', 500: '#a78bfa' },
+            },
+            boxShadow: {
+              glass:
+                '0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.06), 0 30px 60px -20px rgba(0,0,0,0.7)',
+              soft: '0 20px 60px -20px rgba(0,0,0,0.6)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html, body { background: #07070c; }
+      body {
+        font-feature-settings: 'ss01', 'cv11';
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .aurora {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .aurora::before, .aurora::after {
+        content: '';
+        position: absolute;
+        width: 60vmax;
+        height: 60vmax;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.55;
+        mix-blend-mode: screen;
+      }
+      .aurora::before {
+        top: -20vmax;
+        left: -10vmax;
+        background: radial-gradient(circle at 30% 30%, #38bdf8, transparent 60%);
+        animation: float1 22s ease-in-out infinite alternate;
+      }
+      .aurora::after {
+        bottom: -25vmax;
+        right: -15vmax;
+        background: radial-gradient(circle at 70% 70%, #a78bfa, transparent 60%);
+        animation: float2 26s ease-in-out infinite alternate;
+      }
+      .aurora .mint {
+        position: absolute;
+        top: 30%;
+        left: 45%;
+        width: 40vmax;
+        height: 40vmax;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 50% 50%, #2dd4bf, transparent 60%);
+        filter: blur(100px);
+        opacity: 0.28;
+        mix-blend-mode: screen;
+        animation: float3 30s ease-in-out infinite alternate;
+      }
+      @keyframes float1 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(6vmax, 4vmax, 0) scale(1.1); } }
+      @keyframes float2 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-4vmax, -6vmax, 0) scale(1.15); } }
+      @keyframes float3 { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-5vmax, 3vmax, 0) scale(1.05); } }
+
+      .grid-texture {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 75%);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+
+      .glass {
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        backdrop-filter: blur(24px) saturate(140%);
+        -webkit-backdrop-filter: blur(24px) saturate(140%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
+      }
+      .glass-strong {
+        background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03));
+        backdrop-filter: blur(28px) saturate(160%);
+        -webkit-backdrop-filter: blur(28px) saturate(160%);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .chip {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.09);
+      }
+
+      .shine { position: relative; overflow: hidden; }
+      .shine::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.14) 50%, transparent 70%);
+        transform: translateX(-100%);
+        transition: transform 0.9s ease;
+      }
+      .shine:hover::after { transform: translateX(100%); }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.85rem 1.25rem;
+        border-radius: 14px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+      .btn:hover { transform: translateY(-1px); }
+      .btn-primary {
+        background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+        color: #05161f;
+        box-shadow: 0 12px 30px -10px rgba(56,189,248,0.55), 0 1px 0 0 rgba(255,255,255,0.3) inset;
+      }
+      .btn-primary:hover {
+        box-shadow: 0 16px 36px -10px rgba(56,189,248,0.7), 0 1px 0 0 rgba(255,255,255,0.35) inset;
+      }
+      .btn-secondary {
+        color: #e8e8f0;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        color: rgba(226,232,240,0.65);
+        font-weight: 600;
+      }
+      .eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: #5eead4;
+      }
+
+      .shot {
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 40px 120px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08) inset;
+        background: #0b0b12;
+      }
+
+      .factsheet dt {
+        text-transform: uppercase;
+        font-size: 11.5px;
+        letter-spacing: 0.14em;
+        color: rgba(226,232,240,0.55);
+        font-weight: 600;
+        padding-top: 1rem;
+      }
+      .factsheet dd {
+        color: rgba(226,232,240,0.92);
+        font-size: 15.5px;
+        line-height: 1.55;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .factsheet a {
+        color: #7dd3fc;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(125,211,252,0.35);
+      }
+      .factsheet a:hover { color: #bae6fd; border-bottom-color: #bae6fd; }
+
+      .tile {
+        background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 22px;
+        overflow: hidden;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .tile:hover {
+        transform: translateY(-2px);
+        border-color: rgba(125,211,252,0.35);
+        box-shadow: 0 20px 60px -20px rgba(56,189,248,0.25);
+      }
+      .tile-thumb {
+        aspect-ratio: 16 / 10;
+        background: #0b0b12;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      .tile-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .tile-thumb.logo { background: radial-gradient(circle at 50% 40%, rgba(56,189,248,0.18), rgba(11,11,18,0) 65%); }
+      .tile-thumb.logo img { width: auto; height: 55%; object-fit: contain; }
+      .tile-body {
+        padding: 1rem 1.15rem 1.15rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+      .tile-name { font-weight: 600; color: #f1f5f9; font-size: 15px; }
+      .tile-meta {
+        color: rgba(226,232,240,0.5);
+        font-size: 12px;
+        font-family: 'SF Mono', ui-monospace, monospace;
+      }
+      .tile-actions {
+        margin-top: 0.6rem;
+        display: flex;
+        gap: 0.75rem;
+        font-size: 13px;
+      }
+      .tile-actions a {
+        color: #7dd3fc;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(125,211,252,0.3);
+      }
+      .tile-actions a:hover { color: #bae6fd; border-bottom-color: #bae6fd; }
+
+      ::selection { background: rgba(56,189,248,0.35); color: #fff; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .aurora::before, .aurora::after, .aurora .mint { animation: none; }
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-200 font-sans antialiased">
+    <div class="aurora"><div class="mint"></div></div>
+    <div class="grid-texture"></div>
+
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-ink-950/50 border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="/assets/appicon-128.png" alt="PromptBar app icon" class="w-8 h-8 rounded-lg shadow-soft" />
+          <span class="font-semibold tracking-tight text-slate-100">PromptBar</span>
+          <span class="chip text-[10px] uppercase tracking-widest text-slate-300 rounded-full px-2 py-0.5 ml-1">Press</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-8 text-sm text-slate-300">
+          <a href="/#features" class="hover:text-white transition">Features</a>
+          <a href="/#screens" class="hover:text-white transition">Screens</a>
+          <a href="/#byo-key" class="hover:text-white transition">BYO Key</a>
+          <a href="/#privacy" class="hover:text-white transition">Privacy</a>
+          <a href="/press.html" class="text-white transition" aria-current="page">Press</a>
+          <a href="https://github.com/peterdsp/PromptBar" target="_blank" rel="noopener" class="hover:text-white transition">GitHub</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="/assets/promptbar-press-kit.zip" download class="btn btn-primary shine text-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Press kit
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="relative pt-20 md:pt-28 pb-14 md:pb-20">
+        <div class="max-w-5xl mx-auto px-6">
+          <span class="eyebrow"><span class="eyebrow-dot"></span>Press / Media kit</span>
+          <h1 class="mt-5 text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white leading-[1.05]">
+            PromptBar press kit
+          </h1>
+          <p class="mt-5 text-lg text-slate-300 max-w-2xl">
+            Everything you need to cover PromptBar accurately: boilerplate, product facts, high-resolution screenshots, app icon at every native size, and a direct line to the maintainer.
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="/assets/promptbar-press-kit.zip" download class="btn btn-primary shine">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download press kit (ZIP)
+            </a>
+            <a href="mailto:info@peterdsp.dev?subject=PromptBar%20press%20inquiry" class="btn btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              Email the maintainer
+            </a>
+          </div>
+
+          <nav aria-label="On this page" class="mt-10 flex flex-wrap gap-2 text-sm">
+            <a href="#about" class="chip rounded-full px-3 py-1.5 text-slate-300 hover:text-white transition">About</a>
+            <a href="#fact-sheet" class="chip rounded-full px-3 py-1.5 text-slate-300 hover:text-white transition">Fact sheet</a>
+            <a href="#media" class="chip rounded-full px-3 py-1.5 text-slate-300 hover:text-white transition">Media</a>
+            <a href="#contact" class="chip rounded-full px-3 py-1.5 text-slate-300 hover:text-white transition">Contact</a>
+          </nav>
+        </div>
+      </section>
+
+      <section id="about" class="py-16 md:py-24" aria-labelledby="about-heading">
+        <div class="max-w-5xl mx-auto px-6">
+          <span class="eyebrow"><span class="eyebrow-dot" style="background:#7dd3fc"></span>About</span>
+          <h2 id="about-heading" class="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-white">
+            About PromptBar
+          </h2>
+          <div class="mt-8 glass p-8 md:p-10 shadow-glass">
+            <p class="text-slate-200 text-lg leading-relaxed">
+              PromptBar is a lightweight macOS menubar app that lives one keystroke away. It wraps any web-based chat in a clean popover and streams natively from any OpenAI-compatible endpoint the user configures with their own API key. Every message travels straight from the Mac to the endpoint URL: no relay, no accounts, no telemetry.
+            </p>
+            <p class="mt-5 text-slate-300 text-lg leading-relaxed">
+              Built on macOS 26 Tahoe's Liquid Glass material system, PromptBar ships empty and stays out of the way. Web chats run inside a WKWebView, API keys live in the macOS Keychain, and a searchable prompt library sits one keyboard shortcut away. It is developed and maintained by an independent Swift developer and distributed through the Mac App Store, Ko-fi, and GitHub Releases.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="fact-sheet" class="py-16 md:py-24" aria-labelledby="fact-sheet-heading">
+        <div class="max-w-5xl mx-auto px-6">
+          <span class="eyebrow"><span class="eyebrow-dot" style="background:#c4b5fd"></span>Fact sheet</span>
+          <h2 id="fact-sheet-heading" class="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-white">
+            The facts
+          </h2>
+
+          <div class="mt-8 glass p-8 md:p-10 shadow-glass">
+            <dl class="factsheet grid sm:grid-cols-[minmax(160px,220px)_1fr] gap-x-10">
+              <dt>Product</dt>
+              <dd>PromptBar</dd>
+
+              <dt>Category</dt>
+              <dd>macOS menubar utility for AI chats</dd>
+
+              <dt>Platforms</dt>
+              <dd>macOS 26 Tahoe or later, Apple Silicon and Intel</dd>
+
+              <dt>Availability</dt>
+              <dd>Mac App Store, Ko-fi, GitHub Releases</dd>
+
+              <dt>Pricing</dt>
+              <dd>Paid on the App Store and Ko-fi. GitHub Releases ships a time-limited trial that unlocks with a Ko-fi license.</dd>
+
+              <dt>License</dt>
+              <dd>Creative Commons Attribution-ShareAlike 4.0 International. Source available.</dd>
+
+              <dt>Privacy</dt>
+              <dd>No accounts, no analytics, no remote config. API keys stored in the macOS Keychain. Web-chat cookies stay local to the Mac.</dd>
+
+              <dt>Size</dt>
+              <dd>Roughly 5 MB installer package</dd>
+
+              <dt>Stack</dt>
+              <dd>Swift, SwiftUI, WebKit, Combine</dd>
+
+              <dt>Website</dt>
+              <dd><a href="https://promptbar.peterdsp.dev">promptbar.peterdsp.dev</a></dd>
+
+              <dt>Source</dt>
+              <dd><a href="https://github.com/peterdsp/PromptBar" target="_blank" rel="noopener">github.com/peterdsp/PromptBar</a></dd>
+
+              <dt>Store</dt>
+              <dd><a href="https://apps.apple.com/app/promptbar/id6743766769?mt=12" target="_blank" rel="noopener">apps.apple.com/app/promptbar/id6743766769</a></dd>
+
+              <dt>Built by</dt>
+              <dd>Petros Dhespollari, independent Swift developer working in Tirana and Athens.</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section id="media" class="py-16 md:py-24" aria-labelledby="media-heading">
+        <div class="max-w-6xl mx-auto px-6">
+          <span class="eyebrow"><span class="eyebrow-dot" style="background:#5eead4"></span>Media &amp; brand</span>
+          <h2 id="media-heading" class="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-white">
+            Screenshots and app icon
+          </h2>
+          <p class="mt-4 text-slate-400 max-w-2xl">
+            Full-resolution PNG. Click a tile to open the file, or use Download to save it directly.
+          </p>
+
+          <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <figure class="tile">
+              <a href="/assets/native-chat.png" class="tile-thumb block" aria-label="Open native chat screenshot">
+                <img src="/assets/native-chat.png" alt="Native streaming chat window inside PromptBar" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">Native streaming chat</span>
+                <span class="tile-meta">PNG, 1576 x 1776</span>
+                <span class="tile-actions">
+                  <a href="/assets/native-chat.png" download="promptbar-native-chat.png">Download</a>
+                  <a href="/assets/native-chat.png" target="_blank" rel="noopener">Open</a>
+                </span>
+              </figcaption>
+            </figure>
+
+            <figure class="tile">
+              <a href="/assets/web-chats.png" class="tile-thumb block" aria-label="Open web chats settings screenshot">
+                <img src="/assets/web-chats.png" alt="PromptBar Web Chats settings, wrap any URL" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">Web Chats settings</span>
+                <span class="tile-meta">PNG, 1576 x 1320</span>
+                <span class="tile-actions">
+                  <a href="/assets/web-chats.png" download="promptbar-web-chats.png">Download</a>
+                  <a href="/assets/web-chats.png" target="_blank" rel="noopener">Open</a>
+                </span>
+              </figcaption>
+            </figure>
+
+            <figure class="tile">
+              <a href="/assets/api-endpoints.png" class="tile-thumb block" aria-label="Open API endpoints screenshot">
+                <img src="/assets/api-endpoints.png" alt="PromptBar API Endpoints configuration" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">API Endpoints</span>
+                <span class="tile-meta">PNG, 1576 x 1320</span>
+                <span class="tile-actions">
+                  <a href="/assets/api-endpoints.png" download="promptbar-api-endpoints.png">Download</a>
+                  <a href="/assets/api-endpoints.png" target="_blank" rel="noopener">Open</a>
+                </span>
+              </figcaption>
+            </figure>
+
+            <figure class="tile">
+              <a href="/assets/mcp-servers.png" class="tile-thumb block" aria-label="Open MCP servers screenshot">
+                <img src="/assets/mcp-servers.png" alt="PromptBar MCP Servers panel" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">MCP Servers</span>
+                <span class="tile-meta">PNG, 1576 x 1320</span>
+                <span class="tile-actions">
+                  <a href="/assets/mcp-servers.png" download="promptbar-mcp-servers.png">Download</a>
+                  <a href="/assets/mcp-servers.png" target="_blank" rel="noopener">Open</a>
+                </span>
+              </figcaption>
+            </figure>
+
+            <figure class="tile">
+              <a href="/assets/prompt-library.png" class="tile-thumb block" aria-label="Open prompt library screenshot">
+                <img src="/assets/prompt-library.png" alt="PromptBar Prompt Library" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">Prompt Library</span>
+                <span class="tile-meta">PNG, 1576 x 1320</span>
+                <span class="tile-actions">
+                  <a href="/assets/prompt-library.png" download="promptbar-prompt-library.png">Download</a>
+                  <a href="/assets/prompt-library.png" target="_blank" rel="noopener">Open</a>
+                </span>
+              </figcaption>
+            </figure>
+
+            <figure class="tile">
+              <a href="/assets/appicon-1024.png" class="tile-thumb logo block" aria-label="Open PromptBar app icon 1024">
+                <img src="/assets/appicon-1024.png" alt="PromptBar app icon" loading="lazy" />
+              </a>
+              <figcaption class="tile-body">
+                <span class="tile-name">App icon</span>
+                <span class="tile-meta">PNG, 1024 x 1024 (kit includes 16 to 1024)</span>
+                <span class="tile-actions">
+                  <a href="/assets/appicon-1024.png" download="promptbar-icon-1024.png">Download 1024</a>
+                  <a href="/assets/appicon-256.png" download="promptbar-icon-256.png">256</a>
+                  <a href="/assets/appicon-128.png" download="promptbar-icon-128.png">128</a>
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="mt-10 glass p-6 md:p-7 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-glass">
+            <div>
+              <p class="text-white font-semibold">Every asset, packaged</p>
+              <p class="text-slate-400 text-sm mt-1">7.1 MB ZIP with logos, screenshots, boilerplate, fact sheet, and usage README.</p>
+            </div>
+            <a href="/assets/promptbar-press-kit.zip" download class="btn btn-primary shine">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download the press kit
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="py-16 md:py-24" aria-labelledby="contact-heading">
+        <div class="max-w-5xl mx-auto px-6">
+          <span class="eyebrow"><span class="eyebrow-dot" style="background:#a78bfa"></span>Press contact</span>
+          <h2 id="contact-heading" class="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-white">
+            Who to talk to
+          </h2>
+
+          <div class="mt-8 glass-strong rounded-2xl p-8 md:p-10 shadow-glass grid md:grid-cols-[auto_1fr_auto] gap-6 md:gap-10 items-center">
+            <img src="/assets/appicon-256.png" alt="PromptBar mark" class="w-20 h-20 rounded-2xl shadow-soft" />
+            <div>
+              <p class="text-white text-xl font-semibold">Petros Dhespollari</p>
+              <p class="text-slate-400 mt-1">Developer &amp; maintainer, PromptBar</p>
+              <p class="text-slate-400 mt-3 text-sm max-w-md">
+                Available weekdays for interviews, review copies, or product questions. Replies typically within 24 to 48 hours, in English or Albanian.
+              </p>
+            </div>
+            <a href="mailto:info@peterdsp.dev?subject=PromptBar%20press%20inquiry" class="btn btn-primary shine">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              info@peterdsp.dev
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/5 mt-8">
+      <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="/assets/appicon-128.png" alt="" class="w-8 h-8 rounded-lg" />
+          <div class="text-sm text-slate-400">
+            &copy; <span id="year">2026</span> PromptBar. Built in Tirana and Athens by
+            <a href="https://peterdsp.dev" class="text-slate-200 hover:text-white underline underline-offset-4">@peterdsp</a>.
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm text-slate-400">
+          <a href="/" class="hover:text-white">Home</a>
+          <a href="https://github.com/peterdsp/PromptBar" target="_blank" rel="noopener" class="hover:text-white">GitHub</a>
+          <a href="https://github.com/peterdsp/PromptBar/blob/main/PRIVACY_POLICY.md" target="_blank" rel="noopener" class="hover:text-white">Privacy</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
