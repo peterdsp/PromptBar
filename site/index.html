@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0b12" />
+    <meta name="color-scheme" content="dark" />
+
+    <title>PromptBar — Any chat. Any model. One keystroke away.</title>
+    <meta
+      name="description"
+      content="A lightweight macOS menubar app that wraps any web chat and talks natively to any OpenAI-compatible endpoint. BYO key. Zero telemetry. Liquid Glass, top to bottom."
+    />
+    <link rel="canonical" href="https://promptbar.peterdsp.dev/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://promptbar.peterdsp.dev/" />
+    <meta property="og:title" content="PromptBar — Any chat. Any model. One keystroke away." />
+    <meta
+      property="og:description"
+      content="A lightweight macOS menubar app that wraps any web chat and talks natively to any OpenAI-compatible endpoint. BYO key. Zero telemetry."
+    />
+    <meta property="og:image" content="https://promptbar.peterdsp.dev/assets/native-chat.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PromptBar — Any chat. Any model. One keystroke away." />
+    <meta
+      name="twitter:description"
+      content="A lightweight macOS menubar app for wrapping any web chat and streaming from any OpenAI-compatible endpoint. BYO key. Zero telemetry."
+    />
+    <meta name="twitter:image" content="https://promptbar.peterdsp.dev/assets/native-chat.png" />
+
+    <link rel="icon" type="image/png" sizes="128x128" href="/assets/appicon-128.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/assets/appicon-256.png" />
+    <link rel="apple-touch-icon" sizes="256x256" href="/assets/appicon-256.png" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                '-apple-system',
+                'BlinkMacSystemFont',
+                'SF Pro Text',
+                'SF Pro Display',
+                'Inter',
+                'system-ui',
+                'Segoe UI',
+                'Helvetica',
+                'Arial',
+                'sans-serif',
+              ],
+              mono: ['SF Mono', 'ui-monospace', 'Menlo', 'Consolas', 'monospace'],
+            },
+            colors: {
+              ink: {
+                950: '#07070c',
+                900: '#0b0b12',
+                800: '#111119',
+                700: '#171722',
+                600: '#1f1f2d',
+              },
+              accent: {
+                400: '#7dd3fc',
+                500: '#38bdf8',
+                600: '#0ea5e9',
+              },
+              mint: {
+                400: '#5eead4',
+                500: '#2dd4bf',
+              },
+              lilac: {
+                400: '#c4b5fd',
+                500: '#a78bfa',
+              },
+            },
+            boxShadow: {
+              glass:
+                '0 1px 0 0 rgba(255,255,255,0.08) inset, 0 0 0 1px rgba(255,255,255,0.06), 0 30px 60px -20px rgba(0,0,0,0.7)',
+              soft: '0 20px 60px -20px rgba(0,0,0,0.6)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html,
+      body {
+        background: #07070c;
+      }
+
+      body {
+        font-feature-settings: 'ss01', 'cv11';
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* Aurora backdrop */
+      .aurora {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .aurora::before,
+      .aurora::after {
+        content: '';
+        position: absolute;
+        width: 60vmax;
+        height: 60vmax;
+        border-radius: 9999px;
+        filter: blur(90px);
+        opacity: 0.55;
+        mix-blend-mode: screen;
+      }
+      .aurora::before {
+        top: -20vmax;
+        left: -10vmax;
+        background: radial-gradient(circle at 30% 30%, #38bdf8, transparent 60%);
+        animation: float1 22s ease-in-out infinite alternate;
+      }
+      .aurora::after {
+        bottom: -25vmax;
+        right: -15vmax;
+        background: radial-gradient(circle at 70% 70%, #a78bfa, transparent 60%);
+        animation: float2 26s ease-in-out infinite alternate;
+      }
+      .aurora .mint {
+        position: absolute;
+        top: 30%;
+        left: 45%;
+        width: 40vmax;
+        height: 40vmax;
+        border-radius: 9999px;
+        background: radial-gradient(circle at 50% 50%, #2dd4bf, transparent 60%);
+        filter: blur(100px);
+        opacity: 0.28;
+        mix-blend-mode: screen;
+        animation: float3 30s ease-in-out infinite alternate;
+      }
+
+      @keyframes float1 {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(6vmax, 4vmax, 0) scale(1.1);
+        }
+      }
+      @keyframes float2 {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(-4vmax, -6vmax, 0) scale(1.15);
+        }
+      }
+      @keyframes float3 {
+        0% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(-5vmax, 3vmax, 0) scale(1.05);
+        }
+      }
+
+      /* Grid texture */
+      .grid-texture {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 75%);
+        -webkit-mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 75%);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+
+      /* Glass panels */
+      .glass {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+        backdrop-filter: blur(24px) saturate(140%);
+        -webkit-backdrop-filter: blur(24px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+      }
+      .glass-strong {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+        backdrop-filter: blur(28px) saturate(160%);
+        -webkit-backdrop-filter: blur(28px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .chip {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+      }
+
+      /* Shine on hover */
+      .shine {
+        position: relative;
+        overflow: hidden;
+      }
+      .shine::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.14) 50%,
+          transparent 70%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.9s ease;
+      }
+      .shine:hover::after {
+        transform: translateX(100%);
+      }
+
+      /* Screenshot frame */
+      .shot {
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 40px 120px -30px rgba(0, 0, 0, 0.75),
+          0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+        background: #0b0b12;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.85rem 1.25rem;
+        border-radius: 14px;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn-primary {
+        background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+        color: #05161f;
+        box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.55),
+          0 1px 0 0 rgba(255, 255, 255, 0.3) inset;
+      }
+      .btn-primary:hover {
+        box-shadow: 0 16px 36px -10px rgba(56, 189, 248, 0.7),
+          0 1px 0 0 rgba(255, 255, 255, 0.35) inset;
+      }
+      .btn-secondary {
+        color: #e8e8f0;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Kbd */
+      kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.6em;
+        padding: 0.15em 0.5em;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+        font-family: 'SF Mono', ui-monospace, monospace;
+        font-size: 0.8em;
+        color: #f8f8f2;
+      }
+
+      /* Fade-in on scroll */
+      .reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Fine text selection color */
+      ::selection {
+        background: rgba(56, 189, 248, 0.35);
+        color: #fff;
+      }
+
+      /* Reduce motion */
+      @media (prefers-reduced-motion: reduce) {
+        .aurora::before,
+        .aurora::after,
+        .aurora .mint {
+          animation: none;
+        }
+        .reveal {
+          transition: none;
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-200 font-sans antialiased">
+    <div class="aurora">
+      <div class="mint"></div>
+    </div>
+    <div class="grid-texture"></div>
+
+    <!-- Nav -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-ink-950/50 border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="#" class="flex items-center gap-3">
+          <img
+            src="/assets/appicon-128.png"
+            alt="PromptBar app icon"
+            class="w-8 h-8 rounded-lg shadow-soft"
+          />
+          <span class="font-semibold tracking-tight text-slate-100">PromptBar</span>
+          <span class="chip text-[10px] uppercase tracking-widest text-slate-300 rounded-full px-2 py-0.5 ml-1"
+            >v2.0</span
+          >
+        </a>
+        <nav class="hidden md:flex items-center gap-8 text-sm text-slate-300">
+          <a href="#features" class="hover:text-white transition">Features</a>
+          <a href="#screens" class="hover:text-white transition">Screens</a>
+          <a href="#byo-key" class="hover:text-white transition">BYO Key</a>
+          <a href="#privacy" class="hover:text-white transition">Privacy</a>
+          <a
+            href="https://github.com/peterdsp/PromptBar"
+            target="_blank"
+            rel="noopener"
+            class="hover:text-white transition"
+            >GitHub</a
+          >
+        </nav>
+        <div class="flex items-center gap-2">
+          <a
+            href="https://ko-fi.com/peterdsp"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-primary shine text-sm"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 8h1a4 4 0 0 1 0 8h-1"></path>
+              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"></path>
+              <line x1="6" y1="2" x2="6" y2="4"></line>
+              <line x1="10" y1="2" x2="10" y2="4"></line>
+              <line x1="14" y1="2" x2="14" y2="4"></line>
+            </svg>
+            Get PromptBar
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="relative pt-20 md:pt-28 pb-16 md:pb-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-6 reveal">
+            <div
+              class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300 mb-6"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-mint-400"></span>
+              Built for macOS 26 Tahoe — Liquid Glass, top to bottom
+            </div>
+            <h1
+              class="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white leading-[1.05]"
+            >
+              Any chat. Any model.
+              <span
+                class="bg-clip-text text-transparent bg-gradient-to-r from-accent-400 via-mint-400 to-lilac-400"
+                >One keystroke away.</span
+              >
+            </h1>
+            <p class="mt-6 text-lg text-slate-300 max-w-xl">
+              PromptBar is a lightweight macOS menubar app. Wrap any web-based chat in a
+              distraction-free popover, or stream natively from any OpenAI-compatible endpoint.
+              Your key, your model, your data.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="https://ko-fi.com/peterdsp"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary shine"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 8h1a4 4 0 0 1 0 8h-1"></path>
+                  <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"></path>
+                  <line x1="6" y1="2" x2="6" y2="4"></line>
+                  <line x1="10" y1="2" x2="10" y2="4"></line>
+                  <line x1="14" y1="2" x2="14" y2="4"></line>
+                </svg>
+                Buy on Ko-fi
+              </a>
+              <a
+                href="https://apps.apple.com/app/promptbar/id6746917172"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-secondary"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M16.365 1.43c0 1.14-.443 2.24-1.163 3.03-.79.86-2.06 1.52-3.08 1.45-.13-1.12.45-2.27 1.16-3.03.79-.86 2.16-1.5 3.08-1.45zM20.5 17.42c-.56 1.31-.83 1.9-1.56 3.06-1.02 1.63-2.46 3.66-4.24 3.68-1.59.02-2-1.05-4.15-1.04-2.15.01-2.6 1.06-4.2 1.04-1.78-.02-3.15-1.85-4.17-3.48C0.5 17.55-.66 12.9 1.63 9.86c1.06-1.4 2.72-2.29 4.53-2.29 1.85 0 3.02 1.02 4.55 1.02 1.5 0 2.42-1.02 4.53-1.02 1.63 0 3.36.89 4.6 2.44-4.05 2.22-3.39 8.02.66 9.41z"
+                  />
+                </svg>
+                Get on the App Store
+              </a>
+              <a
+                href="https://github.com/peterdsp/PromptBar/releases"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-secondary"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2C6.48 2 2 6.58 2 12.26c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.36-3.37-1.36-.46-1.19-1.11-1.51-1.11-1.51-.91-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.34 9.34 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.04.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"
+                  />
+                </svg>
+                Free .pkg on GitHub
+              </a>
+            </div>
+            <div class="mt-6 text-sm text-slate-400 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <span><kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>O</kbd> to summon</span>
+              <span class="text-slate-500">·</span>
+              <span>macOS 26 Tahoe+</span>
+              <span class="text-slate-500">·</span>
+              <span>Signed & notarized</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6 reveal">
+            <div class="relative">
+              <div
+                class="absolute -inset-6 -z-10 rounded-[36px] bg-gradient-to-br from-accent-500/25 via-lilac-500/20 to-mint-500/20 blur-3xl opacity-70"
+              ></div>
+              <div class="shot">
+                <img
+                  src="/assets/native-chat.png"
+                  alt="PromptBar native streaming chat window on macOS"
+                  class="w-full h-auto"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </div>
+              <div
+                class="absolute -bottom-6 -right-4 hidden md:flex glass px-4 py-3 items-center gap-3 shadow-glass"
+              >
+                <span class="w-2 h-2 rounded-full bg-mint-400 animate-pulse"></span>
+                <span class="text-xs text-slate-300"
+                  >Streaming from <span class="font-mono text-slate-100">gpt-4o</span></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee-ish trust strip -->
+    <section class="pb-12">
+      <div class="max-w-7xl mx-auto px-6">
+        <div
+          class="glass px-6 py-5 flex flex-wrap items-center justify-between gap-6 text-sm text-slate-300"
+        >
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-mint-400"></span> Zero telemetry
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-accent-400"></span> Keys in the Keychain
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-lilac-400"></span> Bring your own endpoint
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-mint-400"></span> Menubar-only, no Dock noise
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 rounded-full bg-accent-400"></span> Source available
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features grid -->
+    <section id="features" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-2xl reveal">
+          <div
+            class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300 mb-4"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-accent-400"></span>
+            What's inside
+          </div>
+          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+            Built to disappear until you need it.
+          </h2>
+          <p class="mt-4 text-slate-300">
+            PromptBar ships empty. No bundled providers, no bundled brands. You decide what goes
+            in the menubar, and the app stays out of your way.
+          </p>
+        </div>
+
+        <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Card -->
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500/30 to-lilac-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-accent-400"
+              >
+                <rect x="3" y="4" width="18" height="14" rx="3"></rect>
+                <path d="M8 20h8"></path>
+                <path d="M12 18v2"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Liquid Glass UI</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              Top-to-bottom on macOS 26's material system. Sits perfectly beside every native app.
+            </p>
+          </div>
+
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-mint-500/30 to-accent-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-mint-400"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M2 12h20"></path>
+                <path d="M12 2a15 15 0 0 1 0 20"></path>
+                <path d="M12 2a15 15 0 0 0 0 20"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Wrap any web chat</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              Paste a URL, pick a name, icon, and color. Cookies live on this Mac, not in the
+              cloud.
+            </p>
+          </div>
+
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-lilac-500/30 to-mint-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-lilac-400"
+              >
+                <path d="M21 2l-9 9"></path>
+                <path d="M15 2h6v6"></path>
+                <path d="M12 22H4a2 2 0 0 1-2-2v-8"></path>
+                <path d="M6 12l6 6"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">BYO API key</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              OpenAI-compatible <span class="font-mono text-slate-100">/chat/completions</span>.
+              Straight from your Mac to your endpoint. No relay.
+            </p>
+          </div>
+
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-500/30 to-mint-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-accent-400"
+              >
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h10"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Prompt library</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              Save your best prompts once. Reuse in any chat with <kbd>⌘</kbd> <kbd>P</kbd>.
+              Search, tag, ship.
+            </p>
+          </div>
+
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-lilac-500/30 to-accent-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-lilac-400"
+              >
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Keychain-backed keys</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              Not in UserDefaults. Not in iCloud. Not in a log file. Just the Keychain.
+            </p>
+          </div>
+
+          <div class="glass p-6 shadow-glass reveal">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-mint-500/30 to-lilac-500/30 grid place-items-center mb-4"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-mint-400"
+              >
+                <path d="M12 2v4"></path>
+                <path d="M12 18v4"></path>
+                <path d="M4.93 4.93l2.83 2.83"></path>
+                <path d="M16.24 16.24l2.83 2.83"></path>
+                <path d="M2 12h4"></path>
+                <path d="M18 12h4"></path>
+                <path d="M4.93 19.07l2.83-2.83"></path>
+                <path d="M16.24 7.76l2.83-2.83"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Zero telemetry</h3>
+            <p class="mt-2 text-sm text-slate-300">
+              No accounts. No analytics. No remote config. Updates check GitHub directly.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screens showcase -->
+    <section id="screens" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-end justify-between flex-wrap gap-6 reveal">
+          <div class="max-w-2xl">
+            <div
+              class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300 mb-4"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-lilac-400"></span>
+              Look inside
+            </div>
+            <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+              One popover. Every conversation.
+            </h2>
+          </div>
+          <p class="text-slate-400 max-w-md">
+            Native streaming chat, web-wrapped chats, API endpoints, MCP servers, and a
+            keyboard-driven prompt library.
+          </p>
+        </div>
+
+        <div class="mt-12 grid lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-8 shot reveal">
+            <img
+              src="/assets/web-chats.png"
+              alt="PromptBar Web Chats settings — wrap any URL"
+              loading="lazy"
+              class="w-full h-auto"
+            />
+          </div>
+          <div class="lg:col-span-4 grid gap-6">
+            <div class="shot reveal">
+              <img
+                src="/assets/api-endpoints.png"
+                alt="PromptBar API Endpoints"
+                loading="lazy"
+                class="w-full h-auto"
+              />
+            </div>
+            <div class="shot reveal">
+              <img
+                src="/assets/mcp-servers.png"
+                alt="PromptBar MCP Servers"
+                loading="lazy"
+                class="w-full h-auto"
+              />
+            </div>
+          </div>
+          <div class="lg:col-span-12 shot reveal">
+            <img
+              src="/assets/prompt-library.png"
+              alt="PromptBar Prompt Library"
+              loading="lazy"
+              class="w-full h-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BYO Key section -->
+    <section id="byo-key" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-6 reveal">
+          <div
+            class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300 mb-4"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-mint-400"></span>
+            Bring your own key
+          </div>
+          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+            Point PromptBar at any OpenAI-compatible endpoint.
+          </h2>
+          <p class="mt-4 text-slate-300">
+            The de-facto standard, supported by the vast majority of inference services and local
+            runtimes. If it speaks
+            <span class="font-mono text-slate-100">/chat/completions</span>, PromptBar can chat
+            with it.
+          </p>
+          <ul class="mt-6 space-y-3 text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1 w-1.5 h-1.5 rounded-full bg-accent-400"></span>
+              Native streaming with server-sent events, cancel mid-stream.
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1 w-1.5 h-1.5 rounded-full bg-mint-400"></span>
+              Base URL, model, key, and system prompt persisted per endpoint.
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1 w-1.5 h-1.5 rounded-full bg-lilac-400"></span>
+              Straight from your Mac to your endpoint — no relay, no middleman.
+            </li>
+          </ul>
+        </div>
+
+        <div class="lg:col-span-6 reveal">
+          <div
+            class="glass-strong rounded-2xl overflow-hidden shadow-glass"
+          >
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+              <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-400/70"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-400/70"></span>
+              <span class="ml-3 text-xs text-slate-400 font-mono">endpoint.json</span>
+            </div>
+            <pre class="p-5 text-sm leading-relaxed text-slate-200 font-mono overflow-x-auto"><span class="text-slate-500">// Configured once, saved to Keychain</span>
+{
+  <span class="text-accent-400">"name"</span>: <span class="text-mint-400">"My OpenAI"</span>,
+  <span class="text-accent-400">"baseURL"</span>: <span class="text-mint-400">"https://api.openai.com/v1"</span>,
+  <span class="text-accent-400">"model"</span>: <span class="text-mint-400">"gpt-4o-mini"</span>,
+  <span class="text-accent-400">"apiKey"</span>: <span class="text-slate-500">"* stored in macOS Keychain *"</span>,
+  <span class="text-accent-400">"stream"</span>: <span class="text-lilac-400">true</span>,
+  <span class="text-accent-400">"systemPrompt"</span>: <span class="text-mint-400">"You are..."</span>
+}</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy -->
+    <section id="privacy" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="glass p-8 md:p-12 shadow-glass reveal">
+          <div class="grid lg:grid-cols-12 gap-10 items-start">
+            <div class="lg:col-span-5">
+              <div
+                class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300 mb-4"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-400"></span>
+                Private by design
+              </div>
+              <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+                No accounts. No analytics. No telemetry.
+              </h2>
+              <p class="mt-4 text-slate-300">
+                PromptBar was rebuilt from the ground up around a single rule: your data leaves
+                your Mac only when you send it, only to where you send it.
+              </p>
+            </div>
+            <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+              <div class="glass p-5">
+                <h3 class="font-semibold text-white">Keychain-backed keys</h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Not in UserDefaults. Not in iCloud. Not in a log file.
+                </p>
+              </div>
+              <div class="glass p-5">
+                <h3 class="font-semibold text-white">Local cookies</h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Web chats run inside WKWebView. Clear all local data with one click.
+                </p>
+              </div>
+              <div class="glass p-5">
+                <h3 class="font-semibold text-white">Zero remote config</h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Firebase is gone for good. Updates check GitHub Releases directly.
+                </p>
+              </div>
+              <div class="glass p-5">
+                <h3 class="font-semibold text-white">Signed & notarized</h3>
+                <p class="text-sm text-slate-300 mt-1">
+                  Distributed as a signed .pkg. Source available on GitHub under CC BY-SA 4.0.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-16 md:py-24">
+      <div class="max-w-5xl mx-auto px-6">
+        <div class="relative reveal">
+          <div
+            class="absolute -inset-6 -z-10 rounded-[36px] bg-gradient-to-br from-accent-500/30 via-mint-500/25 to-lilac-500/30 blur-3xl"
+          ></div>
+          <div class="glass-strong p-10 md:p-14 text-center shadow-glass">
+            <img
+              src="/assets/appicon-256.png"
+              alt="PromptBar app icon"
+              class="mx-auto w-20 h-20 rounded-2xl shadow-soft"
+            />
+            <h2 class="mt-6 text-3xl md:text-4xl font-semibold tracking-tight text-white">
+              Give your chats a home in the menubar.
+            </h2>
+            <p class="mt-4 text-slate-300 max-w-xl mx-auto">
+              Single-developer software. Buy on Ko-fi or the App Store to support development, or
+              grab the free .pkg from GitHub.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://ko-fi.com/peterdsp"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary shine"
+              >
+                Buy on Ko-fi
+              </a>
+              <a
+                href="https://apps.apple.com/app/promptbar/id6746917172"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-secondary"
+              >
+                App Store
+              </a>
+              <a
+                href="https://github.com/peterdsp/PromptBar/releases"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-secondary"
+              >
+                Free .pkg on GitHub
+              </a>
+            </div>
+            <p class="mt-6 text-xs text-slate-500">
+              Requires macOS 26 Tahoe or later · Signed & notarized · Apple Silicon and Intel
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 mt-8">
+      <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="/assets/appicon-128.png" alt="" class="w-8 h-8 rounded-lg" />
+          <div class="text-sm text-slate-400">
+            © <span id="year">2026</span> PromptBar. Built in Tirana & Athens by
+            <a
+              href="https://peterdsp.dev"
+              class="text-slate-200 hover:text-white underline underline-offset-4"
+              >@peterdsp</a
+            >.
+          </div>
+        </div>
+        <div class="flex items-center gap-6 text-sm text-slate-400">
+          <a
+            href="https://github.com/peterdsp/PromptBar"
+            target="_blank"
+            rel="noopener"
+            class="hover:text-white"
+            >GitHub</a
+          >
+          <a
+            href="https://github.com/peterdsp/PromptBar/blob/main/PRIVACY_POLICY.md"
+            target="_blank"
+            rel="noopener"
+            class="hover:text-white"
+            >Privacy</a
+          >
+          <a
+            href="https://github.com/peterdsp/PromptBar/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener"
+            class="hover:text-white"
+            >License</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Smooth scroll for in-page anchors
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href');
+          if (id.length > 1) {
+            const el = document.querySelector(id);
+            if (el) {
+              e.preventDefault();
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
