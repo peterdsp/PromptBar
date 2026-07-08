@@ -97,6 +97,14 @@ class Product:
     name_match: str          # lowercase substring fallback match
     email_subject: str
     email_body: str
+    # When False, the /activate email-lookup convenience is disabled for
+    # this product: the only way to unlock is the signed license file we
+    # email, so knowing a buyer's address alone is not enough.
+    email_activation: bool = True
+    # When True, the signed license JSON is also embedded inline in the
+    # email body (in addition to the attachment) so buyers can copy it
+    # straight from the message.
+    inline_license: bool = False
     private_key: object = field(default=None)  # loaded Ed25519PrivateKey
 
     def safe_email(self, email: str) -> str:
@@ -132,15 +140,18 @@ peterdsp.dev
 
 KLIPA_EMAIL_BODY = """Hey,
 
-Thanks for buying klipa. To unlock the app:
+Thanks for buying klipa. Your license is the signed block at the bottom
+of this email (also attached as license.klipa). To unlock the app:
 
   1. Install klipa from https://klipa.peterdsp.dev (or via Homebrew).
-  2. Copy the email address you used on Ko-fi to your clipboard.
+  2. Select and copy the whole LICENSE block below (or open the attached
+     license.klipa file and copy its contents).
   3. Click the klipa menu bar icon, then "Activate" - klipa reads the
-     email from your clipboard and unlocks automatically.
+     license from your clipboard, verifies it, and unlocks. No network
+     needed.
 
-If activation can't reach the network, the .klipa license file is also
-attached: keep it as your proof of purchase.
+Keep this license safe - it is your proof of purchase and works offline
+on any Mac.
 
 Reply to this email if anything breaks.
 
@@ -183,6 +194,8 @@ def _build_registry() -> dict:
             name_match=os.environ.get("KLIPA_NAME_MATCH", "klipa").lower(),
             email_subject="Your klipa license",
             email_body=KLIPA_EMAIL_BODY,
+            email_activation=False,
+            inline_license=True,
         )
 
     # Load each product's signing key; drop products whose key won't load.
@@ -274,9 +287,16 @@ def send_license_email(product: Product, to_email: str, license_blob: dict):
         if bcc:
             msg["Bcc"] = ", ".join(bcc)
     msg["Subject"] = product.email_subject
-    msg.set_content(product.email_body)
-
     license_text = json.dumps(license_blob, indent=2, sort_keys=True)
+    body = product.email_body
+    if product.inline_license:
+        body += (
+            "\n\n----- LICENSE (copy everything between the lines) -----\n"
+            + license_text
+            + "\n----- END LICENSE -----\n"
+        )
+    msg.set_content(body)
+
     msg.add_attachment(
         license_text.encode("utf-8"),
         maintype="application",
@@ -362,6 +382,16 @@ def activate():
     product = PRODUCTS.get(product_key)
     if product is None:
         return jsonify({"error": "unknown product"}), 404
+
+    # Some products (klipa) deliberately disable email-lookup activation:
+    # the signed license file is the only key, so a known address alone
+    # can't unlock. We don't hand out the license here.
+    if not product.email_activation:
+        return jsonify({
+            "error": "email activation is disabled for this product",
+            "hint": "Use the license file that was emailed to you: copy its "
+                    "contents and paste them into the app's Activate action.",
+        }), 403
 
     archive_path = product.archive_path(raw_email)
     if os.path.exists(archive_path):
