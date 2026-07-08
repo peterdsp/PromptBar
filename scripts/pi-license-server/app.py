@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 """
-PromptBar license-issuing webhook server, designed to run 24/7 on a
+Multi-product license-issuing webhook server, designed to run 24/7 on a
 Raspberry Pi (or any small Linux box).
 
-Receives Ko-fi shop-order webhooks, verifies the verification token,
-filters for PromptBar purchases, signs a license with the private
-Ed25519 key, and emails the buyer the .promptbar file as an attachment.
+Receives Ko-fi shop-order webhooks, verifies the verification token, and
+for each configured product (PromptBar, klipa, ...) decides whether the
+order matches, signs a license with that product's Ed25519 private key,
+archives it, and emails the buyer the license file as an attachment.
+
+Ko-fi only allows one webhook URL per account, so a single instance has
+to serve every product sold on that account - hence the product registry
+below. Each product is fully isolated: its own signing key, its own
+`.ext` license file, its own Ko-fi item match, its own email copy. A
+license signed for one product cannot validate another.
 
 See README.md in this folder for setup (Cloudflare Tunnel, SMTP creds,
 systemd unit).
@@ -16,6 +23,7 @@ import json
 import logging
 import smtplib
 import sys
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from base64 import b64decode, b64encode
@@ -34,18 +42,20 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s"
 )
-log = logging.getLogger("promptbar-licenses")
+log = logging.getLogger("licenses")
 
 
 # ---------------------------------------------------------------------------
-# Config from environment
+# Shared config from environment
 
 KOFI_VERIFICATION_TOKEN = os.environ.get("KOFI_VERIFICATION_TOKEN", "")
-PRIVATE_KEY_PATH        = os.environ.get("PROMPTBAR_PRIVATE_KEY",
-                                         "/home/pi/promptbar/license-private.key")
-MIN_VERSION             = os.environ.get("PROMPTBAR_MIN_VERSION", "2.0.0")
-LOG_DIR                 = os.environ.get("PROMPTBAR_LOG_DIR",
-                                         "/home/pi/promptbar/issued")
+# Shared archive dir. Kept under the historical PROMPTBAR_LOG_DIR name so
+# the existing PromptBar archive path is untouched; license files are
+# namespaced by their per-product extension (.promptbar, .klipa, ...).
+LOG_DIR = os.environ.get(
+    "LICENSE_LOG_DIR",
+    os.environ.get("PROMPTBAR_LOG_DIR", "/home/pi/promptbar/issued"),
+)
 
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
@@ -54,18 +64,9 @@ SMTP_PASS = os.environ.get("SMTP_PASS", "")
 SMTP_FROM = os.environ.get("SMTP_FROM", SMTP_USER)
 SMTP_FROM_NAME = os.environ.get("SMTP_FROM_NAME", "Petros Dhespollari")
 
-# Which Ko-fi shop items count as PromptBar purchases. Ko-fi sends a
-# direct_link_code per item; you can also match on the variation_name
-# field. Comma-separated env var, falls back to a name substring check.
-PROMPTBAR_LINK_CODES = set(filter(
-    None,
-    (s.strip() for s in os.environ.get("PROMPTBAR_LINK_CODES", "").split(","))
-))
-PROMPTBAR_NAME_MATCH = os.environ.get("PROMPTBAR_NAME_MATCH", "promptbar").lower()
-
-# Admin emails get a free license auto-archived at startup so they can
-# /activate at any time. Comma-separated. Also receive BCC of every
-# license email so the operator has a permanent inbox record.
+# Admin emails get a free license per product auto-archived at startup so
+# the operator can /activate at any time, and receive BCC of every
+# license email so there's a permanent inbox record. Comma-separated.
 ADMIN_EMAILS = [
     s.strip().lower() for s in
     os.environ.get("ADMIN_EMAILS", "info@peterdsp.dev").split(",")
@@ -78,81 +79,35 @@ BCC_LICENSE_EMAILS = [
 ]
 
 
-# ---------------------------------------------------------------------------
-# Crypto: load the Ed25519 private key once at startup.
-
-def _load_private_key(path: str) -> Ed25519PrivateKey:
-    with open(path, "r") as f:
-        raw_b64 = f.read().strip()
-    raw = b64decode(raw_b64)
-    if len(raw) != 32:
-        raise RuntimeError(f"Expected 32-byte Ed25519 key in {path}, got {len(raw)}")
-    return Ed25519PrivateKey.from_private_bytes(raw)
-
-
-try:
-    PRIVATE_KEY = _load_private_key(PRIVATE_KEY_PATH)
-    log.info("Loaded private key from %s", PRIVATE_KEY_PATH)
-except Exception as e:
-    log.error("Failed to load private key: %s", e)
-    PRIVATE_KEY = None
-
-
-def _bootstrap_admin_licenses():
-    """Ensure every email in ADMIN_EMAILS has an archived license so the
-    operator can /activate from any Mac at any time. Idempotent, safe
-    to call on every startup."""
-    if PRIVATE_KEY is None or not ADMIN_EMAILS:
-        return
-    try:
-        os.makedirs(LOG_DIR, exist_ok=True)
-    except Exception as e:
-        log.error("Cannot create LOG_DIR %s: %s", LOG_DIR, e)
-        return
-    for raw in ADMIN_EMAILS:
-        email = raw.strip().lower()
-        if not email or "@" not in email:
-            continue
-        safe = email.replace("@", "_at_").replace(".", "_").replace("+", "_plus_")
-        path = os.path.join(LOG_DIR, f"{safe}.promptbar")
-        if os.path.exists(path):
-            continue
-        blob = issue_license(email, f"admin-{email}")
-        try:
-            with open(path, "w") as f:
-                json.dump(blob, f, indent=2, sort_keys=True)
-            log.info("Bootstrapped admin license for %s", email)
-        except Exception as e:
-            log.error("Failed to write admin license for %s: %s", email, e)
-
-
-def _canonical_json(obj: dict) -> bytes:
-    return json.dumps(obj, separators=(",", ":"), sort_keys=True).encode("utf-8")
-
-
-def issue_license(email: str, order_id: str) -> dict:
-    issued_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    canonical = {
-        "email": email.lower().strip(),
-        "issued_at": issued_at,
-        "order_id": order_id.strip(),
-        "product": "PromptBar",
-        "min_version": MIN_VERSION,
-    }
-    signature = PRIVATE_KEY.sign(_canonical_json(canonical))
-    canonical["signature"] = b64encode(signature).decode("ascii")
-    return canonical
-
-
-# Run the admin-license bootstrap once the issuer is defined.
-_bootstrap_admin_licenses()
+def _env_codes(name: str) -> set:
+    return set(filter(None, (s.strip() for s in os.environ.get(name, "").split(","))))
 
 
 # ---------------------------------------------------------------------------
-# Email delivery
+# Product registry
 
-EMAIL_SUBJECT = "Your PromptBar 2.0 license"
-EMAIL_BODY = """Hey,
+@dataclass
+class Product:
+    key: str                 # registry key / ?product= value, e.g. "klipa"
+    name: str                # signed "product" field + email copy, e.g. "klipa"
+    ext: str                 # license file extension, e.g. "klipa"
+    private_key_path: str
+    min_version: str
+    link_codes: set          # Ko-fi direct_link_code allow list
+    name_match: str          # lowercase substring fallback match
+    email_subject: str
+    email_body: str
+    private_key: object = field(default=None)  # loaded Ed25519PrivateKey
+
+    def safe_email(self, email: str) -> str:
+        norm = email.strip().lower()
+        return norm.replace("@", "_at_").replace(".", "_").replace("+", "_plus_")
+
+    def archive_path(self, email: str) -> str:
+        return os.path.join(LOG_DIR, f"{self.safe_email(email)}.{self.ext}")
+
+
+PROMPTBAR_EMAIL_BODY = """Hey,
 
 Thanks for buying PromptBar 2.0. Two things attached/linked:
 
@@ -175,25 +130,158 @@ Petros
 peterdsp.dev
 """
 
+KLIPA_EMAIL_BODY = """Hey,
 
-def send_license_email(to_email: str, license_blob: dict):
+Thanks for buying klipa. To unlock the app:
+
+  1. Install klipa from https://klipa.peterdsp.dev (or via Homebrew).
+  2. Copy the email address you used on Ko-fi to your clipboard.
+  3. Click the klipa menu bar icon, then "Activate" - klipa reads the
+     email from your clipboard and unlocks automatically.
+
+If activation can't reach the network, the .klipa license file is also
+attached: keep it as your proof of purchase.
+
+Reply to this email if anything breaks.
+
+Thanks for backing the project.
+
+Petros
+peterdsp.dev
+"""
+
+
+def _build_registry() -> dict:
+    products = {}
+
+    # PromptBar - unchanged env vars so the live deployment keeps working.
+    products["promptbar"] = Product(
+        key="promptbar",
+        name="PromptBar",
+        ext="promptbar",
+        private_key_path=os.environ.get(
+            "PROMPTBAR_PRIVATE_KEY", "/home/pi/promptbar/license-private.key"),
+        min_version=os.environ.get("PROMPTBAR_MIN_VERSION", "2.0.0"),
+        link_codes=_env_codes("PROMPTBAR_LINK_CODES"),
+        name_match=os.environ.get("PROMPTBAR_NAME_MATCH", "promptbar").lower(),
+        email_subject="Your PromptBar 2.0 license",
+        email_body=PROMPTBAR_EMAIL_BODY,
+    )
+
+    # klipa - only registered when its signing key path is configured, so
+    # a Pi that hasn't been given the klipa key simply ignores klipa
+    # orders instead of erroring.
+    klipa_key = os.environ.get("KLIPA_PRIVATE_KEY", "")
+    if klipa_key:
+        products["klipa"] = Product(
+            key="klipa",
+            name="klipa",
+            ext="klipa",
+            private_key_path=klipa_key,
+            min_version=os.environ.get("KLIPA_MIN_VERSION", "0.4.0"),
+            link_codes=_env_codes("KLIPA_LINK_CODES"),
+            name_match=os.environ.get("KLIPA_NAME_MATCH", "klipa").lower(),
+            email_subject="Your klipa license",
+            email_body=KLIPA_EMAIL_BODY,
+        )
+
+    # Load each product's signing key; drop products whose key won't load.
+    ready = {}
+    for pkey, product in products.items():
+        try:
+            product.private_key = _load_private_key(product.private_key_path)
+            ready[pkey] = product
+            log.info("Product '%s' ready (key %s)", pkey, product.private_key_path)
+        except Exception as e:
+            log.error("Product '%s' disabled: cannot load key %s: %s",
+                      pkey, product.private_key_path, e)
+    return ready
+
+
+# ---------------------------------------------------------------------------
+# Crypto
+
+def _load_private_key(path: str) -> Ed25519PrivateKey:
+    with open(path, "r") as f:
+        raw_b64 = f.read().strip()
+    raw = b64decode(raw_b64)
+    if len(raw) != 32:
+        raise RuntimeError(f"Expected 32-byte Ed25519 key in {path}, got {len(raw)}")
+    return Ed25519PrivateKey.from_private_bytes(raw)
+
+
+def _canonical_json(obj: dict) -> bytes:
+    return json.dumps(obj, separators=(",", ":"), sort_keys=True).encode("utf-8")
+
+
+def issue_license(product: Product, email: str, order_id: str) -> dict:
+    issued_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    canonical = {
+        "email": email.lower().strip(),
+        "issued_at": issued_at,
+        "order_id": order_id.strip(),
+        "product": product.name,
+        "min_version": product.min_version,
+    }
+    signature = product.private_key.sign(_canonical_json(canonical))
+    canonical["signature"] = b64encode(signature).decode("ascii")
+    return canonical
+
+
+PRODUCTS = _build_registry()
+
+
+def _bootstrap_admin_licenses():
+    """Ensure every admin email has an archived license for every product,
+    so the operator can /activate from any Mac at any time. Idempotent."""
+    if not ADMIN_EMAILS:
+        return
+    try:
+        os.makedirs(LOG_DIR, exist_ok=True)
+    except Exception as e:
+        log.error("Cannot create LOG_DIR %s: %s", LOG_DIR, e)
+        return
+    for product in PRODUCTS.values():
+        for raw in ADMIN_EMAILS:
+            email = raw.strip().lower()
+            if not email or "@" not in email:
+                continue
+            path = product.archive_path(email)
+            if os.path.exists(path):
+                continue
+            blob = issue_license(product, email, f"admin-{email}")
+            try:
+                with open(path, "w") as f:
+                    json.dump(blob, f, indent=2, sort_keys=True)
+                log.info("Bootstrapped %s admin license for %s", product.key, email)
+            except Exception as e:
+                log.error("Failed to write %s admin license for %s: %s",
+                          product.key, email, e)
+
+
+_bootstrap_admin_licenses()
+
+
+# ---------------------------------------------------------------------------
+# Email delivery
+
+def send_license_email(product: Product, to_email: str, license_blob: dict):
     msg = EmailMessage()
     msg["From"] = f"{SMTP_FROM_NAME} <{SMTP_FROM}>"
     msg["To"] = to_email
     if BCC_LICENSE_EMAILS:
-        # Drop the recipient itself from the BCC list to avoid duplicates.
         bcc = [a for a in BCC_LICENSE_EMAILS if a != to_email.lower()]
         if bcc:
             msg["Bcc"] = ", ".join(bcc)
-    msg["Subject"] = EMAIL_SUBJECT
-    msg.set_content(EMAIL_BODY)
+    msg["Subject"] = product.email_subject
+    msg.set_content(product.email_body)
 
     license_text = json.dumps(license_blob, indent=2, sort_keys=True)
     msg.add_attachment(
         license_text.encode("utf-8"),
         maintype="application",
         subtype="json",
-        filename="license.promptbar"
+        filename=f"license.{product.ext}"
     )
 
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=30) as smtp:
@@ -201,7 +289,41 @@ def send_license_email(to_email: str, license_blob: dict):
         smtp.starttls()
         smtp.login(SMTP_USER, SMTP_PASS)
         smtp.send_message(msg)
-    log.info("Emailed license to %s (bcc=%s)", to_email, msg.get("Bcc") or "-")
+    log.info("Emailed %s license to %s (bcc=%s)",
+             product.key, to_email, msg.get("Bcc") or "-")
+
+
+# ---------------------------------------------------------------------------
+# Matching + archiving
+
+def _matches(product: Product, payload: dict) -> bool:
+    items = payload.get("shop_items") or []
+    if isinstance(items, list):
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            code = (item.get("direct_link_code") or "").strip()
+            if code and code in product.link_codes:
+                return True
+            name = (item.get("variation_name") or "").lower()
+            if product.name_match and product.name_match in name:
+                return True
+    # Fallback: some Ko-fi shop events flatten items into the message field.
+    msg = (payload.get("message") or "").lower()
+    if product.name_match and product.name_match in msg:
+        return True
+    return False
+
+
+def _archive(product: Product, email: str, license_blob: dict):
+    try:
+        os.makedirs(LOG_DIR, exist_ok=True)
+        path = product.archive_path(email)
+        with open(path, "w") as f:
+            json.dump(license_blob, f, indent=2, sort_keys=True)
+        log.info("Archived %s license at %s", product.key, path)
+    except Exception as e:
+        log.warning("Archive failed for %s: %s", product.key, e)
 
 
 # ---------------------------------------------------------------------------
@@ -211,8 +333,9 @@ def send_license_email(to_email: str, license_blob: dict):
 def health():
     return jsonify({
         "ok": True,
-        "private_key_loaded": PRIVATE_KEY is not None,
-        "min_version": MIN_VERSION,
+        "products": {
+            p.key: {"min_version": p.min_version} for p in PRODUCTS.values()
+        },
         "smtp_configured": bool(SMTP_USER and SMTP_PASS),
     })
 
@@ -220,36 +343,39 @@ def health():
 @app.route("/activate", methods=["POST"])
 def activate():
     """
-    App-driven activation: the buyer types their Ko-fi email in PromptBar,
-    the app POSTs {"email": "..."} here, and we return the signed license
-    JSON if the email has a license on file. Zero file handling for the
-    buyer.
+    App-driven activation: the buyer's app POSTs {"email": "...",
+    "product": "klipa"} and we return the signed license JSON if that
+    email has a license on file for that product. `product` defaults to
+    "promptbar" so the existing PromptBar app (which sends no product
+    field) keeps working unchanged.
 
-    For privacy, we don't tell unknown emails whether the address exists,
-    just that no license was found.
+    For privacy, we don't reveal whether an unknown address exists, only
+    that no license was found.
     """
-    if PRIVATE_KEY is None:
-        return jsonify({"error": "server misconfigured"}), 500
-
     body = request.get_json(silent=True) or {}
     raw_email = (body.get("email") or "").strip().lower()
+    product_key = (body.get("product") or request.args.get("product") or "promptbar").strip().lower()
+
     if not raw_email or "@" not in raw_email:
         return jsonify({"error": "invalid email"}), 400
 
-    # Look the email up in the archive directory. If found, hand it back.
-    safe = raw_email.replace("@", "_at_").replace(".", "_").replace("+", "_plus_")
-    archive_path = os.path.join(LOG_DIR, f"{safe}.promptbar")
+    product = PRODUCTS.get(product_key)
+    if product is None:
+        return jsonify({"error": "unknown product"}), 404
+
+    archive_path = product.archive_path(raw_email)
     if os.path.exists(archive_path):
         try:
             with open(archive_path, "r") as f:
                 license_blob = json.load(f)
-            log.info("Activated %s from archive", raw_email)
+            log.info("Activated %s for %s from archive", product_key, raw_email)
             return jsonify(license_blob), 200
         except Exception as e:
-            log.error("Failed to read archived license for %s: %s", raw_email, e)
+            log.error("Failed to read archived %s license for %s: %s",
+                      product_key, raw_email, e)
             return jsonify({"error": "archive read failed"}), 500
 
-    log.info("Activation requested for unknown email %s", raw_email)
+    log.info("Activation requested for unknown %s email %s", product_key, raw_email)
     return jsonify({
         "error": "no license on file for that email",
         "hint": "Use the email you typed on Ko-fi at checkout. If you bought "
@@ -261,18 +387,10 @@ def activate():
 @app.route("/webhook", methods=["POST"])
 def kofi_webhook():
     """
-    Ko-fi webhook receiver.
-
-    Ko-fi posts as form data with a single 'data' field that contains the
-    JSON payload (this is documented in their developer docs). We pull
-    that out, verify the token, decide whether this purchase qualifies
-    for a license, sign one, and email it.
+    Ko-fi webhook receiver. Ko-fi posts form data with a single 'data'
+    field holding the JSON payload. We verify the token, then offer the
+    order to every product; the first one that matches gets issued.
     """
-    if PRIVATE_KEY is None:
-        log.error("Refusing webhook: private key not loaded")
-        return jsonify({"error": "server misconfigured"}), 500
-
-    # Ko-fi sends form data, not JSON
     raw = request.form.get("data") or request.get_data(as_text=True)
     try:
         payload = json.loads(raw)
@@ -295,59 +413,28 @@ def kofi_webhook():
         log.warning("Shop order without buyer email, skipping")
         return jsonify({"error": "no email"}), 400
 
-    if not _is_promptbar_purchase(payload):
-        log.info("Shop order for %s is not a PromptBar item, skipping", email)
-        return jsonify({"ok": True, "matched": False}), 200
-
-    order_id = payload.get("kofi_transaction_id") or payload.get("message_id") or "unknown"
-
-    try:
-        license_blob = issue_license(email, order_id)
-    except Exception as e:
-        log.error("Failed to issue license for %s: %s", email, e)
-        return jsonify({"error": "sign failed"}), 500
-
-    _archive(email, order_id, license_blob)
-
-    try:
-        send_license_email(email, license_blob)
-    except Exception as e:
-        log.error("Failed to email license to %s: %s", email, e)
-        return jsonify({"error": "email failed"}), 500
-
-    return jsonify({"ok": True, "issued_to": email, "order_id": order_id}), 200
-
-
-def _is_promptbar_purchase(payload: dict) -> bool:
-    items = payload.get("shop_items") or []
-    if not isinstance(items, list):
-        return False
-    for item in items:
-        if not isinstance(item, dict):
+    for product in PRODUCTS.values():
+        if not _matches(product, payload):
             continue
-        code = (item.get("direct_link_code") or "").strip()
-        if code and code in PROMPTBAR_LINK_CODES:
-            return True
-        name = (item.get("variation_name") or "").lower()
-        if PROMPTBAR_NAME_MATCH and PROMPTBAR_NAME_MATCH in name:
-            return True
-    # Fallback: some Ko-fi shop events flatten items into a single message
-    msg = (payload.get("message") or "").lower()
-    if PROMPTBAR_NAME_MATCH and PROMPTBAR_NAME_MATCH in msg:
-        return True
-    return False
+        order_id = payload.get("kofi_transaction_id") or payload.get("message_id") or "unknown"
+        try:
+            license_blob = issue_license(product, email, order_id)
+        except Exception as e:
+            log.error("Failed to issue %s license for %s: %s", product.key, email, e)
+            return jsonify({"error": "sign failed"}), 500
+        _archive(product, email, license_blob)
+        try:
+            send_license_email(product, email, license_blob)
+        except Exception as e:
+            log.error("Failed to email %s license to %s: %s", product.key, email, e)
+            return jsonify({"error": "email failed"}), 500
+        return jsonify({
+            "ok": True, "product": product.key,
+            "issued_to": email, "order_id": order_id
+        }), 200
 
-
-def _archive(email: str, order_id: str, license_blob: dict):
-    try:
-        os.makedirs(LOG_DIR, exist_ok=True)
-        safe_email = email.replace("@", "_at_").replace(".", "_")
-        path = os.path.join(LOG_DIR, f"{safe_email}.promptbar")
-        with open(path, "w") as f:
-            json.dump(license_blob, f, indent=2, sort_keys=True)
-        log.info("Archived license at %s", path)
-    except Exception as e:
-        log.warning("Archive failed: %s", e)
+    log.info("Shop order for %s matched no product, skipping", email)
+    return jsonify({"ok": True, "matched": False}), 200
 
 
 # ---------------------------------------------------------------------------
