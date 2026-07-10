@@ -4,10 +4,10 @@
 //
 //  First-launch activation for EXTERNAL_DISTRIBUTION builds.
 //
-//  Primary flow: type your Ko-fi email, click Activate, the app fetches
-//  your signed license from the license server. Zero file handling.
-//
-//  Fallback flow (collapsed by default): drop or paste a .promptbar file.
+//  Activation is file-based only: drop the license.promptbar file we email
+//  you, or paste its contents. The license is a signed block verified
+//  entirely on-device (LicenseValidator), so no network call is made and
+//  knowing a buyer's email address is never enough to unlock the app.
 //
 
 #if EXTERNAL_DISTRIBUTION
@@ -18,25 +18,11 @@ import UniformTypeIdentifiers
 struct LicenseEntryView: View {
     let onLicensed: (License) -> Void
 
-    @State private var email: String = ""
     @State private var input: String = ""
     @State private var errorMessage: String?
     @State private var isDropTargeted = false
     @State private var successEmail: String?
-    @State private var showFileDrop = false
     @State private var showRecovery = false
-    @State private var isActivating = false
-
-    /// License server URL. Configured at build time via Info.plist key
-    /// `PromptBarLicenseEndpoint`; falls back to peterdsp.dev domain.
-    private var activateURL: URL? {
-        let configured = Bundle.main.object(forInfoDictionaryKey: "PromptBarLicenseEndpoint")
-            as? String
-        let raw = configured?.trimmingCharacters(in: .whitespaces).isEmpty == false
-            ? configured!
-            : "https://licenses.peterdsp.dev/activate"
-        return URL(string: raw)
-    }
 
     var body: some View {
         ZStack {
@@ -63,29 +49,16 @@ struct LicenseEntryView: View {
                     }
                     Text("Activate PromptBar")
                         .font(.title2.weight(.semibold))
-                    Text("Type the email you used at Ko-fi checkout. We'll fetch your license automatically.")
+                    Text("Drop the license.promptbar file from your purchase email, or paste its contents below.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
                 }
 
-                HStack(spacing: 8) {
-                    Image(systemName: "envelope")
-                        .foregroundStyle(.secondary)
-                    TextField("you@example.com", text: $email)
-                        .textFieldStyle(.plain)
-                        .disableAutocorrection(true)
-                        .onSubmit { activateByEmail() }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.regularMaterial)
-                )
-                .padding(.horizontal, 30)
-                .frame(maxWidth: 460)
+                licenseDropCard
+                    .padding(.horizontal, 30)
+                    .frame(maxWidth: 460)
 
                 if let err = errorMessage {
                     Label(err, systemImage: "exclamationmark.triangle.fill")
@@ -107,38 +80,19 @@ struct LicenseEntryView: View {
                             NSWorkspace.shared.open(url)
                         }
                     }
-                    Button {
-                        activateByEmail()
-                    } label: {
-                        if isActivating {
-                            ProgressView()
-                                .controlSize(.small)
-                                .padding(.horizontal, 12)
-                        } else {
-                            Text("Activate")
-                        }
+                    Button("Activate") {
+                        validateFile()
                     }
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(isActivating || email.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
-
-                DisclosureGroup(isExpanded: $showFileDrop) {
-                    fileDropFallback
-                        .padding(.top, 6)
-                } label: {
-                    Text("I have a license file instead")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 30)
-                .frame(maxWidth: 460)
 
                 DisclosureGroup(isExpanded: $showRecovery) {
                     recoveryCard
                         .padding(.top, 6)
                 } label: {
-                    Text("It says my email isn't recognized")
+                    Text("I can't find my license file")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }
@@ -152,83 +106,15 @@ struct LicenseEntryView: View {
     }
 
     private var dynamicHeight: CGFloat {
-        var h: CGFloat = 470
-        if showFileDrop { h += 230 }
+        var h: CGFloat = 520
         if showRecovery { h += 170 }
         return h
     }
 
-    // MARK: - Email activation
+    // MARK: - License file drop / paste
 
-    private func activateByEmail() {
-        let trimmed = email.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard trimmed.contains("@") else {
-            errorMessage = "Type the email you used on Ko-fi."
-            return
-        }
-        guard let url = activateURL else {
-            errorMessage = "Activation server is misconfigured."
-            return
-        }
-
-        errorMessage = nil
-        successEmail = nil
-        isActivating = true
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 20
-        let body: [String: String] = ["email": trimmed.lowercased()]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                self.isActivating = false
-                if let error = error {
-                    self.errorMessage = "Couldn't reach the license server: \(error.localizedDescription)"
-                    return
-                }
-                guard let http = response as? HTTPURLResponse, let data = data else {
-                    self.errorMessage = "No response from license server."
-                    return
-                }
-                if http.statusCode == 404 {
-                    self.errorMessage = "No license on file for that email. If you bought with a different one, reply to your Ko-fi receipt."
-                    return
-                }
-                if http.statusCode != 200 {
-                    let detail = String(data: data, encoding: .utf8) ?? ""
-                    self.errorMessage = "Server error \(http.statusCode). \(detail.prefix(120))"
-                    return
-                }
-                guard let text = String(data: data, encoding: .utf8) else {
-                    self.errorMessage = "License response wasn't valid text."
-                    return
-                }
-                switch LicenseStore.shared.install(text) {
-                case .success(let license):
-                    self.successEmail = license.email
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                        self.onLicensed(license)
-                    }
-                case .failure(let err):
-                    self.errorMessage = "Server signed a license but it didn't verify locally: \(err.localizedDescription)"
-                }
-            }
-        }.resume()
-    }
-
-    // MARK: - File-drop fallback (collapsed by default)
-
-    private var fileDropFallback: some View {
+    private var licenseDropCard: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Power-user / offline path")
-                .font(.subheadline.weight(.semibold))
-            Text("If you received a .promptbar file by email, drop it below.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
             ZStack {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .strokeBorder(
@@ -244,7 +130,7 @@ struct LicenseEntryView: View {
                         Image(systemName: "arrow.down.doc")
                             .font(.system(size: 18))
                             .foregroundStyle(.secondary)
-                        Text("Drop your .promptbar file here, or paste its contents")
+                        Text("Drop your license.promptbar file here, or paste its contents")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -255,25 +141,11 @@ struct LicenseEntryView: View {
                     .padding(8)
                     .opacity(input.isEmpty ? 0.0 : 1.0)
             }
-            .frame(height: 130)
+            .frame(height: 150)
             .onDrop(of: [.fileURL, .plainText], isTargeted: $isDropTargeted) { providers in
                 handleDrop(providers)
             }
-
-            HStack {
-                Spacer()
-                Button("Validate file") {
-                    validateFile()
-                }
-                .disabled(input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            }
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(.regularMaterial)
-        )
     }
 
     private func handleDrop(_ providers: [NSItemProvider]) -> Bool {
@@ -331,7 +203,7 @@ struct LicenseEntryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Things to try")
                 .font(.subheadline.weight(.semibold))
-            Text("• Use the exact email Ko-fi has on your receipt.\n• Wait 1 to 5 minutes after purchase; activations are issued as orders come in.\n• Check your spam folder for a confirmation in case you missed it.")
+            Text("• Check your purchase email for the license.promptbar attachment, or copy the LICENSE block from the email body and paste it above.\n• Wait 1 to 5 minutes after purchase; licenses are emailed as orders come in.\n• Check your spam folder in case you missed the email.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -367,7 +239,7 @@ struct LicenseEntryView: View {
         let body = """
         Hi Petros,
 
-        I bought PromptBar on Ko-fi and the app can't find my license.
+        I bought PromptBar on Ko-fi and can't find or activate my license.
 
         Email used on Ko-fi:
         Ko-fi order ID (in your Ko-fi receipt email):
