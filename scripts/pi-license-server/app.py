@@ -117,9 +117,10 @@ class Product:
 
 PROMPTBAR_EMAIL_BODY = """Hey,
 
-Thanks for buying PromptBar 2.0. Two things attached/linked:
+Thanks for buying PromptBar 2.0. Your license is the signed block at the
+bottom of this email (also attached as license.promptbar). Two things:
 
-1. Your personal .promptbar license file (attached).
+1. Your personal license (inline below + attached as license.promptbar).
 2. The signed and notarized .pkg installer:
    https://github.com/peterdsp/PromptBar/releases/latest
 
@@ -127,8 +128,12 @@ Install steps:
 
   1. Open the .pkg, install to Applications.
   2. Launch PromptBar from Applications.
-  3. On the welcome screen, drop the .promptbar file (or paste its contents).
-  4. Done. The license is stored in your macOS Keychain.
+  3. On the welcome screen, drop the license.promptbar file (or copy the
+     whole LICENSE block below and paste its contents).
+  4. Done. The license is verified on-device and stored in your Keychain.
+
+Keep this license safe - it is your proof of purchase and works offline
+on any Mac.
 
 Reply to this email if anything breaks.
 
@@ -177,6 +182,11 @@ def _build_registry() -> dict:
         name_match=os.environ.get("PROMPTBAR_NAME_MATCH", "promptbar").lower(),
         email_subject="Your PromptBar 2.0 license",
         email_body=PROMPTBAR_EMAIL_BODY,
+        # The signed license file (emailed inline + attached) is the only
+        # key. Email-lookup activation is disabled so knowing a buyer's
+        # address alone can't unlock the app.
+        email_activation=False,
+        inline_license=True,
     )
 
     # klipa - only registered when its signing key path is configured, so
