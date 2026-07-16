@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Generate a self-contained SVG chart from GitHub stargazer timestamps."""
+"""Update a repository-owned star history chart from GitHub metadata."""
 
 from __future__ import annotations
 
@@ -8,7 +8,6 @@ import argparse
 import json
 import math
 import os
-import re
 import sys
 import urllib.error
 import urllib.request
@@ -18,30 +17,41 @@ from typing import Any
 
 
 API_VERSION = "2022-11-28"
-STAR_MEDIA_TYPE = "application/vnd.github.star+json"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repository", required=True, help="Repository in owner/name form")
+    parser.add_argument("--data", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args()
 
 
-def github_request(url: str, token: str, accept: str) -> tuple[Any, dict[str, str]]:
+def parse_github_date(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+
+def format_github_date(value: datetime) -> str:
+    return value.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def fetch_repository(repository: str, token: str | None) -> dict[str, Any]:
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "PromptBar-star-history",
+        "X-GitHub-Api-Version": API_VERSION,
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+
     request = urllib.request.Request(
-        url,
-        headers={
-            "Accept": accept,
-            "Authorization": f"Bearer {token}",
-            "User-Agent": "PromptBar-star-history",
-            "X-GitHub-Api-Version": API_VERSION,
-        },
+        f"https://api.github.com/repos/{repository}",
+        headers=headers,
     )
 
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
-            return json.load(response), dict(response.headers.items())
+            return json.load(response)
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")
         raise RuntimeError(f"GitHub API returned HTTP {error.code}: {detail}") from error
@@ -49,39 +59,46 @@ def github_request(url: str, token: str, accept: str) -> tuple[Any, dict[str, st
         raise RuntimeError(f"Could not reach the GitHub API: {error.reason}") from error
 
 
-def next_link(link_header: str | None) -> str | None:
-    if not link_header:
-        return None
-
-    for section in link_header.split(","):
-        match = re.match(r'\s*<([^>]+)>;\s*rel="([^"]+)"', section)
-        if match and match.group(2) == "next":
-            return match.group(1)
-
-    return None
+def load_history(path: Path, repository: str) -> dict[str, Any]:
+    history = json.loads(path.read_text(encoding="utf-8"))
+    if history.get("repository") != repository:
+        raise ValueError(f"History belongs to {history.get('repository')}, not {repository}")
+    if not isinstance(history.get("points"), list):
+        raise ValueError("History points are missing")
+    return history
 
 
-def fetch_star_dates(repository: str, token: str) -> tuple[datetime, list[datetime]]:
-    metadata_url = f"https://api.github.com/repos/{repository}"
-    metadata, _ = github_request(metadata_url, token, "application/vnd.github+json")
-    created_at = parse_github_date(metadata["created_at"])
+def update_history(history: dict[str, Any], star_count: int) -> bool:
+    points = history["points"]
+    previous_count = points[-1]["count"] if points else 0
+    if previous_count == star_count:
+        return False
 
-    stars: list[datetime] = []
-    page_url: str | None = (
-        f"https://api.github.com/repos/{repository}/stargazers?per_page=100"
+    points.append(
+        {
+            "date": format_github_date(datetime.now(timezone.utc)),
+            "count": star_count,
+        }
     )
-
-    while page_url:
-        page, headers = github_request(page_url, token, STAR_MEDIA_TYPE)
-        stars.extend(parse_github_date(item["starred_at"]) for item in page)
-        page_url = next_link(headers.get("Link"))
-
-    stars.sort()
-    return created_at, stars
+    return True
 
 
-def parse_github_date(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
+def serialize_history(history: dict[str, Any]) -> str:
+    points = history["points"]
+    serialized_points = [
+        f"    {json.dumps(point)}{',' if index < len(points) - 1 else ''}"
+        for index, point in enumerate(points)
+    ]
+    joined_points = "\n".join(serialized_points)
+    return (
+        "{\n"
+        f'  "repository": {json.dumps(history["repository"])},\n'
+        f'  "created_at": {json.dumps(history["created_at"])},\n'
+        '  "points": [\n'
+        f"{joined_points}\n"
+        "  ]\n"
+        "}\n"
+    )
 
 
 def nice_ceiling(value: int) -> int:
@@ -94,7 +111,14 @@ def nice_ceiling(value: int) -> int:
     return step * magnitude
 
 
-def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> str:
+def chart_svg(history: dict[str, Any]) -> str:
+    repository = history["repository"]
+    created_at = parse_github_date(history["created_at"])
+    history_points = [
+        (parse_github_date(point["date"]), int(point["count"]))
+        for point in history["points"]
+    ]
+
     width = 800
     height = 420
     left = 68
@@ -104,12 +128,14 @@ def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> s
     plot_width = width - left - right
     plot_height = height - top - bottom
 
-    end_at = stars[-1] if stars else created_at
+    end_at = history_points[-1][0] if history_points else created_at
     if end_at <= created_at:
         end_at = created_at.replace(year=created_at.year + 1)
 
     time_span = (end_at - created_at).total_seconds()
-    y_max = nice_ceiling(max(len(stars), 1))
+    star_count = history_points[-1][1] if history_points else 0
+    maximum_count = max((count for _, count in history_points), default=0)
+    y_max = nice_ceiling(max(maximum_count, 1))
 
     def x_position(date: datetime) -> float:
         elapsed = (date - created_at).total_seconds()
@@ -118,13 +144,15 @@ def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> s
     def y_position(count: int) -> float:
         return top + plot_height * (1 - count / y_max)
 
-    points = [(left, y_position(0))]
-    for index, star_date in enumerate(stars, start=1):
-        x = x_position(star_date)
-        points.append((x, y_position(index - 1)))
-        points.append((x, y_position(index)))
-    points.append((left + plot_width, y_position(len(stars))))
-    polyline = " ".join(f"{x:.2f},{y:.2f}" for x, y in points)
+    polyline_points = [(left, y_position(0))]
+    previous_count = 0
+    for date, count in history_points:
+        x = x_position(date)
+        polyline_points.append((x, y_position(previous_count)))
+        polyline_points.append((x, y_position(count)))
+        previous_count = count
+    polyline_points.append((left + plot_width, y_position(previous_count)))
+    polyline = " ".join(f"{x:.2f},{y:.2f}" for x, y in polyline_points)
 
     y_ticks = []
     for index in range(6):
@@ -151,12 +179,12 @@ def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> s
             f'text-anchor="{anchor}" class="axis">{date.strftime("%b %Y")}</text>'
         )
 
-    latest_label = stars[-1].strftime("%d %b %Y") if stars else "No stars yet"
+    latest_label = history_points[-1][0].strftime("%d %b %Y") if history_points else "No stars yet"
     title = repository.split("/", maxsplit=1)[-1]
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title description">
   <title id="title">{title} star history</title>
-  <desc id="description">{len(stars)} GitHub stars through {latest_label}.</desc>
+  <desc id="description">{star_count} GitHub stars through {latest_label}.</desc>
   <style>
     .background {{ fill: #ffffff; }}
     .title {{ fill: #111827; font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }}
@@ -174,7 +202,7 @@ def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> s
   </defs>
   <rect class="background" width="{width}" height="{height}" rx="12"/>
   <text x="{left}" y="36" class="title">{title} star history</text>
-  <text x="{left}" y="60" class="subtitle">{len(stars)} stars, refreshed daily from the GitHub API</text>
+  <text x="{left}" y="60" class="subtitle">{star_count} stars, refreshed daily from the GitHub API</text>
   {"".join(y_ticks)}
   {"".join(x_ticks)}
   <polygon class="area" points="{polyline} {left + plot_width},{top + plot_height} {left},{top + plot_height}"/>
@@ -185,21 +213,22 @@ def chart_svg(repository: str, created_at: datetime, stars: list[datetime]) -> s
 
 def main() -> int:
     args = parse_args()
-    token = os.environ.get("GITHUB_TOKEN")
-    if not token:
-        print("GITHUB_TOKEN is required", file=sys.stderr)
-        return 1
 
     try:
-        created_at, stars = fetch_star_dates(args.repository, token)
-        svg = chart_svg(args.repository, created_at, stars)
+        metadata = fetch_repository(args.repository, os.environ.get("GITHUB_TOKEN"))
+        history = load_history(args.data, args.repository)
+        changed = update_history(history, int(metadata["stargazers_count"]))
+        svg = chart_svg(history)
+
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(svg, encoding="utf-8")
-    except (KeyError, RuntimeError, ValueError) as error:
+        if changed:
+            args.data.write_text(serialize_history(history), encoding="utf-8")
+    except (KeyError, OSError, RuntimeError, TypeError, ValueError, json.JSONDecodeError) as error:
         print(error, file=sys.stderr)
         return 1
 
-    print(f"Generated {args.output} with {len(stars)} stars")
+    print(f"Generated {args.output} with {metadata['stargazers_count']} stars")
     return 0
 
 

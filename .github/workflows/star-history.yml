@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate chart
         env:
@@ -26,6 +26,7 @@ jobs:
         run: |
           python3 scripts/generate_star_history.py \
             --repository "${{ github.repository }}" \
+            --data .github/assets/star-history.json \
             --output /tmp/star-history.svg
 
       - name: Keep the latest valid chart
@@ -35,13 +36,13 @@ jobs:
 
       - name: Commit chart changes
         run: |
-          if git diff --quiet -- .github/assets/star-history.svg; then
+          if git diff --quiet -- .github/assets/star-history.json .github/assets/star-history.svg; then
             echo "Star history is already current"
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/assets/star-history.svg
+          git add .github/assets/star-history.json .github/assets/star-history.svg
           git commit -m "Update star history chart"
           git push
