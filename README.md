@@ -178,7 +178,7 @@ PromptBar is **single-developer software**. Every coffee and every star keeps it
 ### If PromptBar saved you a tab, drop a ⭐
 ### Nese PromptBar te kurseu nje tab, lere nje ⭐
 
-[![Star History Chart](https://api.star-history.com/svg?repos=peterdsp/PromptBar&type=Date)](https://star-history.com/#peterdsp/PromptBar&Date)
+[![PromptBar star history](.github/assets/star-history.svg)](https://github.com/peterdsp/PromptBar/stargazers)
 
 Built with 💎 in Tirana and Athens by [@peterdsp](https://github.com/peterdsp).
 Ndertuar me 💎 ne Tirane dhe Athine nga [@peterdsp](https://github.com/peterdsp).
