@@ -4,8 +4,10 @@
 //
 //  First-launch activation for EXTERNAL_DISTRIBUTION builds.
 //
-//  Primary flow: type your Ko-fi email, click Activate, the app fetches
-//  your signed license from the license server. Zero file handling.
+//  Primary flow: type the email and order id from your Ko-fi receipt,
+//  click Activate, the app fetches your signed license from the license
+//  server. Both are required: an email address alone is not a secret, so
+//  the order id is what proves the purchase is yours.
 //
 //  Fallback flow (collapsed by default): drop or paste a .promptbar file.
 //
@@ -19,6 +21,7 @@ struct LicenseEntryView: View {
     let onLicensed: (License) -> Void
 
     @State private var email: String = ""
+    @State private var orderID: String = ""
     @State private var input: String = ""
     @State private var errorMessage: String?
     @State private var isDropTargeted = false
@@ -63,27 +66,44 @@ struct LicenseEntryView: View {
                     }
                     Text("Activate PromptBar")
                         .font(.title2.weight(.semibold))
-                    Text("Type the email you used at Ko-fi checkout. We'll fetch your license automatically.")
+                    Text("Type the email and order id from your Ko-fi receipt. We'll fetch your license automatically.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
                 }
 
-                HStack(spacing: 8) {
-                    Image(systemName: "envelope")
-                        .foregroundStyle(.secondary)
-                    TextField("you@example.com", text: $email)
-                        .textFieldStyle(.plain)
-                        .disableAutocorrection(true)
-                        .onSubmit { activateByEmail() }
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "envelope")
+                            .foregroundStyle(.secondary)
+                        TextField("you@example.com", text: $email)
+                            .textFieldStyle(.plain)
+                            .disableAutocorrection(true)
+                            .onSubmit { activateByEmail() }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(.regularMaterial)
+                    )
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "number")
+                            .foregroundStyle(.secondary)
+                        TextField("Order id from your Ko-fi receipt", text: $orderID)
+                            .textFieldStyle(.plain)
+                            .disableAutocorrection(true)
+                            .onSubmit { activateByEmail() }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(.regularMaterial)
+                    )
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.regularMaterial)
-                )
                 .padding(.horizontal, 30)
                 .frame(maxWidth: 460)
 
@@ -120,7 +140,11 @@ struct LicenseEntryView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(isActivating || email.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(
+                        isActivating
+                        || email.trimmingCharacters(in: .whitespaces).isEmpty
+                        || orderID.trimmingCharacters(in: .whitespaces).isEmpty
+                    )
                 }
 
                 DisclosureGroup(isExpanded: $showFileDrop) {
@@ -152,7 +176,8 @@ struct LicenseEntryView: View {
     }
 
     private var dynamicHeight: CGFloat {
-        var h: CGFloat = 470
+        // 470 base, plus room for the order-id field under the email field.
+        var h: CGFloat = 518
         if showFileDrop { h += 230 }
         if showRecovery { h += 170 }
         return h
@@ -162,8 +187,13 @@ struct LicenseEntryView: View {
 
     private func activateByEmail() {
         let trimmed = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedOrder = orderID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmed.contains("@") else {
             errorMessage = "Type the email you used on Ko-fi."
+            return
+        }
+        guard !trimmedOrder.isEmpty else {
+            errorMessage = "Type the order id from your Ko-fi receipt."
             return
         }
         guard let url = activateURL else {
@@ -179,7 +209,10 @@ struct LicenseEntryView: View {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 20
-        let body: [String: String] = ["email": trimmed.lowercased()]
+        let body: [String: String] = [
+            "email": trimmed.lowercased(),
+            "order_id": trimmedOrder,
+        ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -194,7 +227,11 @@ struct LicenseEntryView: View {
                     return
                 }
                 if http.statusCode == 404 {
-                    self.errorMessage = "No license on file for that email. If you bought with a different one, reply to your Ko-fi receipt."
+                    self.errorMessage = "No license matches that email and order id. Both are on your Ko-fi receipt. Still stuck? Email info@peterdsp.dev."
+                    return
+                }
+                if http.statusCode == 429 {
+                    self.errorMessage = "Too many attempts. Wait a few minutes, or use the license file we emailed you."
                     return
                 }
                 if http.statusCode != 200 {
@@ -331,7 +368,7 @@ struct LicenseEntryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Things to try")
                 .font(.subheadline.weight(.semibold))
-            Text("• Use the exact email Ko-fi has on your receipt.\n• Wait 1 to 5 minutes after purchase; activations are issued as orders come in.\n• Check your spam folder for a confirmation in case you missed it.")
+            Text("• Use the exact email and order id Ko-fi has on your receipt.\n• Wait 1 to 5 minutes after purchase; activations are issued as orders come in.\n• Check your spam folder for a confirmation in case you missed it.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
