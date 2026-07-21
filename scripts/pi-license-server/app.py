@@ -18,11 +18,15 @@ See README.md in this folder for setup (Cloudflare Tunnel, SMTP creds,
 systemd unit).
 """
 
+import hmac
 import os
 import json
 import logging
+import secrets
 import smtplib
 import sys
+import threading
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from email.message import EmailMessage
@@ -81,6 +85,51 @@ BCC_LICENSE_EMAILS = [
 
 def _env_codes(name: str) -> set:
     return set(filter(None, (s.strip() for s in os.environ.get(name, "").split(","))))
+
+
+# ---------------------------------------------------------------------------
+# Activation rate limiting
+#
+# A speed bump, not a security boundary: the order-id check below is the
+# real control. Gunicorn runs 2 workers and this counter lives in process
+# memory, so the effective ceiling is roughly ACTIVATE_RATE_MAX per worker.
+# Sized loosely enough that the doubling doesn't matter.
+
+ACTIVATE_RATE_MAX = int(os.environ.get("ACTIVATE_RATE_MAX", "10"))
+ACTIVATE_RATE_WINDOW = int(os.environ.get("ACTIVATE_RATE_WINDOW", "300"))
+
+_rate_hits = {}
+_rate_lock = threading.Lock()
+
+
+def _client_ip() -> str:
+    """Real client IP. Behind a Cloudflare Tunnel every request arrives
+    from localhost, so remote_addr alone would bucket the whole internet
+    together. cloudflared sets CF-Connecting-IP, and since the Flask port
+    is only reachable through the tunnel, that header can be trusted."""
+    for header in ("CF-Connecting-IP", "X-Forwarded-For"):
+        value = request.headers.get(header, "").strip()
+        if value:
+            return value.split(",")[0].strip()
+    return request.remote_addr or "unknown"
+
+
+def _rate_limited(bucket: str) -> bool:
+    """True when `bucket` has exceeded the window. Prunes as it goes."""
+    now = time.monotonic()
+    cutoff = now - ACTIVATE_RATE_WINDOW
+    with _rate_lock:
+        hits = [t for t in _rate_hits.get(bucket, ()) if t > cutoff]
+        # Opportunistic sweep so idle buckets don't accumulate forever.
+        if len(_rate_hits) > 512:
+            for key in [k for k, v in _rate_hits.items() if not any(t > cutoff for t in v)]:
+                _rate_hits.pop(key, None)
+        if len(hits) >= ACTIVATE_RATE_MAX:
+            _rate_hits[bucket] = hits
+            return True
+        hits.append(now)
+        _rate_hits[bucket] = hits
+        return False
 
 
 # ---------------------------------------------------------------------------
@@ -246,7 +295,15 @@ PRODUCTS = _build_registry()
 
 def _bootstrap_admin_licenses():
     """Ensure every admin email has an archived license for every product,
-    so the operator can /activate from any Mac at any time. Idempotent."""
+    so the operator can /activate from any Mac at any time. Idempotent.
+
+    The order id is random rather than derived from the address: /activate
+    gates on it, and "admin-info@peterdsp.dev" would be trivially guessable
+    by anyone who knows the admin address. Generated once and then frozen,
+    since we skip any email that already has an archived license. Read it
+    back off the Pi with:
+      jq -r .order_id /home/pi/promptbar/issued/info_at_peterdsp_dev.promptbar
+    """
     if not ADMIN_EMAILS:
         return
     try:
@@ -262,7 +319,7 @@ def _bootstrap_admin_licenses():
             path = product.archive_path(email)
             if os.path.exists(path):
                 continue
-            blob = issue_license(product, email, f"admin-{email}")
+            blob = issue_license(product, email, f"admin-{secrets.token_hex(16)}")
             try:
                 with open(path, "w") as f:
                     json.dump(blob, f, indent=2, sort_keys=True)
@@ -364,16 +421,22 @@ def health():
 def activate():
     """
     App-driven activation: the buyer's app POSTs {"email": "...",
-    "product": "klipa"} and we return the signed license JSON if that
-    email has a license on file for that product. `product` defaults to
-    "promptbar" so the existing PromptBar app (which sends no product
-    field) keeps working unchanged.
+    "order_id": "...", "product": "klipa"} and we return the signed
+    license JSON only when that pair matches a license on file. `product`
+    defaults to "promptbar".
 
-    For privacy, we don't reveal whether an unknown address exists, only
-    that no license was found.
+    Both fields are required. An email address is not a secret: buyers put
+    theirs in public issue threads, and the archive is keyed on it, so
+    email alone would let anyone holding the free trial mint a permanent
+    license for any known buyer. The order id comes from the buyer's Ko-fi
+    receipt and is the thing only they hold.
+
+    Wrong pair and unknown address return an identical 404, so this can't
+    be used to enumerate who bought what.
     """
     body = request.get_json(silent=True) or {}
     raw_email = (body.get("email") or "").strip().lower()
+    raw_order = (body.get("order_id") or "").strip()
     product_key = (body.get("product") or request.args.get("product") or "promptbar").strip().lower()
 
     if not raw_email or "@" not in raw_email:
@@ -393,24 +456,53 @@ def activate():
                     "contents and paste them into the app's Activate action.",
         }), 403
 
+    # Pre-2.1 clients sent email only and render `error` truncated to ~120
+    # chars, so the actionable sentence has to lead and jsonify sorts
+    # "error" above "hint". Keep it short and self-contained.
+    if not raw_order:
+        return jsonify({
+            "error": "Update to PromptBar 2.1 or later: activation now needs "
+                     "the order id from your Ko-fi receipt.",
+            "hint": "On 2.1 the Activate screen has an order id field. If you "
+                    "still have the .promptbar file we emailed you, you can "
+                    "drop it into any version instead, no order id needed.",
+        }), 400
+
+    ip = _client_ip()
+    if _rate_limited(ip):
+        log.warning("Rate-limited %s activation attempts from %s", product_key, ip)
+        return jsonify({
+            "error": "too many attempts",
+            "hint": "Wait a few minutes and try again, or drop the license "
+                    "file we emailed you into the app instead.",
+        }), 429
+
     archive_path = product.archive_path(raw_email)
+    license_blob = None
     if os.path.exists(archive_path):
         try:
             with open(archive_path, "r") as f:
                 license_blob = json.load(f)
-            log.info("Activated %s for %s from archive", product_key, raw_email)
-            return jsonify(license_blob), 200
         except Exception as e:
             log.error("Failed to read archived %s license for %s: %s",
                       product_key, raw_email, e)
             return jsonify({"error": "archive read failed"}), 500
 
-    log.info("Activation requested for unknown %s email %s", product_key, raw_email)
+    if license_blob is not None:
+        archived_order = str(license_blob.get("order_id") or "")
+        if hmac.compare_digest(archived_order, raw_order):
+            log.info("Activated %s for %s from archive", product_key, raw_email)
+            return jsonify(license_blob), 200
+        log.warning("Order id mismatch for %s on %s from %s",
+                    product_key, raw_email, ip)
+
+    # Deliberately identical to the mismatch case above.
+    log.info("Activation refused for %s / %s from %s", product_key, raw_email, ip)
     return jsonify({
-        "error": "no license on file for that email",
-        "hint": "Use the email you typed on Ko-fi at checkout. If you bought "
-                "with a different one, reply to your Ko-fi receipt or contact "
-                "the developer."
+        "error": "no license matches that email and order id",
+        "hint": "Both come from your Ko-fi receipt: use the email you typed "
+                "at checkout and the order id on the same receipt. If you "
+                "can't find it, contact the developer at info@peterdsp.dev.",
     }), 404
 
 
