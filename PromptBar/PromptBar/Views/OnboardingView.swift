@@ -13,14 +13,17 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    /// (use case, selected MCP suggestions, show in Dock, hot key enabled)
-    let onFinish: (UseCase, [MCPSuggestion], Bool, Bool) -> Void
+    /// (use case, selected MCP suggestions, launch mode, hot key enabled)
+    let onFinish: (UseCase, [MCPSuggestion], WindowMode, Bool) -> Void
 
     @State private var page: Int = 0
     @State private var maxReached: Int = 0
     @State private var pickedUseCase: UseCase = .everyday
     @State private var selectedMCPIDs: Set<UUID> = []
-    @State private var showInDock: Bool = true
+    // An explicit choice rather than a Dock on/off switch, so the menubar
+    // option is something you pick instead of something you infer from a
+    // toggle being off. Menubar leads: it's what PromptBar is.
+    @State private var launchMode: WindowMode = .menubar
     @State private var hotKeyEnabled: Bool = true
 
     private let totalPages = 5
@@ -227,7 +230,7 @@ struct OnboardingView: View {
         )
     }
 
-    private func bullet(_ symbol: String, title: String, body: String) -> some View {
+    private func bullet(_ symbol: String, title: LocalizedStringKey, body: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -592,7 +595,10 @@ struct OnboardingView: View {
                     HStack(spacing: 6) {
                         Text(suggestion.label).font(.callout.weight(.semibold))
                         if suggestion.needsAuth {
-                            Text("auth")
+                            // Deliberately not localized: this is a 9pt capsule
+                            // badge and the natural translations ("έλεγχος
+                            // ταυτότητας", "authentification") overflow it.
+                            Text(verbatim: "auth")
                                 .font(.system(size: 9, weight: .semibold))
                                 .padding(.horizontal, 5)
                                 .padding(.vertical, 1)
@@ -638,29 +644,36 @@ struct OnboardingView: View {
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 2)
 
-            optionToggle(
-                title: "Show in Dock",
-                body: showInDock
-                    ? "Acts like Safari or Claude with a Dock icon and a real window."
-                    : "Runs in the background, no Dock icon. Use the hotkey to summon it.",
-                isOn: $showInDock
+            launchModeCard(
+                mode: .menubar,
+                symbol: "menubar.rectangle",
+                title: "Menubar",
+                body: "Lives in the menubar with no Dock icon. Click the icon for everything."
             )
+
+            launchModeCard(
+                mode: .window,
+                symbol: "macwindow",
+                title: "Dock",
+                body: "Acts like Safari or Claude, with a Dock icon and a real window."
+            )
+
+            Text("You can change this any time in Settings → General.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .padding(.top, 2)
+
+            Divider().opacity(0.4).padding(.vertical, 4)
 
             optionToggle(
                 title: "Enable ⌥⌘O hotkey",
                 body: hotKeyEnabled
                     ? "Bring PromptBar forward from any app, even full screen."
-                    : "Hotkey disabled. You'll need to click the Dock to open the window.",
+                    : (launchMode == .window
+                        ? "Hotkey disabled. You'll open PromptBar from the Dock."
+                        : "Hotkey disabled. You'll open PromptBar from the menubar icon."),
                 isOn: $hotKeyEnabled
             )
-
-            if !showInDock && !hotKeyEnabled {
-                Label("Pick at least one access method or you won't be able to open the app.",
-                      systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .padding(.top, 4)
-            }
         }
         .padding(14)
         .background(
@@ -669,7 +682,52 @@ struct OnboardingView: View {
         )
     }
 
-    private func optionToggle(title: String, body: String, isOn: Binding<Bool>) -> some View {
+    // LocalizedStringKey, not String: Text(String) picks the non-localizing
+    // initializer, which silently ships English no matter what the catalog says.
+    private func launchModeCard(mode: WindowMode, symbol: String,
+                                title: LocalizedStringKey, body: LocalizedStringKey) -> some View {
+        let isSelected = launchMode == mode
+        return Button {
+            launchMode = mode
+        } label: {
+            HStack(alignment: .top, spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.accentColor.opacity(0.20))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: symbol)
+                        .foregroundStyle(Color.accentColor)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.callout.weight(.semibold))
+                    Text(body)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 18))
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(.regularMaterial)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(
+                        isSelected ? Color.accentColor.opacity(0.55) : Color.clear,
+                        lineWidth: 1.5
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func optionToggle(title: LocalizedStringKey, body: LocalizedStringKey, isOn: Binding<Bool>) -> some View {
         Toggle(isOn: isOn) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.callout.weight(.semibold))
@@ -682,7 +740,7 @@ struct OnboardingView: View {
         .controlSize(.small)
     }
 
-    private func summaryRow(_ symbol: String, title: String, body: String) -> some View {
+    private func summaryRow(_ symbol: String, title: LocalizedStringKey, body: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -757,11 +815,10 @@ struct OnboardingView: View {
                     let picks = pickedUseCase.recommendedMCPs.filter {
                         selectedMCPIDs.contains($0.id)
                     }
-                    onFinish(pickedUseCase, picks, showInDock, hotKeyEnabled)
+                    onFinish(pickedUseCase, picks, launchMode, hotKeyEnabled)
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
-                .disabled(!showInDock && !hotKeyEnabled)
             default:
                 EmptyView()
             }
