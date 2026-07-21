@@ -142,6 +142,39 @@ sudo journalctl -u promptbar-licenses -f
 tail -f /home/pi/promptbar/access.log
 ```
 
+## Activation requires email + order id
+
+`POST /activate` takes both `email` and `order_id` and returns the signed
+license only when the pair matches what's archived. Email alone is not
+enough, and deliberately so: buyers post their address in public issue
+threads, so an address plus the free trial would otherwise mint a
+permanent license for anyone who reads one.
+
+```bash
+# Works: real receipt.
+curl -X POST https://licenses.yourdomain.com/activate \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"buyer@example.com","order_id":"4373837b-89bb-4162-baaa-02e7dac359ed"}'
+
+# 404, same response as an unknown address, so this can't enumerate buyers.
+curl -X POST https://licenses.yourdomain.com/activate \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"buyer@example.com","order_id":"guess"}'
+```
+
+Buyers find the order id on their Ko-fi receipt. Anyone who can't is a
+support email, and the `.promptbar` file you emailed them still works as
+a no-order-id fallback (drop it into the app).
+
+Pre-2.1 apps send email only and get a 400 telling them to update or use
+the license file. That's expected: their activation path changed.
+
+Throttled per client IP via `ACTIVATE_RATE_MAX` / `ACTIVATE_RATE_WINDOW`.
+The counter is in process memory and gunicorn runs 2 workers, so the true
+ceiling is about double the configured max. It's a speed bump; the order
+id is the actual control. If you ever need a hard limit, move the counter
+to Redis or SQLite.
+
 ## Testing without spending €4.99
 
 Use `curl` from your Mac with a forged payload (the verification token
