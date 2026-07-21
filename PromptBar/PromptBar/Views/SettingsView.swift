@@ -7,7 +7,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var store: ChatStore
-    @State private var selection: Section = .web
+    @State private var selection: Section
 
     enum Section: Hashable {
         case web
@@ -16,6 +16,12 @@ struct SettingsView: View {
         case prompts
         case general
         case about
+    }
+
+    /// `initialSection` lets the menubar deep-link straight to a pane, so
+    /// Prompts and MCP Servers are reachable without hunting the sidebar.
+    init(initialSection: Section = .web) {
+        _selection = State(initialValue: initialSection)
     }
 
     var body: some View {
@@ -50,7 +56,7 @@ struct SettingsView: View {
         .frame(width: 200)
     }
 
-    private func row(_ section: Section, label: String, symbol: String) -> some View {
+    private func row(_ section: Section, label: LocalizedStringKey, symbol: String) -> some View {
         Button {
             selection = section
         } label: {
@@ -326,12 +332,25 @@ private struct GeneralSettingsPane: View {
     @ObservedObject private var prefs = AppPreferences.shared
     @State private var showRestartHint = false
 
+    /// One branch per mode. The old copy had two branches for three modes,
+    /// so Hidden was described as Window mode.
+    private var windowModeExplanation: String {
+        switch prefs.windowMode {
+        case .menubar:
+            return String(localized: "Menubar mode: the popover hangs from the menubar icon. No Dock icon. Every feature is in the menubar menu.")
+        case .window:
+            return String(localized: "Window mode: PromptBar acts like a regular app with a Dock icon and a window. The menubar icon stays as a quick toggle.")
+        case .hidden:
+            return String(localized: "Hidden mode: no Dock icon and no menubar icon. PromptBar is reachable only with the ⌥⌘O hotkey, so keep that enabled.")
+        }
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 Text("General").font(.title2.weight(.semibold))
 
-                box("Window Mode") {
+                box(String(localized: "Window Mode")) {
                     Picker("", selection: Binding(
                         get: { prefs.windowMode },
                         set: { newValue in
@@ -346,16 +365,21 @@ private struct GeneralSettingsPane: View {
                     }
                     .pickerStyle(.segmented)
 
-                    Text(prefs.windowMode == .menubar
-                         ? "Menubar mode: the popover hangs from the menubar icon. No Dock icon."
-                         : "Window mode: PromptBar acts like a regular app with a Dock icon and a window. The menubar icon stays as a quick toggle.")
+                    Text(windowModeExplanation)
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
                     if showRestartHint {
-                        Label("Restart PromptBar to apply the new window mode.", systemImage: "arrow.clockwise.circle.fill")
-                            .font(.caption)
-                            .foregroundStyle(Color.orange)
+                        HStack(spacing: 8) {
+                            Label("Restart PromptBar to apply.", systemImage: "arrow.clockwise.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(Color.orange)
+                            // The menubar menu offers to relaunch for you, so
+                            // Settings shouldn't be the one place that makes
+                            // you do it by hand.
+                            Button("Restart Now") { AppRelauncher.relaunch() }
+                                .controlSize(.small)
+                        }
                     }
 
                     Button("Show Onboarding Again on Next Launch") {
