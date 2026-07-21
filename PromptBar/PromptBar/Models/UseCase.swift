@@ -20,14 +20,17 @@ enum UseCase: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
+    // String(localized:) rather than a bare literal: these are rendered via
+    // Text(String), which does not localize, so plain literals here ship
+    // English no matter what the catalog holds.
     var title: String {
         switch self {
-        case .coding: return "Coding & development"
-        case .design: return "Design & creative"
-        case .research: return "Research & writing"
-        case .operations: return "Projects & operations"
-        case .everyday: return "Everyday assistant"
-        case .custom: return "Skip, I'll set it up"
+        case .coding: return String(localized: "Coding & development")
+        case .design: return String(localized: "Design & creative")
+        case .research: return String(localized: "Research & writing")
+        case .operations: return String(localized: "Projects & operations")
+        case .everyday: return String(localized: "Everyday assistant")
+        case .custom: return String(localized: "Skip, I'll set it up")
         }
     }
 
