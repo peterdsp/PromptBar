@@ -12,11 +12,25 @@ import SystemConfiguration
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     // MARK: Window-size presets
 
+    /// `name` is a stable identity: it's the persisted UserDefaults value and
+    /// the menu item's representedObject. Never render it directly, run it
+    /// through localizedSizeName() first.
     static let windowSizes: [(name: String, size: CGSize)] = [
         ("Small", CGSize(width: 420, height: 520)),
         ("Medium", CGSize(width: 520, height: 640)),
         ("Large", CGSize(width: 720, height: 820))
     ]
+
+    static let windowSizeMenuID = NSUserInterfaceItemIdentifier("promptbar.menu.windowSize")
+
+    static func localizedSizeName(_ name: String) -> String {
+        switch name {
+        case "Small": return String(localized: "Small")
+        case "Medium": return String(localized: "Medium")
+        case "Large": return String(localized: "Large")
+        default: return name
+        }
+    }
 
     private let windowSizeKey = "promptbar.windowSize.v2"
     private let alwaysOnTopKey = "promptbar.alwaysOnTop.v2"
@@ -132,10 +146,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     #endif
 
     private func bootForCurrentMode() {
-        // .menubar mode keeps the status item + popover (legacy power-user path).
-        // .window and .hidden don't need the menubar status item, they use the
-        // window directly. We still register the global hotkey if enabled.
-        if prefs.windowMode == .menubar {
+        // The status item now exists in .window too, not just .menubar, so
+        // the full menu is always one click away and never depends on the
+        // Dock. .hidden is left alone on purpose: no Dock icon and no
+        // menubar icon is the entire point of that mode, and forcing an icon
+        // there would make it indistinguishable from .menubar.
+        if prefs.windowMode != .hidden {
             constructStatusItem()
             constructPopover()
             constructMenu()
@@ -262,14 +278,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         viewMenuItem.submenu = viewMenu
 
         for entry in Self.windowSizes {
-            let item = NSMenuItem(title: "\(entry.name) Window",
+            let item = NSMenuItem(title: Self.localizedSizeName(entry.name),
                                   action: #selector(changeWindowSize(_:)),
                                   keyEquivalent: "")
             item.target = self
+            item.representedObject = entry.name
             viewMenu.addItem(item)
         }
         viewMenu.addItem(.separator())
-        viewMenu.addItem(makeItem("Reload", action: #selector(reloadCurrentWebView), key: "r"))
+        viewMenu.addItem(makeItem(String(localized: "Reload"),
+                                  action: #selector(reloadCurrentWebView), key: "r"))
 
         // -- Window --
         let windowMenuItem = NSMenuItem()
@@ -324,9 +342,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func presentOnboarding() {
         NSApp.setActivationPolicy(.regular)
 
-        let view = OnboardingView { [weak self] chosenUseCase, selectedMCPs, showInDock, hotKeyEnabled in
+        let view = OnboardingView { [weak self] chosenUseCase, selectedMCPs, launchMode, hotKeyEnabled in
             guard let self = self else { return }
-            self.prefs.windowMode = showInDock ? .window : .hidden
+            // Onboarding offers menubar or dock only. .hidden strips every
+            // affordance at once and stays a deliberate Settings choice
+            // rather than something to fall into on first run.
+            self.prefs.windowMode = launchMode
             self.prefs.hotKeyEnabled = hotKeyEnabled
             self.prefs.hasCompletedOnboarding = true
             self.applyUseCase(chosenUseCase)
@@ -548,32 +569,67 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     // MARK: Right-click menu
 
+    /// The status item's menu. This is the app's complete surface: every
+    /// feature has to be reachable from here, because in .menubar mode
+    /// (the default) there is no Dock icon and no main menu to fall back on.
     func constructMenu() {
         let m = NSMenu()
         m.delegate = self
 
-        let primaryTitle = prefs.windowMode == .window ? "Show Window" : "Open"
+        let primaryTitle = prefs.windowMode == .window
+            ? String(localized: "Show Window")
+            : String(localized: "Open")
         m.addItem(makeItem(primaryTitle, action: #selector(primaryToggleAction), key: ""))
         m.addItem(.separator())
 
-        m.addItem(makeItem("Settings…", action: #selector(openSettings), key: ","))
-        m.addItem(makeItem("About PromptBar", action: #selector(openAbout), key: ""))
+        addTargetItems(to: m)
+
+        m.addItem(makeItem(String(localized: "Prompt Library…"),
+                           action: #selector(openPromptLibrary), key: "l"))
+        m.addItem(makeItem(String(localized: "MCP Servers…"),
+                           action: #selector(openMCPServers), key: ""))
+
+        let addItem = NSMenuItem(title: String(localized: "Add"), action: nil, keyEquivalent: "")
+        let addMenu = NSMenu()
+        addMenu.addItem(makeItem(String(localized: "Web Chat…"),
+                                 action: #selector(openWebChatSettings), key: ""))
+        addMenu.addItem(makeItem(String(localized: "API Endpoint…"),
+                                 action: #selector(openEndpointSettings), key: ""))
+        addItem.submenu = addMenu
+        m.addItem(addItem)
         m.addItem(.separator())
 
-        let sizeItem = NSMenuItem(title: "Window Size", action: nil, keyEquivalent: "")
+        m.addItem(makeItem(String(localized: "Settings…"), action: #selector(openSettings), key: ","))
+        m.addItem(makeItem(String(localized: "About PromptBar"), action: #selector(openAbout), key: ""))
+        #if EXTERNAL_DISTRIBUTION
+        // Previously only in the main menu, which is built for .window mode
+        // only. A menubar user had no way to enter a license at all.
+        m.addItem(makeItem(String(localized: "Activate License…"),
+                           action: #selector(openLicenseEntry), key: ""))
+        m.addItem(makeItem(String(localized: "Check for Updates…"),
+                           action: #selector(checkForUpdatesAction), key: ""))
+        #endif
+        m.addItem(.separator())
+
+        let sizeItem = NSMenuItem(title: String(localized: "Window Size"), action: nil, keyEquivalent: "")
+        sizeItem.identifier = Self.windowSizeMenuID
         let sizeMenu = NSMenu()
         for entry in Self.windowSizes {
-            let item = NSMenuItem(title: entry.name,
+            let item = NSMenuItem(title: Self.localizedSizeName(entry.name),
                                   action: #selector(changeWindowSize(_:)),
                                   keyEquivalent: "")
             item.target = self
+            // The unlocalized name is the identity; the title is display only.
+            item.representedObject = entry.name
             sizeMenu.addItem(item)
         }
         sizeItem.submenu = sizeMenu
         m.addItem(sizeItem)
 
+        addWindowModeItems(to: m)
+
         if prefs.windowMode == .menubar {
-            let aotItem = NSMenuItem(title: "Always on Top",
+            let aotItem = NSMenuItem(title: String(localized: "Always on Top"),
                                      action: #selector(toggleAlwaysOnTop(_:)),
                                      keyEquivalent: "")
             aotItem.target = self
@@ -582,11 +638,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
 
         m.addItem(.separator())
-        m.addItem(makeItem("Reload", action: #selector(reloadCurrentWebView), key: "r"))
-        m.addItem(makeItem("Clean Cookies & Cache", action: #selector(cleanCookiesAction), key: ""))
+        m.addItem(makeItem(String(localized: "Reload"), action: #selector(reloadCurrentWebView), key: "r"))
+        m.addItem(makeItem(String(localized: "Clean Cookies & Cache"),
+                           action: #selector(cleanCookiesAction), key: ""))
 
         m.addItem(.separator())
-        let quitItem = NSMenuItem(title: "Quit PromptBar",
+        let quitItem = NSMenuItem(title: String(localized: "Quit PromptBar"),
                                   action: #selector(NSApplication.terminate(_:)),
                                   keyEquivalent: "q")
         m.addItem(quitItem)
@@ -595,17 +652,184 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         updateWindowSizeMenuState()
     }
 
+    /// Service/endpoint switching and New Chat, which previously existed only
+    /// as pills inside the popover.
+    private func addTargetItems(to m: NSMenu) {
+        guard !store.services.isEmpty || !store.endpoints.isEmpty else {
+            // Nothing configured yet: point at the thing that fixes that
+            // rather than showing an empty submenu.
+            let empty = NSMenuItem(title: String(localized: "No chats yet"), action: nil, keyEquivalent: "")
+            empty.isEnabled = false
+            m.addItem(empty)
+            m.addItem(.separator())
+            return
+        }
+
+        let switchItem = NSMenuItem(title: String(localized: "Switch To"), action: nil, keyEquivalent: "")
+        let switchMenu = NSMenu()
+        for service in store.services {
+            let item = NSMenuItem(title: service.name,
+                                  action: #selector(selectWebTarget(_:)),
+                                  keyEquivalent: "")
+            item.target = self
+            item.representedObject = service.id
+            if case .web(let id) = store.selectedTarget, id == service.id { item.state = .on }
+            switchMenu.addItem(item)
+        }
+        if !store.services.isEmpty && !store.endpoints.isEmpty {
+            switchMenu.addItem(.separator())
+        }
+        for endpoint in store.endpoints {
+            let item = NSMenuItem(title: endpoint.name,
+                                  action: #selector(selectAPITarget(_:)),
+                                  keyEquivalent: "")
+            item.target = self
+            item.representedObject = endpoint.id
+            if case .api(let id) = store.selectedTarget, id == endpoint.id { item.state = .on }
+            switchMenu.addItem(item)
+        }
+        switchItem.submenu = switchMenu
+        m.addItem(switchItem)
+
+        // New Chat only means something for API endpoints; web chats are
+        // whatever the site shows.
+        if case .api = store.selectedTarget {
+            m.addItem(makeItem(String(localized: "New Chat"), action: #selector(newChatAction), key: "n"))
+        }
+        m.addItem(.separator())
+    }
+
+    /// Mode switching from the menu. Previously Settings-only, and it told
+    /// you to restart by hand.
+    private func addWindowModeItems(to m: NSMenu) {
+        let modeItem = NSMenuItem(title: String(localized: "Window Mode"), action: nil, keyEquivalent: "")
+        let modeMenu = NSMenu()
+        for mode in WindowMode.allCases {
+            let item = NSMenuItem(title: mode.displayName,
+                                  action: #selector(changeWindowMode(_:)),
+                                  keyEquivalent: "")
+            item.target = self
+            item.representedObject = mode.rawValue
+            item.state = prefs.windowMode == mode ? .on : .off
+            modeMenu.addItem(item)
+        }
+        modeItem.submenu = modeMenu
+        m.addItem(modeItem)
+    }
+
     private func makeItem(_ title: String, action: Selector, key: String) -> NSMenuItem {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
         item.target = self
         return item
     }
 
+    // MARK: Menu actions
+
+    @objc private func selectWebTarget(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID,
+              let service = store.services.first(where: { $0.id == id }) else { return }
+        store.select(service)
+        refreshPopupContent()
+        showCurrentSurface()
+    }
+
+    @objc private func selectAPITarget(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? UUID,
+              let endpoint = store.endpoints.first(where: { $0.id == id }) else { return }
+        store.select(endpoint)
+        refreshPopupContent()
+        showCurrentSurface()
+    }
+
+    @objc private func newChatAction() {
+        guard case .api(let id) = store.selectedTarget,
+              let endpoint = store.endpoints.first(where: { $0.id == id }) else { return }
+        _ = store.startNewConversation(for: endpoint)
+        refreshPopupContent()
+        showCurrentSurface()
+    }
+
+    /// Bring the right surface forward for the current mode after a menu
+    /// action, so picking something from the menu actually shows it.
+    private func showCurrentSurface() {
+        switch prefs.windowMode {
+        case .menubar:
+            if !popover.isShown { togglePopover() }
+        case .window, .hidden:
+            showMainWindow()
+        }
+    }
+
+    @objc private func changeWindowMode(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String,
+              let mode = WindowMode(rawValue: raw),
+              mode != prefs.windowMode else { return }
+
+        prefs.windowMode = mode
+
+        // bootForCurrentMode only runs at launch and sets activation policy,
+        // builds the main menu, and constructs the status item, so switching
+        // live would need a teardown path that doesn't exist. Relaunching is
+        // honest and takes a second. Warn first: .hidden has no icon at all.
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Restart PromptBar to switch mode?")
+        if mode == .hidden {
+            alert.informativeText = String(
+                localized: "Hidden mode removes both the Dock icon and the menubar icon. You'll reach PromptBar with ⌥⌘O only."
+            )
+        } else {
+            alert.informativeText = String(localized: "PromptBar needs to restart to apply the new window mode.")
+        }
+        alert.addButton(withTitle: String(localized: "Restart Now"))
+        alert.addButton(withTitle: String(localized: "Later"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            relaunch()
+        }
+    }
+
+    private func relaunch() {
+        AppRelauncher.relaunch()
+    }
+
+    #if EXTERNAL_DISTRIBUTION
+    @objc private func checkForUpdatesAction() {
+        let current = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
+        Task { @MainActor in
+            let result = await UpdateChecker.check(currentVersion: current)
+            let alert = NSAlert()
+            switch result {
+            case .upToDate(let version):
+                alert.messageText = String(localized: "You're up to date")
+                alert.informativeText = String(localized: "PromptBar \(version) is the latest version.")
+                alert.addButton(withTitle: String(localized: "OK"))
+                alert.runModal()
+            case .updateAvailable(let latest, let url, _):
+                alert.messageText = String(localized: "PromptBar \(latest) is available")
+                alert.informativeText = String(localized: "You're running \(current).")
+                alert.addButton(withTitle: String(localized: "Download"))
+                alert.addButton(withTitle: String(localized: "Later"))
+                if alert.runModal() == .alertFirstButtonReturn {
+                    NSWorkspace.shared.open(url)
+                }
+            case .failure:
+                alert.messageText = String(localized: "Couldn't check for updates")
+                alert.informativeText = String(localized: "Check your connection and try again.")
+                alert.addButton(withTitle: String(localized: "OK"))
+                alert.runModal()
+            }
+        }
+    }
+    #endif
+
     func menuDidClose(_ menu: NSMenu) {
         removeMenu()
     }
 
     private func showMenu() {
+        // Rebuild every time: Switch To, New Chat and the mode/size check
+        // marks all depend on live state, and the menu is otherwise only
+        // built once at launch.
+        constructMenu()
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
     }
@@ -615,12 +839,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func updateWindowSizeMenuState() {
-        guard let sizeMenu = menu?.item(withTitle: "Window Size")?.submenu else { return }
+        // Look up by identifier, not title: the title is localized, so
+        // item(withTitle: "Window Size") finds nothing outside English and
+        // the checkmarks silently stop tracking the real size.
+        guard let sizeMenu = menu?.items
+            .first(where: { $0.identifier == Self.windowSizeMenuID })?.submenu else { return }
         let current = popover?.contentSize ?? mainWindow?.frame.size ?? persistedWindowSize()
         for item in sizeMenu.items {
-            if let entry = Self.windowSizes.first(where: { $0.name == item.title }) {
-                item.state = (entry.size == current) ? .on : .off
-            }
+            guard let name = item.representedObject as? String,
+                  let entry = Self.windowSizes.first(where: { $0.name == name }) else { continue }
+            item.state = (entry.size == current) ? .on : .off
         }
     }
 
@@ -631,13 +859,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func openSettings() {
+        presentSettings(pane: .web)
+    }
+
+    // Selectors can't carry an enum, so each deep-link gets a thin @objc
+    // entry point. These are what make Prompts and MCP reachable from the
+    // menubar at all; before, they existed only inside the Settings sidebar.
+    @objc private func openPromptLibrary() { presentSettings(pane: .prompts) }
+    @objc private func openMCPServers() { presentSettings(pane: .mcp) }
+    @objc private func openWebChatSettings() { presentSettings(pane: .web) }
+    @objc private func openEndpointSettings() { presentSettings(pane: .endpoints) }
+    @objc private func openGeneralSettings() { presentSettings(pane: .general) }
+
+    private func presentSettings(pane: SettingsView.Section) {
+        // An existing window keeps whatever pane it's on: recreating it would
+        // throw away unsaved form state in the pane the user is looking at.
         if let window = settingsWindow {
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
             return
         }
 
-        let view = SettingsView()
+        let view = SettingsView(initialSection: pane)
             .environmentObject(store)
         let controller = NSHostingController(rootView: view)
         let window = NSWindow(contentViewController: controller)
@@ -677,8 +920,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func changeWindowSize(_ sender: NSMenuItem) {
-        let title = sender.title.replacingOccurrences(of: " Window", with: "")
-        guard let entry = Self.windowSizes.first(where: { $0.name == title }) else { return }
+        // representedObject carries the unlocalized name. Matching on the
+        // title would break the moment the menu isn't in English.
+        guard let name = sender.representedObject as? String,
+              let entry = Self.windowSizes.first(where: { $0.name == name }) else { return }
         popover?.contentSize = entry.size
         if let window = mainWindow {
             window.setContentSize(entry.size)
