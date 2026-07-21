@@ -1,1891 +1,4829 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "" : {
-
+  "sourceLanguage": "en",
+  "strings": {
+    "": {},
+    "%@  •  %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@  •  %2$@"
+          }
+        }
+      }
+    },
+    "%lld prompts added": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προστέθηκαν %lld prompts"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld prompts ajoutés"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U shtuan %lld prompte"
+          }
+        }
+      }
+    },
+    "A lightweight menubar wrapper for any web-based chat. You bring the URL; PromptBar gives it a home.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ένα ελαφρύ περιτύλιγμα στη γραμμή μενού για κάθε διαδικτυακή συνομιλία. Εσείς φέρνετε το URL, το PromptBar του δίνει στέγη."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un habillage léger en barre de menus pour n'importe quel chat web. Vous apportez l'URL ; PromptBar lui donne un foyer."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Një mbështjellës i lehtë në shiritin e menusë për çdo bisedë në web. Ti sjell URL-në; PromptBar i jep një shtëpi."
+          }
+        }
+      }
+    },
+    "A tiny repo-versioned memory framework. Drop it in your project and every AI you use, including PromptBar, reads your conventions in every session.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ένα μικροσκοπικό framework μνήμης με έλεγχο εκδόσεων μέσα στο repo. Προσθέστε το στο έργο σας και κάθε AI που χρησιμοποιείτε, μαζί και το PromptBar, διαβάζει τις συμβάσεις σας σε κάθε συνεδρία."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un petit framework de mémoire versionné dans le repo. Déposez-le dans votre projet et chaque IA que vous utilisez, y compris PromptBar, lit vos conventions à chaque session."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Një kornizë e vogël kujtese e versionuar në repo. Vendose në projektin tënd dhe çdo AI që përdor, përfshirë PromptBar, i lexon konventat e tua në çdo sesion."
+          }
+        }
+      }
+    },
+    "API Endpoint (BYO Key)": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endpoint API (με δικό σας κλειδί)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point d'API (votre clé)"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endpoint API (me çelësin tënd)"
+          }
+        }
+      }
+    },
+    "API Endpoints": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API Endpoints"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Points d'API"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pikat e API"
+          }
+        }
+      }
+    },
+    "API Endpoint…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endpoint API…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point d'API…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endpoint API…"
+          }
+        }
+      }
+    },
+    "API keys are stored in the macOS Keychain. They never leave your Mac except when sent to the URL above.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τα κλειδιά API αποθηκεύονται στο Keychain του macOS. Δεν φεύγουν ποτέ από το Mac σας, παρά μόνο όταν αποστέλλονται στο παραπάνω URL."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les clés API sont stockées dans le Trousseau macOS. Elles ne quittent jamais votre Mac, sauf lorsqu'elles sont envoyées à l'URL ci-dessus."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çelësat API ruhen në Keychain të macOS. Nuk largohen kurrë nga Mac-u yt, përveçse kur dërgohen te URL-ja më sipër."
+          }
+        }
+      }
+    },
+    "About": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σχετικά"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rreth"
+          }
+        }
+      }
+    },
+    "About PromptBar": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σχετικά με το PromptBar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos de PromptBar"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rreth PromptBar"
+          }
+        }
+      }
+    },
+    "Activate": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενεργοποίηση"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivizo"
+          }
+        }
+      }
+    },
+    "Activate License…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενεργοποίηση άδειας…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer la licence…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivizo licencën…"
+          }
+        }
+      }
+    },
+    "Activate PromptBar": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενεργοποίηση του PromptBar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer PromptBar"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivizo PromptBar"
+          }
+        }
+      }
+    },
+    "Acts like Safari or Claude, with a Dock icon and a real window.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λειτουργεί όπως το Safari ή το Claude, με εικονίδιο στο Dock και κανονικό παράθυρο."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se comporte comme Safari ou Claude, avec une icône dans le Dock et une vraie fenêtre."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sillet si Safari ose Claude, me një ikonë në Dock dhe një dritare të vërtetë."
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto"
+          }
+        }
+      }
+    },
+    "Add API Endpoint": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη API Endpoint"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un point d'API"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto pikë API"
+          }
+        }
+      }
+    },
+    "Add Endpoint": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη endpoint"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un point d'API"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto endpoint"
+          }
+        }
+      }
+    },
+    "Add MCP Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη διακομιστή MCP"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un serveur MCP"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto server MCP"
+          }
+        }
+      }
+    },
+    "Add Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη διακομιστή"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter le serveur"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto server"
+          }
+        }
+      }
+    },
+    "Add Service": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη υπηρεσίας"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter le service"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto shërbim"
+          }
+        }
+      }
+    },
+    "Add Web Chat": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη Web Chat"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un chat web"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto bisedë web"
+          }
+        }
+      }
+    },
+    "Add a Web Chat": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθήκη διαδικτυακής συνομιλίας"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un chat web"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto një bisedë web"
+          }
+        }
+      }
+    },
+    "Add a chat-completions endpoint to chat natively from your menubar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθέστε ένα endpoint chat-completions για να συνομιλείτε απευθείας από τη γραμμή μενού."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez un point d'API chat-completions pour chatter nativement depuis votre barre de menus."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto një endpoint chat-completions për të biseduar drejtpërdrejt nga shiriti i menusë."
+          }
+        }
+      }
+    },
+    "Add a prompt, it'll be one tap away in every chat.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθέστε ένα prompt και θα το έχετε με ένα πάτημα σε κάθε συνομιλία."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez un prompt, il sera à portée de clic dans chaque chat."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto një prompt dhe do ta kesh një prekje larg në çdo bisedë."
+          }
+        }
+      }
+    },
+    "Add an HTTP MCP server endpoint to extend your chats with real tools.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθέστε ένα endpoint διακομιστή HTTP MCP για να επεκτείνετε τις συνομιλίες σας με πραγματικά εργαλεία."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez l'adresse d'un serveur MCP HTTP pour étendre vos chats avec de vrais outils."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto një endpoint serveri HTTP MCP për t'i zgjeruar bisedat me mjete të vërteta."
+          }
+        }
+      }
+    },
+    "Add prompts from Settings → Prompts.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθέστε prompts από τις Ρυθμίσεις → Prompts."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez des prompts depuis Réglages → Prompts."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto prompte nga Cilësimet → Promptet."
+          }
+        }
+      }
+    },
+    "Add your own from Settings → Prompts.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προσθέστε τα δικά σας από τις Ρυθμίσεις → Prompts."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajoutez les vôtres depuis Réglages → Prompts."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shto të tuat nga Cilësimet → Promptet."
+          }
+        }
+      }
+    },
+    "Almost there…": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σχεδόν εκεί…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presque fini…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pothuajse aty…"
+          }
+        }
+      }
+    },
+    "Always on Top": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πάντα μπροστά"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toujours au premier plan"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gjithmonë sipër"
+          }
+        }
+      }
+    },
+    "Always on top": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πάντα σε πρώτο πλάνο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toujours au premier plan"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gjithmonë sipër"
+          }
+        }
+      }
+    },
+    "Assistant": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Βοηθός"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistenti"
+          }
+        }
+      }
+    },
+    "Back": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πίσω"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mbrapa"
+          }
+        }
+      }
+    },
+    "Bring PromptBar forward from any app, even full screen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εμφανίστε το PromptBar από οποιαδήποτε εφαρμογή, ακόμη και σε πλήρη οθόνη."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affichez PromptBar depuis n'importe quelle app, même en plein écran."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sill PromptBar-in përpara nga çdo aplikacion, edhe në ekran të plotë."
+          }
+        }
+      }
+    },
+    "Bring your own API key": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Φέρε το δικό σου κλειδί API"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apportez votre propre clé API"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sill çelësin tënd të API"
+          }
+        }
+      }
+    },
+    "Bring your own API key. PromptBar speaks the standard chat-completions schema, so any endpoint that supports it works.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Φέρτε το δικό σας κλειδί API. Το PromptBar μιλά το πρότυπο σχήμα chat-completions, οπότε λειτουργεί κάθε endpoint που το υποστηρίζει."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apportez votre propre clé API. PromptBar parle le schéma standard chat-completions, donc tout point d'API qui le prend en charge fonctionne."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sill çelësin tënd API. PromptBar flet skemën standarde chat-completions, prandaj funksionon çdo endpoint që e mbështet."
+          }
+        }
+      }
+    },
+    "Buy on Ko-fi": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αγορά στο Ko-fi"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acheter sur Ko-fi"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bli në Ko-fi"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Άκυρο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anulo"
+          }
+        }
+      }
+    },
+    "Check for Updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έλεγχος για ενημερώσεις"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher les mises à jour"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollo për përditësime"
+          }
+        }
+      }
+    },
+    "Check for Updates…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έλεγχος για ενημερώσεις…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher les mises à jour…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollo për përditësime…"
+          }
+        }
+      }
+    },
+    "Check for updates on launch": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έλεγχος για ενημερώσεις κατά την εκκίνηση"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher les mises à jour au lancement"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollo për përditësime në nisje"
+          }
+        }
+      }
+    },
+    "Check the email you received after your Ko-fi purchase. The file ends in .promptbar.": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έλεγξε το email που έλαβες μετά την αγορά στο Ko-fi. Το αρχείο τελειώνει σε .promptbar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez l'e-mail reçu après votre achat Ko-fi. Le fichier finit par .promptbar."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollo email-in që more pas blerjes në Ko-fi. Skedari mbaron me .promptbar."
+          }
+        }
+      }
+    },
+    "Check your connection and try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez votre connexion et réessayez."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollo lidhjen dhe provo përsëri."
+          }
+        }
+      }
+    },
+    "Clean Cookies & Cache": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Καθαρισμός Cookies & Cache"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effacer cookies & cache"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pastro Cookies & Cache"
+          }
+        }
+      }
+    },
+    "Click Add to wrap your first URL.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Κάντε κλικ στην Προσθήκη για να ενσωματώσετε το πρώτο σας URL."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cliquez sur Ajouter pour encapsuler votre première URL."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kliko Shto për të mbështjellë URL-në tënde të parë."
+          }
+        }
+      }
+    },
+    "Close": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Κλείσιμο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fermer"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mbyll"
+          }
+        }
+      }
+    },
+    "Coding & development": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προγραμματισμός & ανάπτυξη"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code & développement"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kodim & zhvillim"
+          }
+        }
+      }
+    },
+    "Color": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Χρώμα"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couleur"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngjyrë"
+          }
+        }
+      }
+    },
+    "Common URLs": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συχνά URLs"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL courantes"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL të zakonshme"
+          }
+        }
+      }
+    },
+    "Common base URLs": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνηθισμένα βασικά URL"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL de base courantes"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL bazë të zakonshme"
+          }
+        }
+      }
+    },
+    "Companion project: Kujto": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνοδευτικό project: Kujto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projet compagnon : Kujto"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekt shoqërues: Kujto"
+          }
+        }
+      }
+    },
+    "Connect MCP servers. Your AI can read and act on your real workspace, design tools, issue trackers, source control, your dashboards.": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σύνδεσε servers MCP. Το AI σου μπορεί να διαβάσει και να ενεργήσει στον πραγματικό σου χώρο εργασίας, εργαλεία σχεδιασμού, issue trackers, source control, dashboards."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez des serveurs MCP. Votre IA peut lire et agir sur votre vrai espace de travail, outils de design, suivi de tickets, source control, vos dashboards."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidh serverët MCP. AI yt mund të lexojë dhe veprojë në hapësirën tënde reale të punës, mjete dizajni, ndjekës biletash, kontroll burimi, dashboard-et e tua."
+          }
+        }
+      }
+    },
+    "Connect Model Context Protocol servers (HTTP). The tools they expose become available inside native chats.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνδέστε διακομιστές Model Context Protocol (HTTP). Τα εργαλεία που παρέχουν γίνονται διαθέσιμα μέσα στις εγγενείς συνομιλίες."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez des serveurs Model Context Protocol (HTTP). Les outils qu'ils exposent deviennent disponibles dans les chats natifs."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidh serverë Model Context Protocol (HTTP). Mjetet që ofrojnë bëhen të disponueshme brenda bisedave native."
+          }
+        }
+      }
+    },
+    "Connect any HTTP MCP server. Tools it exposes become available to your native chats.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνδέστε οποιονδήποτε διακομιστή HTTP MCP. Τα εργαλεία που παρέχει γίνονται διαθέσιμα στις εγγενείς συνομιλίες σας."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez n'importe quel serveur MCP HTTP. Les outils qu'il expose deviennent disponibles dans vos chats natifs."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidh çdo server HTTP MCP. Mjetet që ofron bëhen të disponueshme në bisedat e tua native."
+          }
+        }
+      }
+    },
+    "Connect any chat-completions endpoint (standard schema).": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνδέστε οποιοδήποτε endpoint chat-completions (πρότυπο σχήμα)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connectez n'importe quel point d'API chat-completions (schéma standard)."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidh çdo endpoint chat-completions (skemë standarde)."
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνέχεια"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuer"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vazhdo"
+          }
+        }
+      }
+    },
+    "Conversation history": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ιστορικό συνομιλιών"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historique des conversations"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historiku i bisedës"
+          }
+        }
+      }
+    },
+    "Copied": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αντιγράφηκε"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copié"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U kopjua"
+          }
+        }
+      }
+    },
+    "Copy install command": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αντιγραφή εντολής εγκατάστασης"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier la commande d'installation"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopjo komandën e instalimit"
+          }
+        }
+      }
+    },
+    "Couldn't check for updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν ήταν δυνατός ο έλεγχος για ενημερώσεις"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de rechercher les mises à jour"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuk u kontrollua dot për përditësime"
+          }
+        }
+      }
+    },
+    "Default size": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προεπιλεγμένο μέγεθος"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taille par défaut"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Madhësia e parazgjedhur"
+          }
+        }
+      }
+    },
+    "Deselect all": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αποεπιλογή όλων"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout désélectionner"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çzgjidhi të gjitha"
+          }
+        }
+      }
+    },
+    "Design & creative": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σχεδιασμός & δημιουργία"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Design & création"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dizajn & krijim"
+          }
+        }
+      }
+    },
+    "Developer Site": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ιστότοπος προγραμματιστή"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Site du développeur"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faqja e zhvilluesit"
+          }
+        }
+      }
+    },
+    "Disable if your endpoint doesn't support streaming.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Απενεργοποιήστε το αν το endpoint σας δεν υποστηρίζει streaming."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désactivez si votre point d'API ne prend pas en charge le streaming."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çaktivizoje nëse endpoint-i yt nuk mbështet transmetimin."
+          }
+        }
+      }
+    },
+    "Display Name": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Όνομα εμφάνισης"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom affiché"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emri i shfaqjes"
+          }
+        }
+      }
+    },
+    "Dock": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock"
+          }
+        }
+      }
+    },
+    "Download": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λήψη"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shkarko"
+          }
+        }
+      }
+    },
+    "Download Update": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λήψη ενημέρωσης"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger la mise à jour"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shkarko përditësimin"
+          }
+        }
+      }
+    },
+    "Drop your .promptbar file here, or paste its contents": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αφήστε εδώ το αρχείο .promptbar ή επικολλήστε τα περιεχόμενά του"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déposez votre fichier .promptbar ici, ou collez son contenu"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lësho këtu skedarin tënd .promptbar, ose ngjit përmbajtjen e tij"
+          }
+        }
+      }
+    },
+    "Drop your license file here": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Άσε το αρχείο άδειας εδώ"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déposez votre fichier de licence ici"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lësho skedarin e licencës këtu"
+          }
+        }
+      }
+    },
+    "Edit Endpoint": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επεξεργασία endpoint"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le point d'API"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifiko endpoint-in"
+          }
+        }
+      }
+    },
+    "Edit MCP Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επεξεργασία διακομιστή MCP"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le serveur MCP"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifiko serverin MCP"
+          }
+        }
+      }
+    },
+    "Edit Prompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επεξεργασία prompt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le prompt"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifiko promptin"
+          }
+        }
+      }
+    },
+    "Edit Service": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επεξεργασία υπηρεσίας"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier le service"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifiko shërbimin"
+          }
+        }
+      }
+    },
+    "Email the developer": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Στείλτε email στον προγραμματιστή"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Écrire au développeur"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dërgo email zhvilluesit"
+          }
+        }
+      }
+    },
+    "Enable ⌥⌘O hotkey": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενεργοποίηση συντόμευσης ⌥⌘O"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activer le raccourci ⌥⌘O"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivizo shkurtoren ⌥⌘O"
+          }
+        }
+      }
+    },
+    "Enter your PromptBar license": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εισαγωγή της άδειας PromptBar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisissez votre licence PromptBar"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fut licencën tënde PromptBar"
+          }
+        }
+      }
+    },
+    "Everyday assistant": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Καθημερινός βοηθός"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant du quotidien"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistent i përditshëm"
+          }
+        }
+      }
+    },
+    "From early supporters of the project on Ko-fi.": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Από πρώτους υποστηρικτές του project στο Ko-fi."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Des premiers soutiens du projet sur Ko-fi."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nga mbështetësit e parë të projektit në Ko-fi."
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Γενικά"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Général"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Të përgjithshme"
+          }
+        }
+      }
+    },
+    "Get Started": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ξεκίνα"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commencer"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fillo"
+          }
+        }
+      }
+    },
+    "Go to step %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μετάβαση στο βήμα %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aller à l'étape %lld"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shko te hapi %lld"
+          }
+        }
+      }
+    },
+    "Hidden mode removes both the Dock icon and the menubar icon. You'll reach PromptBar with ⌥⌘O only.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η κρυφή λειτουργία αφαιρεί και το εικονίδιο του Dock και το εικονίδιο της γραμμής μενού. Θα ανοίγετε το PromptBar μόνο με ⌥⌘O."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le mode masqué supprime à la fois l'icône du Dock et celle de la barre de menus. Vous n'atteindrez PromptBar qu'avec ⌥⌘O."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i fshehur heq si ikonën e Dock-ut, ashtu edhe atë të shiritit të menusë. PromptBar do ta hapësh vetëm me ⌥⌘O."
+          }
+        }
+      }
+    },
+    "Hidden mode: no Dock icon and no menubar icon. PromptBar is reachable only with the ⌥⌘O hotkey, so keep that enabled.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Κρυφή λειτουργία: χωρίς εικονίδιο στο Dock και χωρίς εικονίδιο στη γραμμή μενού. Το PromptBar ανοίγει μόνο με τη συντόμευση ⌥⌘O, οπότε κρατήστε την ενεργή."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode masqué : aucune icône dans le Dock ni dans la barre de menus. PromptBar n'est accessible qu'avec le raccourci ⌥⌘O, gardez-le donc activé."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i fshehur: pa ikonë në Dock dhe pa ikonë në shiritin e menysë. PromptBar hapet vetëm me shkurtoren ⌥⌘O, prandaj mbaje atë të aktivizuar."
+          }
+        }
+      }
+    },
+    "Hotkey disabled. You'll open PromptBar from the Dock.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η συντόμευση απενεργοποιήθηκε. Θα ανοίγετε το PromptBar από το Dock."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raccourci désactivé. Vous ouvrirez PromptBar depuis le Dock."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shkurtorja u çaktivizua. Do ta hapësh PromptBar-in nga Dock-u."
+          }
+        }
+      }
+    },
+    "Hotkey disabled. You'll open PromptBar from the menubar icon.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η συντόμευση απενεργοποιήθηκε. Θα ανοίγετε το PromptBar από το εικονίδιο στη γραμμή μενού."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raccourci désactivé. Vous ouvrirez PromptBar depuis l'icône de la barre de menus."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shkurtorja u çaktivizua. Do ta hapësh PromptBar-in nga ikona në shiritin e menysë."
+          }
+        }
+      }
+    },
+    "How should PromptBar launch?": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πώς να ξεκινάει το PromptBar;"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comment lancer PromptBar ?"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si duhet të nisë PromptBar?"
+          }
+        }
+      }
+    },
+    "I have a license file instead": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έχω αρχείο άδειας"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "J'ai plutôt un fichier de licence"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Në vend të kësaj, kam një skedar licence"
+          }
+        }
+      }
+    },
+    "Icon": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εικονίδιο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icône"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ikonë"
+          }
+        }
+      }
+    },
+    "If you received a .promptbar file by email, drop it below.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αν λάβατε αρχείο .promptbar με email, αφήστε το παρακάτω."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si vous avez reçu un fichier .promptbar par e-mail, déposez-le ci-dessous."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nëse ke marrë një skedar .promptbar me email, lëshoje më poshtë."
+          }
+        }
+      }
+    },
+    "If your server uses a bearer token, paste it as 'Authorization: Bearer <token>'. Custom header keys also work, e.g. 'X-API-Key: <token>'.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αν ο διακομιστής σας χρησιμοποιεί bearer token, επικολλήστε το ως 'Authorization: Bearer <token>'. Λειτουργούν και προσαρμοσμένα κλειδιά κεφαλίδας, π.χ. 'X-API-Key: <token>'."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si votre serveur utilise un jeton bearer, collez-le sous la forme « Authorization: Bearer <token> ». Les clés d'en-tête personnalisées fonctionnent aussi, par ex. « X-API-Key: <token> »."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nëse serveri yt përdor një bearer token, ngjite si 'Authorization: Bearer <token>'. Funksionojnë edhe çelësa header të personalizuar, p.sh. 'X-API-Key: <token>'."
+          }
+        }
+      }
+    },
+    "Insert prompt from library": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εισαγωγή prompt από τη βιβλιοθήκη"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insérer un prompt de la bibliothèque"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fut prompt nga biblioteka"
+          }
+        }
+      }
+    },
+    "It says my email isn't recognized": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λέει ότι το email μου δεν αναγνωρίζεται"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il dit que mon e-mail n'est pas reconnu"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thotë se emaili im nuk njihet"
+          }
+        }
+      }
+    },
+    "Large": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μεγάλο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grand"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I madh"
+          }
+        }
+      }
+    },
+    "Later": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αργότερα"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus tard"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Më vonë"
+          }
+        }
+      }
+    },
+    "Leave blank to keep existing": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αφήστε το κενό για να διατηρηθεί το υπάρχον"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laissez vide pour conserver l'existant"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lëre bosh për të ruajtur atë ekzistues"
+          }
+        }
+      }
+    },
+    "Licensed to %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Άδεια για %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licence accordée à %@"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licencuar për %@"
+          }
+        }
+      }
+    },
+    "Lives in the menubar with no Dock icon. Click the icon for everything.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ζει στη γραμμή μενού, χωρίς εικονίδιο στο Dock. Κάντε κλικ στο εικονίδιο για τα πάντα."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vit dans la barre de menus, sans icône dans le Dock. Cliquez sur l'icône pour tout faire."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rri në shiritin e menysë, pa ikonë në Dock. Kliko ikonën për gjithçka."
+          }
+        }
+      }
+    },
+    "MCP Servers": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servers MCP"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serveurs MCP"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverët MCP"
+          }
+        }
+      }
+    },
+    "MCP Servers…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διακομιστές MCP…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serveurs MCP…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverët MCP…"
+          }
+        }
+      }
+    },
+    "Medium": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μεσαίο"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyen"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesatar"
+          }
+        }
+      }
+    },
+    "Menubar": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Γραμμή μενού"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barre de menus"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shiriti i menysë"
+          }
+        }
+      }
+    },
+    "Menubar mode: the popover hangs from the menubar icon. No Dock icon.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λειτουργία γραμμής μενού: το αναδυόμενο παράθυρο κρέμεται από το εικονίδιο της γραμμής μενού. Χωρίς εικονίδιο στο Dock."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode barre de menus : la fenêtre contextuelle est suspendue à l'icône de la barre de menus. Pas d'icône dans le Dock."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i shiritit të menusë: dritarja varet nga ikona e shiritit të menusë. Pa ikonë në Dock."
+          }
+        }
+      }
+    },
+    "Menubar mode: the popover hangs from the menubar icon. No Dock icon. Every feature is in the menubar menu.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λειτουργία γραμμής μενού: το αναδυόμενο παράθυρο κρέμεται από το εικονίδιο στη γραμμή μενού. Χωρίς εικονίδιο στο Dock. Κάθε λειτουργία βρίσκεται στο μενού της γραμμής μενού."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode barre de menus : la fenêtre contextuelle se déploie depuis l'icône de la barre de menus. Aucune icône dans le Dock. Toutes les fonctionnalités sont dans le menu de la barre de menus."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i shiritit të menysë: dritarja kërcyese varet nga ikona e shiritit të menysë. Pa ikonë në Dock. Çdo veçori ndodhet në menynë e shiritit të menysë."
+          }
+        }
+      }
+    },
+    "Message…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μήνυμα…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesazh…"
+          }
+        }
+      }
+    },
+    "Most servers need an auth token. Servers needing auth install disabled, flip them on in Settings → MCP Servers after you add the token.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Οι περισσότεροι διακομιστές χρειάζονται token ελέγχου ταυτότητας. Όσοι το χρειάζονται εγκαθίστανται απενεργοποιημένοι, ενεργοποιήστε τους από τις Ρυθμίσεις → Διακομιστές MCP αφού προσθέσετε το token."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La plupart des serveurs ont besoin d'un jeton d'authentification. Ceux qui en requièrent un s'installent désactivés ; activez-les dans Réglages → Serveurs MCP après avoir ajouté le jeton."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shumica e serverëve kanë nevojë për një token autentikimi. Serverët që kërkojnë autentikim instalohen të çaktivizuar; aktivizoji te Cilësimet → Serverët MCP pasi të shtosh tokenin."
+          }
+        }
+      }
+    },
+    "Native streaming chat against any chat-completions endpoint. Keys live in the macOS Keychain, never UserDefaults, never iCloud.": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εγγενής συνομιλία streaming σε οποιοδήποτε endpoint chat-completions. Τα κλειδιά μένουν στο Keychain του macOS, ποτέ στο UserDefaults, ποτέ στο iCloud."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat natif en streaming contre n'importe quel point d'API chat-completions. Les clés vivent dans le Trousseau macOS, jamais dans UserDefaults, jamais iCloud."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisedë vendase me streaming kundër çdo pikë-fundi chat-completions. Çelësat rrojnë në Keychain-in e macOS, kurrë në UserDefaults, kurrë në iCloud."
+          }
+        }
+      }
+    },
+    "New Chat": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Νέα συνομιλία"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau chat"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisedë e re"
+          }
+        }
+      }
+    },
+    "New Prompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Νέο prompt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau prompt"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompt i ri"
+          }
+        }
+      }
     },
-    "%@  •  %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@  •  %2$@"
+    "New chat": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Νέα συνομιλία"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouveau chat"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisedë e re"
           }
         }
       }
-    },
-    "A lightweight menubar wrapper for any web-based chat. You bring the URL; PromptBar gives it a home." : {
-
     },
-    "A tiny repo-versioned memory framework. Drop it in your project and every AI you use, including PromptBar, reads your conventions in every session." : {
-
-    },
-    "About" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σχετικά"
+    "No MCP servers yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν ακόμη διακομιστές MCP"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À propos"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun serveur MCP pour l'instant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rreth"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende asnjë server MCP"
           }
         }
       }
     },
-    "Add" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Προσθήκη"
+    "No analytics, no telemetry, no remote config. Updates check GitHub Releases directly.": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Χωρίς analytics, χωρίς telemetry, χωρίς remote config. Οι ενημερώσεις ελέγχουν απευθείας τα GitHub Releases."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune analytique, aucune télémétrie, aucune configuration distante. Les mises à jour vérifient directement les GitHub Releases."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shto"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pa analitikë, pa telemetri, pa konfigurim të largët. Përditësimet kontrollojnë drejtpërsëdrejti GitHub Releases."
           }
         }
       }
-    },
-    "Add a chat-completions endpoint to chat natively from your menubar." : {
-
     },
-    "Add a prompt, it'll be one tap away in every chat." : {
-
-    },
-    "Add a Web Chat" : {
-
-    },
-    "Add an HTTP MCP server endpoint to extend your chats with real tools." : {
-
-    },
-    "Add API Endpoint" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Προσθήκη API Endpoint"
+    "No chats yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν ακόμη συνομιλίες"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un point d'API"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun chat pour l'instant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shto pikë API"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende asnjë bisedë"
           }
         }
       }
-    },
-    "Add Endpoint" : {
-
-    },
-    "Add MCP Server" : {
-
-    },
-    "Add prompts from Settings → Prompts." : {
-
-    },
-    "Add Server" : {
-
-    },
-    "Add Service" : {
-
     },
-    "Add Web Chat" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Προσθήκη Web Chat"
+    "No endpoints yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν ακόμη endpoints"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un chat web"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun point d'API pour l'instant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shto bisedë web"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende asnjë endpoint"
           }
         }
       }
     },
-    "Almost there…" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σχεδόν εκεί…"
+    "No prompts saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν έχουν αποθηκευτεί prompts"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presque fini…"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun prompt enregistré"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pothuajse aty…"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asnjë prompt i ruajtur"
           }
         }
       }
     },
-    "Always on top" : {
-
-    },
-    "Always on Top" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Πάντα μπροστά"
+    "No saved prompts yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν ακόμη αποθηκευμένα prompts"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toujours au premier plan"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun prompt enregistré pour l'instant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjithmonë sipër"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende asnjë prompt i ruajtur"
           }
         }
       }
-    },
-    "API Endpoint (BYO Key)" : {
-
     },
-    "API Endpoints" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API Endpoints"
+    "No web chats yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δεν υπάρχουν ακόμη διαδικτυακές συνομιλίες"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Points d'API"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun chat web pour l'instant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pikat e API"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ende asnjë bisedë web"
           }
         }
       }
-    },
-    "API keys are stored in the macOS Keychain. They never leave your Mac except when sent to the URL above." : {
-
-    },
-    "Assistant" : {
-
     },
-    "auth" : {
-
-    },
-    "Back" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Πίσω"
+    "OK": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retour"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mbrapa"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
           }
         }
       }
     },
-    "Bring your own API key" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Φέρε το δικό σου κλειδί API"
+    "Open": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Άνοιγμα"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apportez votre propre clé API"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sill çelësin tënd të API"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hap"
           }
         }
       }
-    },
-    "Bring your own API key. PromptBar speaks the standard chat-completions schema, so any endpoint that supports it works." : {
-
     },
-    "Buy on Ko-fi" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αγορά στο Ko-fi"
+    "Order id from your Ko-fi receipt": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Κωδικός παραγγελίας από την απόδειξη Ko-fi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acheter sur Ko-fi"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Identifiant de commande de votre reçu Ko-fi"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bli në Ko-fi"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID-ja e porosisë nga fatura jote e Ko-fi"
           }
         }
       }
     },
-    "Cancel" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Άκυρο"
+    "Paste your API key": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επικολλήστε το κλειδί API σας"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Annuler"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collez votre clé API"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anulo"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngjit çelësin tënd API"
           }
         }
       }
     },
-    "Check the email you received after your Ko-fi purchase. The file ends in .promptbar." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Έλεγξε το email που έλαβες μετά την αγορά στο Ko-fi. Το αρχείο τελειώνει σε .promptbar."
+    "Personalising PromptBar for %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εξατομίκευση του PromptBar για %@."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vérifiez l'e-mail reçu après votre achat Ko-fi. Le fichier finit par .promptbar."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personnalisation de PromptBar pour %@."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kontrollo email-in që more pas blerjes në Ko-fi. Skedari mbaron me .promptbar."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po personalizohet PromptBar për %@."
           }
         }
       }
     },
-    "Clean Cookies & Cache" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Καθαρισμός Cookies & Cache"
+    "Pick at least one access method or you won't be able to open the app.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επιλέξτε τουλάχιστον έναν τρόπο πρόσβασης, αλλιώς δεν θα μπορείτε να ανοίξετε την εφαρμογή."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Effacer cookies & cache"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez au moins une méthode d'accès, sinon vous ne pourrez plus ouvrir l'app."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pastro Cookies & Cache"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zgjidh të paktën një mënyrë qasjeje, përndryshe nuk do ta hapësh dot aplikacionin."
           }
         }
       }
-    },
-    "Click Add to wrap your first URL." : {
-
-    },
-    "Close" : {
-
     },
-    "Coding & development" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Προγραμματισμός & ανάπτυξη"
+    "Pick the closest one. We'll set up the right defaults.": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διάλεξε αυτό που ταιριάζει πιο πολύ. Θα στήσουμε τις σωστές προεπιλογές."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code & développement"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez le plus proche. On configurera les bons réglages."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kodim & zhvillim"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zgjidh atë më të afërt. Do t'i caktojmë vlerat e duhura."
           }
         }
       }
     },
-    "Color" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Χρώμα"
+    "Pick which power-ups to install. You can change all of it later.": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διάλεξε ποια εργαλεία θες να εγκαταστήσεις. Μπορείς να αλλάξεις τα πάντα αργότερα."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Couleur"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez les bonus à installer. Vous pourrez tout changer plus tard."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ngjyrë"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zgjidh fuqitë që do të instalosh. Mund t'i ndryshosh më vonë."
           }
         }
       }
     },
-    "Common base URLs" : {
-
-    },
-    "Common URLs" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Συχνά URLs"
+    "Power-user / offline path": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Για προχωρημένους / χωρίς σύνδεση"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL courantes"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voie experte / hors ligne"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL të zakonshme"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rruga për përdorues të avancuar / jashtë linje"
           }
         }
       }
     },
-    "Companion project: Kujto" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Συνοδευτικό project: Kujto"
+    "Press ⌥⌘O from anywhere to summon PromptBar": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πάτα ⌥⌘O από οπουδήποτε για να καλέσεις το PromptBar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projet compagnon : Kujto"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez sur ⌥⌘O n'importe où pour invoquer PromptBar"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projekt shoqërues: Kujto"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shtyp ⌥⌘O nga kudo për të thirrur PromptBar"
           }
         }
       }
-    },
-    "Connect any chat-completions endpoint (standard schema)." : {
-
     },
-    "Connect any HTTP MCP server. Tools it exposes become available to your native chats." : {
-
-    },
-    "Connect MCP servers. Your AI can read and act on your real workspace, design tools, issue trackers, source control, your dashboards." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σύνδεσε servers MCP. Το AI σου μπορεί να διαβάσει και να ενεργήσει στον πραγματικό σου χώρο εργασίας, εργαλεία σχεδιασμού, issue trackers, source control, dashboards."
+    "Private by design": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ιδιωτικό από σχεδίαση"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connectez des serveurs MCP. Votre IA peut lire et agir sur votre vrai espace de travail, outils de design, suivi de tickets, source control, vos dashboards."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privé par conception"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lidh serverët MCP. AI yt mund të lexojë dhe veprojë në hapësirën tënde reale të punës, mjete dizajni, ndjekës biletash, kontroll burimi, dashboard-et e tua."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privat nga vetë dizajni"
           }
         }
       }
-    },
-    "Connect Model Context Protocol servers (HTTP). The tools they expose become available inside native chats." : {
-
     },
-    "Continue" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Συνέχεια"
+    "Projects & operations": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projects & operations"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projets & opérations"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vazhdo"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekte & operacione"
           }
         }
       }
     },
-    "Conversation history" : {
-
-    },
-    "Copied" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αντιγράφηκε"
+    "Prompt Library": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Βιβλιοθήκη prompt"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copié"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bibliothèque de prompts"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "U kopjua"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biblioteka e prompteve"
           }
         }
       }
     },
-    "Copy install command" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αντιγραφή εντολής εγκατάστασης"
+    "Prompt Library…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Βιβλιοθήκη prompt…"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copier la commande d'installation"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bibliothèque de prompts…"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kopjo komandën e instalimit"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biblioteka e prompteve…"
           }
         }
       }
-    },
-    "Default size" : {
-
     },
-    "Deselect all" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αποεπιλογή όλων"
+    "PromptBar": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout désélectionner"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Çzgjidhi të gjitha"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar"
           }
         }
       }
     },
-    "Design & creative" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σχεδιασμός & δημιουργία"
+    "PromptBar %@ is available": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το PromptBar %@ είναι διαθέσιμο"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Design & création"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar %@ est disponible"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dizajn & krijim"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar %@ është i disponueshëm"
           }
         }
       }
-    },
-    "Developer Site" : {
-
-    },
-    "Disable if your endpoint doesn't support streaming." : {
-
     },
-    "Display Name" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Όνομα εμφάνισης"
+    "PromptBar %@ is the latest version.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το PromptBar %@ είναι η πιο πρόσφατη έκδοση."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nom affiché"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar %@ est la dernière version."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Emri i shfaqjes"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar %@ është versioni më i fundit."
           }
         }
       }
     },
-    "Drop your license file here" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Άσε το αρχείο άδειας εδώ"
+    "PromptBar does not create accounts and does not collect personal data. Web chats run inside isolated WebViews; API endpoints send your messages directly to the URL you configured. API keys are stored in the macOS Keychain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το PromptBar δεν δημιουργεί λογαριασμούς και δεν συλλέγει προσωπικά δεδομένα. Οι διαδικτυακές συνομιλίες εκτελούνται μέσα σε απομονωμένα WebViews, ενώ τα endpoints API στέλνουν τα μηνύματά σας απευθείας στο URL που ορίσατε. Τα κλειδιά API αποθηκεύονται στο Keychain του macOS."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déposez votre fichier de licence ici"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar ne crée pas de comptes et ne collecte pas de données personnelles. Les chats web s'exécutent dans des WebViews isolées ; les points d'API envoient vos messages directement à l'URL que vous avez configurée. Les clés API sont stockées dans le Trousseau macOS."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lësho skedarin e licencës këtu"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar nuk krijon llogari dhe nuk mbledh të dhëna personale. Bisedat web ekzekutohen brenda WebView-ve të izoluara; endpoint-et API i dërgojnë mesazhet e tua drejtpërdrejt te URL-ja që ke konfiguruar. Çelësat API ruhen në Keychain të macOS."
           }
         }
       }
     },
-    "e.g. Authorization: Bearer ..." : {
-
-    },
-    "e.g. gpt-4o-mini, llama-3.1-70b" : {
-
-    },
-    "e.g. Issue Tracker" : {
-
-    },
-    "e.g. My Inference Server" : {
-
-    },
-    "e.g. Work Chat" : {
-
-    },
-    "Edit Endpoint" : {
-
-    },
-    "Edit MCP Server" : {
-
-    },
-    "Edit Prompt" : {
-
-    },
-    "Edit Service" : {
-
-    },
-    "Enable ⌥⌘O hotkey" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ενεργοποίηση συντόμευσης ⌥⌘O"
+    "PromptBar needs to restart to apply the new window mode.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το PromptBar πρέπει να επανεκκινήσει για να εφαρμοστεί η νέα λειτουργία παραθύρου."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activer le raccourci ⌥⌘O"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar doit redémarrer pour appliquer le nouveau mode de fenêtre."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktivizo shkurtoren ⌥⌘O"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PromptBar duhet të riniset për të zbatuar modalitetin e ri të dritares."
           }
         }
       }
     },
-    "Enter your PromptBar license" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Εισαγωγή της άδειας PromptBar"
+    "Prompts": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompts"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisissez votre licence PromptBar"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompts"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fut licencën tënde PromptBar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompts"
           }
         }
       }
     },
-    "Everyday assistant" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Καθημερινός βοηθός"
+    "Quit PromptBar": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τερματισμός PromptBar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistant du quotidien"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitter PromptBar"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Asistent i përditshëm"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dil nga PromptBar"
           }
         }
       }
     },
-    "From early supporters of the project on Ko-fi." : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Από πρώτους υποστηρικτές του project στο Ko-fi."
+    "Re-open Ko-fi": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Άνοιγμα ξανά του Ko-fi"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Des premiers soutiens du projet sur Ko-fi."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rouvrir Ko-fi"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nga mbështetësit e parë të projektit në Ko-fi."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rihap Ko-fi"
           }
         }
       }
     },
-    "General" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Γενικά"
+    "Reach them with ⌘P inside any chat.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ανοίξτε τα με ⌘P μέσα σε οποιαδήποτε συνομιλία."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Général"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accédez-y avec ⌘P dans n'importe quel chat."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Të përgjithshme"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hapi me ⌘P brenda çdo bisede."
           }
         }
       }
     },
-    "Get Started" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ξεκίνα"
+    "Recommended MCP servers": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Προτεινόμενοι servers MCP"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commencer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serveurs MCP recommandés"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fillo"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serverët MCP të rekomanduar"
           }
         }
       }
-    },
-    "Go to step %lld" : {
-
     },
-    "How should PromptBar launch?" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Πώς να ξεκινάει το PromptBar;"
+    "Refining your experience": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τελειοποίηση της εμπειρίας σου"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comment lancer PromptBar ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affinage de votre expérience"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Si duhet të nisë PromptBar?"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po përsosim përvojën tënde"
           }
         }
       }
-    },
-    "https://api.example.com/v1" : {
-
-    },
-    "https://example.com" : {
-
     },
-    "https://mcp.example.com/v1" : {
-
-    },
-    "Icon" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Εικονίδιο"
+    "Reload": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επαναφόρτωση"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Icône"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recharger"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ikonë"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringarko"
           }
         }
       }
-    },
-    "If your server uses a bearer token, paste it as 'Authorization: Bearer <token>'. Custom header keys also work, e.g. 'X-API-Key: <token>'." : {
-
     },
-    "Insert prompt from library" : {
-
-    },
-    "Large" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Μεγάλο"
+    "Remove": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αφαίρεση"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grand"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I madh"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiq"
           }
         }
       }
-    },
-    "Leave blank to keep existing" : {
-
     },
-    "MCP Servers" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servers MCP"
+    "Research & writing": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έρευνα & γραφή"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serveurs MCP"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recherche & rédaction"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serverët MCP"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hulumtim & shkrim"
           }
         }
       }
     },
-    "Medium" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Μεσαίο"
+    "Restart Now": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επανεκκίνηση τώρα"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Moyen"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrer maintenant"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mesatar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinis tani"
           }
         }
       }
     },
-    "Menubar mode: the popover hangs from the menubar icon. No Dock icon." : {
-
-    },
-    "Message…" : {
-
-    },
-    "Most servers need an auth token. Servers needing auth install disabled, flip them on in Settings → MCP Servers after you add the token." : {
-
-    },
-    "Native streaming chat against any chat-completions endpoint. Keys live in the macOS Keychain, never UserDefaults, never iCloud." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Εγγενής συνομιλία streaming σε οποιοδήποτε endpoint chat-completions. Τα κλειδιά μένουν στο Keychain του macOS, ποτέ στο UserDefaults, ποτέ στο iCloud."
+    "Restart PromptBar to apply the new window mode.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επανεκκινήστε το PromptBar για να εφαρμοστεί η νέα λειτουργία παραθύρου."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chat natif en streaming contre n'importe quel point d'API chat-completions. Les clés vivent dans le Trousseau macOS, jamais dans UserDefaults, jamais iCloud."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrez PromptBar pour appliquer le nouveau mode de fenêtre."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bisedë vendase me streaming kundër çdo pikë-fundi chat-completions. Çelësat rrojnë në Keychain-in e macOS, kurrë në UserDefaults, kurrë në iCloud."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinise PromptBar për të zbatuar modalitetin e ri të dritares."
           }
         }
       }
-    },
-    "New chat" : {
-
     },
-    "New Chat" : {
-
-    },
-    "New Prompt" : {
-
-    },
-    "No analytics, no telemetry, no remote config. Updates check GitHub Releases directly." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Χωρίς analytics, χωρίς telemetry, χωρίς remote config. Οι ενημερώσεις ελέγχουν απευθείας τα GitHub Releases."
+    "Restart PromptBar to apply.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επανεκκινήστε το PromptBar για εφαρμογή."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucune analytique, aucune télémétrie, aucune configuration distante. Les mises à jour vérifient directement les GitHub Releases."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrez PromptBar pour appliquer."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pa analitikë, pa telemetri, pa konfigurim të largët. Përditësimet kontrollojnë drejtpërsëdrejti GitHub Releases."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinis PromptBar-in për ta zbatuar."
           }
         }
       }
     },
-    "No endpoints yet" : {
-
+    "Restart PromptBar to switch mode?": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επανεκκίνηση του PromptBar για αλλαγή λειτουργίας;"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redémarrer PromptBar pour changer de mode ?"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta rinisim PromptBar për të ndërruar modalitetin?"
+          }
+        }
+      }
     },
-    "No MCP servers yet" : {
-
+    "Save": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αποθήκευση"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrer"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruaj"
+          }
+        }
+      }
     },
-    "No prompts saved" : {
-
+    "Save your best prompts. Reuse them in any chat with ⌘P.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αποθηκεύστε τα καλύτερα prompts σας. Χρησιμοποιήστε τα ξανά σε κάθε συνομιλία με ⌘P."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrez vos meilleurs prompts. Réutilisez-les dans n'importe quel chat avec ⌘P."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruaj promptet e tua më të mira. Përdori sërish në çdo bisedë me ⌘P."
+          }
+        }
+      }
     },
-    "No saved prompts yet" : {
-
+    "Search prompts and tags…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναζήτηση σε prompts και ετικέτες…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher prompts et tags…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kërko prompte dhe etiketa…"
+          }
+        }
+      }
     },
-    "No web chats yet" : {
-
+    "Search prompts…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναζήτηση prompts…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher des prompts…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kërko prompte…"
+          }
+        }
+      }
     },
-    "open source" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ανοιχτού κώδικα"
+    "Select all": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επιλογή όλων"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "open source"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout sélectionner"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "burim i hapur"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zgjidhi të gjitha"
           }
         }
       }
     },
-    "or paste its contents below" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ή επικόλλησε το περιεχόμενο πιο κάτω"
+    "Send (⌘↩)": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αποστολή (⌘↩)"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ou collez son contenu ci-dessous"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoyer (⌘↩)"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ose ngjit përmbajtjen më poshtë"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dërgo (⌘↩)"
           }
         }
       }
     },
-    "Paste your API key" : {
-
+    "Settings…": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ρυθμίσεις…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages…"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cilësimet…"
+          }
+        }
+      }
     },
-    "Personalising PromptBar for %@." : {
-
+    "Ships empty. No bundled providers, no third-party logos. You add the URLs and the keys you actually use.": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έρχεται άδειο. Χωρίς προεπιλεγμένους παρόχους, χωρίς λογότυπα τρίτων. Προσθέτεις τα URL και τα κλειδιά που πραγματικά χρησιμοποιείς."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Livré vide. Aucun fournisseur intégré, aucun logo tiers. Vous ajoutez les URL et les clés que vous utilisez vraiment."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vjen bosh. Pa ofrues të paracaktuar, pa logo të palëve të treta. Ti shton URL-të dhe çelësat që përdor vërtet."
+          }
+        }
+      }
     },
-    "Pick at least one access method or you won't be able to open the app." : {
-
+    "Show Onboarding Again on Next Launch": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εμφάνιση εισαγωγής ξανά στην επόμενη εκκίνηση"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réafficher la configuration au prochain lancement"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shfaq sërish udhëzimet fillestare në nisjen tjetër"
+          }
+        }
+      }
     },
-    "Pick the closest one. We'll set up the right defaults." : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Διάλεξε αυτό που ταιριάζει πιο πολύ. Θα στήσουμε τις σωστές προεπιλογές."
+    "Show Window": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εμφάνιση παραθύρου"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez le plus proche. On configurera les bons réglages."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher la fenêtre"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zgjidh atë më të afërt. Do t'i caktojmë vlerat e duhura."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shfaq dritaren"
           }
         }
       }
     },
-    "Pick which power-ups to install. You can change all of it later." : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Διάλεξε ποια εργαλεία θες να εγκαταστήσεις. Μπορείς να αλλάξεις τα πάντα αργότερα."
+    "Show in Dock": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εμφάνιση στο Dock"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez les bonus à installer. Vous pourrez tout changer plus tard."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher dans le Dock"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zgjidh fuqitë që do të instalosh. Mund t'i ndryshosh më vonë."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shfaq në Dock"
           }
         }
       }
     },
-    "Press ⌥⌘O from anywhere to summon PromptBar" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Πάτα ⌥⌘O από οπουδήποτε για να καλέσεις το PromptBar"
+    "Skip Setup": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Παράλειψη ρύθμισης"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez sur ⌥⌘O n'importe où pour invoquer PromptBar"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passer la configuration"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shtyp ⌥⌘O nga kudo për të thirrur PromptBar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anashkalo konfigurimin"
           }
         }
       }
     },
-    "Private by design" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ιδιωτικό από σχεδίαση"
+    "Skip, I'll set it up": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Παράλειψη, θα το ρυθμίσω μόνος"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privé par conception"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passer, je configurerai"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privat nga vetë dizajni"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anashkalo, do ta caktoj vetë"
           }
         }
       }
     },
-    "Projects & operations" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projects & operations"
+    "Small": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μικρό"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projets & opérations"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Petit"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projekte & operacione"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I vogël"
           }
         }
       }
     },
-    "Prompt Library" : {
-
+    "Stop": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διακοπή"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêter"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ndalo"
+          }
+        }
+      }
     },
-    "PromptBar" : {
-
+    "Stream responses (Server-Sent Events)": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ροή απαντήσεων (Server-Sent Events)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réponses en streaming (Server-Sent Events)"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transmeto përgjigjet (Server-Sent Events)"
+          }
+        }
+      }
     },
-    "PromptBar does not create accounts and does not collect personal data. Web chats run inside isolated WebViews; API endpoints send your messages directly to the URL you configured. API keys are stored in the macOS Keychain." : {
-
+    "Switch To": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μετάβαση σε"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basculer vers"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kalo te"
+          }
+        }
+      }
     },
-    "Prompts" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prompts"
+    "Tags (comma-separated, optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ετικέτες (χωρισμένες με κόμμα, προαιρετικό)"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prompts"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tags (séparés par des virgules, facultatif)"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prompts"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etiketa (ndarë me presje, opsionale)"
           }
         }
       }
     },
-    "Recommended MCP servers" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Προτεινόμενοι servers MCP"
+    "Tap to copy a URL into the field above. You choose the name yourself.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πατήστε για να αντιγράψετε ένα URL στο παραπάνω πεδίο. Το όνομα το επιλέγετε εσείς."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serveurs MCP recommandés"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cliquez pour copier une URL dans le champ ci-dessus. Vous choisissez le nom vous-même."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serverët MCP të rekomanduar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prek për të kopjuar një URL në fushën më sipër. Emrin e zgjedh vetë."
           }
         }
       }
     },
-    "Refining your experience" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Τελειοποίηση της εμπειρίας σου"
+    "Things to try": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δοκιμάστε αυτά"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affinage de votre expérience"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À essayer"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Po përsosim përvojën tënde"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gjëra për të provuar"
           }
         }
       }
     },
-    "Reload" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Επαναφόρτωση"
+    "Title": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τίτλος"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recharger"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titre"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ringarko"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titulli"
           }
         }
       }
     },
-    "Remove" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αφαίρεση"
+    "Two ways to chat": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δύο τρόποι για συνομιλία"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux façons de chatter"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiq"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dy mënyra për të biseduar"
           }
         }
       }
     },
-    "Research & writing" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Έρευνα & γραφή"
+    "Type the email and order id from your Ko-fi receipt. We'll fetch your license automatically.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πληκτρολογήστε το email και τον κωδικό παραγγελίας από την απόδειξη Ko-fi. Θα ανακτήσουμε αυτόματα την άδειά σας."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherche & rédaction"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saisissez l'e-mail et l'identifiant de commande de votre reçu Ko-fi. Nous récupérerons votre licence automatiquement."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hulumtim & shkrim"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shkruaj emailin dhe ID-në e porosisë nga fatura jote e Ko-fi. Licencën do ta marrim automatikisht."
           }
         }
       }
     },
-    "Restart PromptBar to apply the new window mode." : {
-
+    "URL": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        }
+      }
     },
-    "Save" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Αποθήκευση"
+    "Updates come from GitHub Releases. No analytics, no tracking.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Οι ενημερώσεις προέρχονται από τα GitHub Releases. Χωρίς αναλυτικά στοιχεία, χωρίς παρακολούθηση."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enregistrer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les mises à jour viennent des GitHub Releases. Aucune analytique, aucun suivi."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruaj"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Përditësimet vijnë nga GitHub Releases. Pa analitikë, pa gjurmim."
           }
         }
       }
     },
-    "Save your best prompts. Reuse them in any chat with ⌘P." : {
-
+    "Validate": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Επικύρωση"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valider"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vleresimi"
+          }
+        }
+      }
     },
-    "Search prompts and tags…" : {
-
+    "Validate file": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έλεγχος αρχείου"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valider le fichier"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifiko skedarin"
+          }
+        }
+      }
     },
-    "Search prompts…" : {
-
+    "Version %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Έκδοση %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versioni %@"
+          }
+        }
+      }
     },
-    "Select all" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Επιλογή όλων"
+    "View on GitHub": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δες στο GitHub"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout sélectionner"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voir sur GitHub"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zgjidhi të gjitha"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shihe në GitHub"
           }
         }
       }
     },
-    "Send (⌘↩)" : {
-
+    "Web Chat": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διαδικτυακή συνομιλία"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat web"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisedë web"
+          }
+        }
+      }
     },
-    "Settings…" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ρυθμίσεις…"
+    "Web Chats": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Web Chats"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réglages…"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chats Web"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cilësimet…"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat-et në Web"
           }
         }
       }
     },
-    "Ships empty. No bundled providers, no third-party logos. You add the URLs and the keys you actually use." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Έρχεται άδειο. Χωρίς προεπιλεγμένους παρόχους, χωρίς λογότυπα τρίτων. Προσθέτεις τα URL και τα κλειδιά που πραγματικά χρησιμοποιείς."
+    "Web Chat…": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Διαδικτυακή συνομιλία…"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livré vide. Aucun fournisseur intégré, aucun logo tiers. Vous ajoutez les URL et les clés que vous utilisez vraiment."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chat web…"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vjen bosh. Pa ofrues të paracaktuar, pa logo të palëve të treta. Ti shton URL-të dhe çelësat që përdor vërtet."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bisedë web…"
           }
         }
       }
     },
-    "Show in Dock" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Εμφάνιση στο Dock"
+    "Welcome to PromptBar": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Καλώς ήρθες στο PromptBar"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher dans le Dock"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenue dans PromptBar"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shfaq në Dock"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirë se vjen në PromptBar"
           }
         }
       }
     },
-    "Show Onboarding Again on Next Launch" : {
-
+    "What people are saying": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τι λένε οι άλλοι"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ce qu'on en dit"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çfarë thonë njerëzit"
+          }
+        }
+      }
     },
-    "Skip Setup" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Παράλειψη ρύθμισης"
+    "What will you use PromptBar for?": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Για τι θα χρησιμοποιήσεις το PromptBar;"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passer la configuration"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À quoi servira PromptBar ?"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anashkalo konfigurimin"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Për çfarë do ta përdorësh PromptBar?"
           }
         }
       }
     },
-    "Skip, I'll set it up" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Παράλειψη, θα το ρυθμίσω μόνος"
+    "Window Mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λειτουργία παραθύρου"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passer, je configurerai"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode de fenêtre"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anashkalo, do ta caktoj vetë"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i dritares"
           }
         }
       }
     },
-    "Small" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Μικρό"
+    "Window Size": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μέγεθος παραθύρου"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Petit"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taille de la fenêtre"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I vogël"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Madhësia e dritares"
           }
         }
       }
     },
-    "Stop" : {
-
+    "Window mode: PromptBar acts like a regular app with a Dock icon and a window. The menubar icon stays as a quick toggle.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Λειτουργία παραθύρου: το PromptBar συμπεριφέρεται σαν κανονική εφαρμογή, με εικονίδιο στο Dock και παράθυρο. Το εικονίδιο της γραμμής μενού παραμένει ως γρήγορος διακόπτης."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode fenêtre : PromptBar se comporte comme une app classique, avec une icône dans le Dock et une fenêtre. L'icône de la barre de menus reste un accès rapide."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modaliteti i dritares: PromptBar sillet si një aplikacion i zakonshëm, me ikonë në Dock dhe një dritare. Ikona e shiritit të menusë mbetet si çelës i shpejtë."
+          }
+        }
+      }
     },
-    "Stream responses (Server-Sent Events)" : {
-
+    "Wire it to your real tools": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Σύνδεσέ το με τα πραγματικά σου εργαλεία"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Branchez-le à vos vrais outils"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidhe me veglat e tua të vërteta"
+          }
+        }
+      }
     },
-    "Tags (comma-separated, optional)" : {
-
+    "Wrap any web chat URL in your menubar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενσωματώστε οποιοδήποτε URL διαδικτυακής συνομιλίας στη γραμμή μενού σας."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encapsulez n'importe quelle URL de chat web dans votre barre de menus."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mbështill çdo URL bisede web në shiritin e menusë."
+          }
+        }
+      }
     },
-    "Tap to copy a URL into the field above. You choose the name yourself." : {
-
+    "Wrap any web chat in your menubar, or bring your own API key for a native streaming chat. Both are private, both are yours.": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τύλιξε οποιοδήποτε web chat στη menubar σου ή φέρε το δικό σου κλειδί API για native streaming chat. Και τα δύο είναι ιδιωτικά, και τα δύο είναι δικά σου."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encapsulez n'importe quel chat web dans votre barre de menus, ou apportez votre clé API pour un chat natif en streaming. Les deux sont privés, les deux sont à vous."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mbështill çdo bisedë web në menubar, ose sill çelësin tënd të API për një bisedë vendase me streaming. Të dyja janë private, të dyja janë të tuat."
+          }
+        }
+      }
     },
-    "Title" : {
-
+    "Wrap any web-based chat URL. You name it; PromptBar wraps it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ενσωματώστε οποιοδήποτε URL διαδικτυακής συνομιλίας. Εσείς του δίνετε όνομα, το PromptBar το τυλίγει."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encapsulez n'importe quelle URL de chat web. Vous la nommez ; PromptBar l'encapsule."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mbështill çdo URL bisede në web. Ti e emërton; PromptBar e mbështjell."
+          }
+        }
+      }
     },
-    "Two ways to chat" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Δύο τρόποι για συνομιλία"
+    "You": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Εσείς"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deux façons de chatter"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dy mënyra për të biseduar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti"
           }
         }
       }
     },
-    "URL" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+    "You can change this any time in Settings → General.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μπορείτε να το αλλάξετε ανά πάσα στιγμή στις Ρυθμίσεις → Γενικά."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous pouvez modifier ce choix à tout moment dans Réglages → Général."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mund ta ndryshosh këtë në çdo kohë te Cilësimet → Të përgjithshme."
           }
         }
       }
     },
-    "Validate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Επικύρωση"
+    "You're running %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Χρησιμοποιείτε την έκδοση %@."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valider"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous utilisez %@."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vleresimi"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Po përdor %@."
           }
         }
       }
     },
-    "Version %@" : {
-
+    "You're set": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Είσαι έτοιμος"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes prêt"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je gati"
+          }
+        }
+      }
     },
-    "View on GitHub" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Δες στο GitHub"
+    "You're up to date": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Είστε ενημερωμένοι"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voir sur GitHub"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes à jour"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shihe në GitHub"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je i përditësuar"
           }
         }
       }
     },
-    "Web Chat" : {
-
+    "Your 7 day trial has ended": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η δοκιμαστική περίοδος 7 ημερών έληξε"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre essai de 7 jours est terminé"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova jote 7-ditore ka përfunduar"
+          }
+        }
+      }
     },
-    "Web Chats" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Web Chats"
+    "Your AI workbench, one keystroke away.": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ο πάγκος εργασίας σου για AI, ένα πλήκτρο μακριά."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chats Web"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre atelier IA, à une touche."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chat-et në Web"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tavolina jote e AI, vetëm një tast larg."
           }
         }
       }
     },
-    "Welcome to PromptBar" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Καλώς ήρθες στο PromptBar"
+    "Your messages are sent directly from this Mac to the endpoint URL you configured. No relay.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Τα μηνύματά σας αποστέλλονται απευθείας από αυτό το Mac στο URL του endpoint που ορίσατε. Χωρίς ενδιάμεσο διακομιστή."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenue dans PromptBar"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos messages sont envoyés directement depuis ce Mac vers l'URL du point d'API que vous avez configurée. Sans relais."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mirë se vjen në PromptBar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesazhet e tua dërgohen drejtpërdrejt nga ky Mac te URL-ja e endpoint-it që ke konfiguruar. Pa ndërmjetës."
           }
         }
       }
     },
-    "What people are saying" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Τι λένε οι άλλοι"
+    "Yours to shape": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δικό σου να το διαμορφώσεις"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce qu'on en dit"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À vous de le façonner"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Çfarë thonë njerëzit"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yti për ta formuar"
           }
         }
       }
     },
-    "What will you use PromptBar for?" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Για τι θα χρησιμοποιήσεις το PromptBar;"
+    "auth": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "έλεγχος ταυτότητας"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À quoi servira PromptBar ?"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "auth"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Për çfarë do ta përdorësh PromptBar?"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "autentikim"
           }
         }
       }
     },
-    "Window mode: PromptBar acts like a regular app with a Dock icon and a window. The menubar icon stays as a quick toggle." : {
-
+    "e.g. Authorization: Bearer ...": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "π.χ. Authorization: Bearer ..."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par ex. Authorization: Bearer ..."
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.sh. Authorization: Bearer ..."
+          }
+        }
+      }
     },
-    "Window Size" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Μέγεθος παραθύρου"
+    "e.g. Issue Tracker": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "π.χ. Παρακολούθηση ζητημάτων"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Taille de la fenêtre"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par ex. Suivi de tickets"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Madhësia e dritares"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.sh. Gjurmues problemesh"
           }
         }
       }
     },
-    "Wire it to your real tools" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Σύνδεσέ το με τα πραγματικά σου εργαλεία"
+    "e.g. My Inference Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "π.χ. Ο διακομιστής inference μου"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Branchez-le à vos vrais outils"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par ex. Mon serveur d'inférence"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lidhe me veglat e tua të vërteta"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.sh. Serveri im i inferencës"
           }
         }
       }
     },
-    "Wrap any web chat in your menubar, or bring your own API key for a native streaming chat. Both are private, both are yours." : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Τύλιξε οποιοδήποτε web chat στη menubar σου ή φέρε το δικό σου κλειδί API για native streaming chat. Και τα δύο είναι ιδιωτικά, και τα δύο είναι δικά σου."
+    "e.g. Work Chat": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "π.χ. Συνομιλία εργασίας"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Encapsulez n'importe quel chat web dans votre barre de menus, ou apportez votre clé API pour un chat natif en streaming. Les deux sont privés, les deux sont à vous."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par ex. Chat pro"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mbështill çdo bisedë web në menubar, ose sill çelësin tënd të API për një bisedë vendase me streaming. Të dyja janë private, të dyja janë të tuat."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.sh. Bisedë pune"
           }
         }
       }
     },
-    "Wrap any web chat URL in your menubar." : {
-
+    "e.g. gpt-4o-mini, llama-3.1-70b": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "π.χ. gpt-4o-mini, llama-3.1-70b"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "par ex. gpt-4o-mini, llama-3.1-70b"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.sh. gpt-4o-mini, llama-3.1-70b"
+          }
+        }
+      }
     },
-    "Wrap any web-based chat URL. You name it; PromptBar wraps it." : {
-
+    "https://api.example.com/v1": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://api.example.com/v1"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://api.example.com/v1"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://api.example.com/v1"
+          }
+        }
+      }
     },
-    "You" : {
-
+    "https://example.com": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://example.com"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://example.com"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://example.com"
+          }
+        }
+      }
     },
-    "You're set" : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Είσαι έτοιμος"
+    "https://mcp.example.com/v1": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mcp.example.com/v1"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vous êtes prêt"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mcp.example.com/v1"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je gati"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mcp.example.com/v1"
           }
         }
       }
     },
-    "Your AI workbench, one keystroke away." : {
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ο πάγκος εργασίας σου για AI, ένα πλήκτρο μακριά."
+    "open source": {
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ανοιχτού κώδικα"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre atelier IA, à une touche."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "open source"
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tavolina jote e AI, vetëm një tast larg."
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "burim i hapur"
           }
         }
       }
     },
-    "Your messages are sent directly from this Mac to the endpoint URL you configured. No relay." : {
-
+    "or paste its contents below": {
+      "extractionState": "stale",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ή επικόλλησε το περιεχόμενο πιο κάτω"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ou collez son contenu ci-dessous"
+          }
+        },
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ose ngjit përmbajtjen më poshtë"
+          }
+        }
+      }
     },
-    "Yours to shape" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "el" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Δικό σου να το διαμορφώσεις"
+    "• Use the exact email and order id Ko-fi has on your receipt.\n• Wait 1 to 5 minutes after purchase; activations are issued as orders come in.\n• Check your spam folder for a confirmation in case you missed it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• Χρησιμοποιήστε ακριβώς το email και τον κωδικό παραγγελίας που έχει το Ko-fi στην απόδειξή σας.\n• Περιμένετε 1 έως 5 λεπτά μετά την αγορά, οι ενεργοποιήσεις εκδίδονται καθώς φτάνουν οι παραγγελίες.\n• Ελέγξτε τον φάκελο ανεπιθύμητων για την επιβεβαίωση, σε περίπτωση που σας ξέφυγε."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À vous de le façonner"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• Utilisez exactement l'e-mail et l'identifiant de commande figurant sur votre reçu Ko-fi.\n• Attendez 1 à 5 minutes après l'achat ; les activations sont émises au fur et à mesure des commandes.\n• Vérifiez votre dossier spam au cas où vous auriez manqué la confirmation."
           }
         },
-        "sq" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yti për ta formuar"
+        "sq": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• Përdor saktësisht emailin dhe ID-në e porosisë që Ko-fi ka në faturën tënde.\n• Prit 1 deri në 5 minuta pas blerjes; aktivizimet lëshohen sipas radhës së porosive.\n• Kontrollo dosjen e spam-it për konfirmimin, në rast se të ka shpëtuar."
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
