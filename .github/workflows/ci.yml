@@ -96,9 +96,21 @@ jobs:
         run: |
           APP=$(find ~/Library/Developer/Xcode/DerivedData -name "PromptBar.app" -path "*/Release/*" | head -1)
 
+          # The app targets macOS 26 (LSMinimumSystemVersion). Launch Services
+          # refuses to launch it on an older runner (error -10825), which is an
+          # environment limitation, not an app defect. Skip the runtime launch
+          # when the runner OS is older than the app's minimum; still run it on
+          # a capable runner so crash-on-startup is caught.
+          MIN=$(/usr/libexec/PlistBuddy -c "Print :LSMinimumSystemVersion" "$APP/Contents/Info.plist" 2>/dev/null || echo "0")
+          OS=$(sw_vers -productVersion)
+          if [ "$(printf '%s\n%s\n' "$MIN" "$OS" | sort -V | head -1)" != "$MIN" ]; then
+            echo "::warning::Runner macOS $OS is older than app minimum $MIN; skipping runtime launch check."
+            exit 0
+          fi
+
           # Launch the app in background, give it a few seconds, then check it's running
           open "$APP"
-          sleep 3
+          sleep 5
 
           if pgrep -x "PromptBar" > /dev/null; then
             echo "App launched successfully"
