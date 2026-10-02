@@ -19,7 +19,7 @@ struct QuickAddView: View {
     /// The user assigns a name themselves. Provided as a convenience so users
     /// don't need to type long URLs by hand.
     private let suggestedURLs: [String] = [
-        "https://chat.openai.com/",
+        "https://chatgpt.com/",
         "https://gemini.google.com/app",
         "https://aistudio.google.com/",
         "https://notebooklm.google.com/",
@@ -31,7 +31,17 @@ struct QuickAddView: View {
         "https://www.meta.ai/",
         "https://you.com/",
         "https://poe.com/",
-        "https://huggingface.co/chat/"
+        "https://huggingface.co/chat/",
+        "https://chat.qwen.ai/",
+        "https://www.kimi.com/",
+        "https://chat.z.ai/",
+        "https://arena.ai/",
+        "https://duck.ai/",
+        "https://lumo.proton.me/",
+        "https://felo.ai/search",
+        "https://echo.fulcrum.inc/try",
+        "https://www.deepl.com/translator",
+        "https://translate.google.com/"
     ]
 
     private let symbolOptions: [String] = [
