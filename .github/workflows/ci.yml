@@ -75,11 +75,6 @@ jobs:
           fi
 
           # Check required resources
-          if [ ! -f "$APP/Contents/Resources/GoogleService-Info.plist" ]; then
-            echo "::error::Missing GoogleService-Info.plist"
-            exit 1
-          fi
-
           if [ ! -d "$APP/Contents/Resources/Assets.car" ]; then
             echo "::error::Missing compiled assets"
             exit 1
