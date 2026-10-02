@@ -75,7 +75,7 @@ jobs:
           fi
 
           # Check required resources
-          if [ ! -d "$APP/Contents/Resources/Assets.car" ]; then
+          if [ ! -f "$APP/Contents/Resources/Assets.car" ]; then
             echo "::error::Missing compiled assets"
             exit 1
           fi
