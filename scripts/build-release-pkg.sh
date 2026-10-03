@@ -170,37 +170,49 @@ cat >"${DISTRIBUTION_XML}" <<EOF
 </installer-gui-script>
 EOF
 
+UNSIGNED_PKG="${PKG_DIR}/${APP_NAME}-unsigned.pkg"
 FINAL_PKG="${OUT_DIR}/${APP_NAME}-${VERSION}.pkg"
 
-# productbuild --sign can hang indefinitely in headless CI if it has to reach a
-# locked keychain or a slow timestamp server. Re-unlock the signing keychain
-# (when running in CI), then sign under a watchdog with one retry so a stall
-# fails fast with diagnostics instead of sitting until the job timeout.
+# Re-unlock the signing keychain when running in CI.
 if [ -n "${KEYCHAIN_PATH:-}" ] && [ -n "${KEYCHAIN_PASSWORD:-}" ]; then
   security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}" || true
 fi
 
-PRODUCTBUILD_OK=0
+# productbuild --sign hangs silently in headless CI (observed: 420s with no
+# output, while app codesign in the same keychain succeeds). Split the steps:
+# synthesize the distribution .pkg UNSIGNED, then sign with productsign. If the
+# unsigned synthesis still hangs, the stall is not in the signing path.
+echo "==> Building unsigned distribution .pkg (watchdog 300s)"
+rm -f "${UNSIGNED_PKG}"
+if ! run_with_timeout 300 productbuild \
+  --distribution "${DISTRIBUTION_XML}" \
+  --package-path "${PKG_DIR}" \
+  "${UNSIGNED_PKG}"; then
+  echo "ERROR: productbuild (unsigned) did not complete; the stall is not in signing."
+  exit 1
+fi
+
+echo "==> Signing .pkg with productsign"
+PRODUCTSIGN_OK=0
 for attempt in 1 2; do
-  echo "==> productbuild attempt ${attempt} (watchdog 420s)"
+  echo "==> productsign attempt ${attempt} (watchdog 420s)"
   rm -f "${FINAL_PKG}"
-  if run_with_timeout 420 productbuild \
-    --distribution "${DISTRIBUTION_XML}" \
-    --package-path "${PKG_DIR}" \
+  if run_with_timeout 420 productsign \
     --sign "${DEV_ID_INSTALLER_IDENTITY}" \
+    "${UNSIGNED_PKG}" \
     "${FINAL_PKG}"; then
-    PRODUCTBUILD_OK=1
+    PRODUCTSIGN_OK=1
     break
   fi
-  echo "WARNING: productbuild attempt ${attempt} failed or timed out."
+  echo "WARNING: productsign attempt ${attempt} failed or timed out."
   if [ -n "${KEYCHAIN_PATH:-}" ] && [ -n "${KEYCHAIN_PASSWORD:-}" ]; then
     security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}" || true
   fi
   sleep 5
 done
 
-if [ "${PRODUCTBUILD_OK}" != "1" ]; then
-  echo "ERROR: productbuild did not complete the signed distribution .pkg."
+if [ "${PRODUCTSIGN_OK}" != "1" ]; then
+  echo "ERROR: productsign did not complete the signed distribution .pkg."
   exit 1
 fi
 
