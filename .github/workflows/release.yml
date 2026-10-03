@@ -97,7 +97,10 @@ jobs:
       - name: Extract version from tag
         id: version
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${{ github.event.inputs.tag }}"
+          if [ -z "$TAG" ]; then
+            TAG="${GITHUB_REF_NAME}"
+          fi
           if [ -z "$TAG" ] || [ "$TAG" = "main" ]; then
             TAG="manual-$(date +%Y%m%d%H%M%S)"
           fi
@@ -124,9 +127,12 @@ jobs:
             -k "${KEYCHAIN_PATH}" -P "$CERTS_P12_PASSWORD" \
             -T /usr/bin/productbuild -T /usr/bin/productsign -T /usr/bin/security
 
-          security list-keychains -d user -s "${KEYCHAIN_PATH}" $(security list-keychains -d user | tr -d '"')
+          # Restrict the search list to the temp build keychain only. Including
+          # the (locked) login keychain makes productbuild stall on an invisible
+          # keychain-access prompt during installer-cert chain validation.
+          security list-keychains -d user -s "${KEYCHAIN_PATH}"
           security default-keychain -s "${KEYCHAIN_PATH}"
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_PATH}"
+          security set-key-partition-list -S apple-tool:,apple:,unsigned: -s -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_PATH}"
 
           rm -f "$RUNNER_TEMP/app.p12" "$RUNNER_TEMP/installer.p12"
 

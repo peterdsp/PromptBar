@@ -14,6 +14,21 @@
 #
 set -euo pipefail
 
+# Run a command with a hard timeout (portable; macOS has no coreutils `timeout`).
+# Returns the command's exit code, or 124 if it was killed for exceeding `secs`.
+run_with_timeout() {
+  local secs="$1"; shift
+  "$@" &
+  local cmd_pid=$!
+  ( sleep "$secs"; kill -0 "$cmd_pid" 2>/dev/null && { kill -TERM "$cmd_pid" 2>/dev/null; sleep 5; kill -KILL "$cmd_pid" 2>/dev/null; }; ) &
+  local watch_pid=$!
+  local rc=0
+  wait "$cmd_pid" || rc=$?
+  kill "$watch_pid" 2>/dev/null || true
+  wait "$watch_pid" 2>/dev/null || true
+  return "$rc"
+}
+
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PROJ_DIR="${ROOT_DIR}/PromptBar"
 PROJ="${PROJ_DIR}/PromptBar.xcodeproj"
@@ -156,11 +171,38 @@ cat >"${DISTRIBUTION_XML}" <<EOF
 EOF
 
 FINAL_PKG="${OUT_DIR}/${APP_NAME}-${VERSION}.pkg"
-productbuild \
-  --distribution "${DISTRIBUTION_XML}" \
-  --package-path "${PKG_DIR}" \
-  --sign "${DEV_ID_INSTALLER_IDENTITY}" \
-  "${FINAL_PKG}"
+
+# productbuild --sign can hang indefinitely in headless CI if it has to reach a
+# locked keychain or a slow timestamp server. Re-unlock the signing keychain
+# (when running in CI), then sign under a watchdog with one retry so a stall
+# fails fast with diagnostics instead of sitting until the job timeout.
+if [ -n "${KEYCHAIN_PATH:-}" ] && [ -n "${KEYCHAIN_PASSWORD:-}" ]; then
+  security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}" || true
+fi
+
+PRODUCTBUILD_OK=0
+for attempt in 1 2; do
+  echo "==> productbuild attempt ${attempt} (watchdog 420s)"
+  rm -f "${FINAL_PKG}"
+  if run_with_timeout 420 productbuild \
+    --distribution "${DISTRIBUTION_XML}" \
+    --package-path "${PKG_DIR}" \
+    --sign "${DEV_ID_INSTALLER_IDENTITY}" \
+    "${FINAL_PKG}"; then
+    PRODUCTBUILD_OK=1
+    break
+  fi
+  echo "WARNING: productbuild attempt ${attempt} failed or timed out."
+  if [ -n "${KEYCHAIN_PATH:-}" ] && [ -n "${KEYCHAIN_PASSWORD:-}" ]; then
+    security unlock-keychain -p "${KEYCHAIN_PASSWORD}" "${KEYCHAIN_PATH}" || true
+  fi
+  sleep 5
+done
+
+if [ "${PRODUCTBUILD_OK}" != "1" ]; then
+  echo "ERROR: productbuild did not complete the signed distribution .pkg."
+  exit 1
+fi
 
 echo "==> Verifying .pkg signature"
 pkgutil --check-signature "${FINAL_PKG}"
