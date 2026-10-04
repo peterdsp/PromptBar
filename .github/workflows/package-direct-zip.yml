@@ -1,0 +1,178 @@
+name: Package Direct ZIP (Developer ID, notarized)
+
+# Standalone, narrowly scoped packaging for the Ko-fi / direct-download channel.
+# Produces a Developer ID signed, notarized, stapled .app packaged as a ZIP,
+# avoiding the installer-pkg productsign step that stalls in CI. It does NOT
+# create a GitHub release (release.yml owns that) and uploads only a short-lived
+# build artifact for the repo owner to retrieve and place on the paid Ko-fi
+# channel. It never attaches the binary to a public Release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Immutable git ref (tag/commit) to build."
+        required: true
+        default: "v2.2.0"
+
+permissions:
+  contents: read
+
+env:
+  SCHEME: PromptBar
+  PROJECT: PromptBar/PromptBar.xcodeproj
+  CONFIGURATION: Release
+  TEAM_ID: YTS4KJBX3P
+
+jobs:
+  package:
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      KEYCHAIN_PASSWORD: ${{ secrets.CI_KEYCHAIN_PASSWORD }}
+      CERTS_P12_PASSWORD: ${{ secrets.CERTS_P12_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+
+    steps:
+      - name: Checkout immutable ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
+      - name: Show toolchain and source identity
+        run: |
+          xcodebuild -version
+          echo "Requested ref: ${{ github.event.inputs.ref }}"
+          echo "Resolved commit: $(git rev-parse HEAD)"
+          grep -E 'MARKETING_VERSION|CURRENT_PROJECT_VERSION|MACOSX_DEPLOYMENT_TARGET|PRODUCT_BUNDLE_IDENTIFIER' \
+            "$PROJECT/project.pbxproj" | sort -u | head
+
+      - name: Resolve SPM dependencies
+        run: xcodebuild -resolvePackageDependencies -project "$PROJECT" -scheme "$SCHEME"
+
+      - name: Define temp keychain path
+        run: echo "KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain-db" >> "$GITHUB_ENV"
+
+      - name: Set up signing keychain (Developer ID Application only)
+        run: |
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "${KEYCHAIN_PATH}"
+          security set-keychain-settings -lut 21600 "${KEYCHAIN_PATH}"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "${KEYCHAIN_PATH}"
+
+          echo "${{ secrets.DEVELOPER_ID_APPLICATION_P12_BASE64 }}" | base64 -d > "$RUNNER_TEMP/app.p12"
+          security import "$RUNNER_TEMP/app.p12" \
+            -k "${KEYCHAIN_PATH}" -P "$CERTS_P12_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/security
+
+          # Restrict the search list to the temp keychain only.
+          security list-keychains -d user -s "${KEYCHAIN_PATH}"
+          security default-keychain -s "${KEYCHAIN_PATH}"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "${KEYCHAIN_PATH}"
+
+          rm -f "$RUNNER_TEMP/app.p12"
+
+          APP_IDENTITY=$(security find-identity -v -p codesigning "${KEYCHAIN_PATH}" \
+            | grep "Developer ID Application" | grep "(${TEAM_ID})" | head -1 \
+            | sed -E 's/^[[:space:]]*[0-9]+\)[[:space:]]+[A-F0-9]+[[:space:]]+"(.+)"$/\1/')
+          if [ -z "$APP_IDENTITY" ]; then
+            echo "::error::No Developer ID Application identity for team ${TEAM_ID}"
+            exit 1
+          fi
+          echo "APP_IDENTITY=$APP_IDENTITY" >> "$GITHUB_ENV"
+          echo "Resolved signing identity: $APP_IDENTITY"
+
+      - name: Store notarytool credentials
+        run: |
+          xcrun notarytool store-credentials promptbar-notary \
+            --apple-id "$APPLE_ID" \
+            --team-id "$TEAM_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --keychain "${KEYCHAIN_PATH}"
+
+      - name: Archive (Release, Developer ID, hardened runtime, EXTERNAL_DISTRIBUTION)
+        run: |
+          xcodebuild \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration "$CONFIGURATION" \
+            -archivePath "$RUNNER_TEMP/PromptBar.xcarchive" \
+            -destination 'generic/platform=macOS' \
+            CODE_SIGN_IDENTITY="$APP_IDENTITY" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            OTHER_CODE_SIGN_FLAGS="--timestamp --options runtime" \
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) EXTERNAL_DISTRIBUTION' \
+            archive
+
+      - name: Export Developer ID app
+        run: |
+          cat > "$RUNNER_TEMP/exportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key><string>developer-id</string>
+              <key>teamID</key><string>${TEAM_ID}</string>
+              <key>signingStyle</key><string>manual</string>
+              <key>signingCertificate</key><string>${APP_IDENTITY}</string>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/PromptBar.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/exportOptions.plist"
+          ls -la "$RUNNER_TEMP/export"
+
+      - name: Verify signature (pre-notarization)
+        run: |
+          APP="$RUNNER_TEMP/export/PromptBar.app"
+          echo "== codesign --verify --deep --strict =="
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          echo "== codesign -dvvv (authority / runtime / team) =="
+          codesign -dvvv "$APP" 2>&1 | grep -E "Identifier|Authority|TeamIdentifier|flags|Runtime" || true
+
+      - name: Notarize (submit ZIP, wait for Accepted)
+        run: |
+          APP="$RUNNER_TEMP/export/PromptBar.app"
+          ditto -c -k --keepParent "$APP" "$RUNNER_TEMP/PromptBar-notarize.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/PromptBar-notarize.zip" \
+            --keychain-profile promptbar-notary \
+            --keychain "${KEYCHAIN_PATH}" \
+            --wait
+
+      - name: Staple, validate, Gatekeeper assess
+        run: |
+          APP="$RUNNER_TEMP/export/PromptBar.app"
+          echo "== staple =="
+          xcrun stapler staple "$APP"
+          echo "== stapler validate =="
+          xcrun stapler validate "$APP"
+          echo "== spctl --assess --type execute =="
+          spctl --assess --type execute -vvv "$APP"
+
+      - name: Build final stapled ZIP and checksum
+        run: |
+          APP="$RUNNER_TEMP/export/PromptBar.app"
+          OUT="PromptBar-2.2.0.zip"
+          ditto -c -k --keepParent "$APP" "$OUT"
+          shasum -a 256 "$OUT" | tee "$OUT.sha256"
+          echo "== final ZIP built from the STAPLED app =="
+          ls -la "$OUT"
+
+      - name: Upload short-lived build artifact (owner retrieval only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: PromptBar-2.2.0-direct-zip
+          path: |
+            PromptBar-2.2.0.zip
+            PromptBar-2.2.0.zip.sha256
+          retention-days: 1
+
+      - name: Clean up signing keychain
+        if: always()
+        run: security delete-keychain "${KEYCHAIN_PATH}" || true
