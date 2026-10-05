@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Mac App Store distribution. Xcode 15+/16 spelling is app-store-connect. -->
+    <key>method</key>
+    <string>app-store-connect</string>
+
+    <!-- Produce a signed .pkg on disk; we upload it in a separate, auditable step. -->
+    <key>destination</key>
+    <string>export</string>
+
+    <key>teamID</key>
+    <string>YTS4KJBX3P</string>
+
+    <!-- Respect the build number baked into the project (CURRENT_PROJECT_VERSION).
+         App Store Connect rejects a duplicate (version, build) pair, so bump the
+         project build before each new upload rather than letting Xcode manage it. -->
+    <key>manageAppVersionAndBuildNumber</key>
+    <false/>
+
+    <key>uploadSymbols</key>
+    <true/>
+
+    <!-- Automatic signing resolves the Apple Distribution cert + Mac App Store
+         provisioning profile from the signed-in Apple account / CI API key.
+         For fully manual CI signing, switch to:
+             <key>signingStyle</key><string>manual</string>
+             <key>signingCertificate</key><string>Apple Distribution</string>
+             <key>provisioningProfiles</key>
+             <dict>
+                 <key>peterdsp.app.PromptBar</key>
+                 <string>PromptBar Mac App Store</string>
+             </dict>
+    -->
+    <key>signingStyle</key>
+    <string>automatic</string>
+</dict>
+</plist>
