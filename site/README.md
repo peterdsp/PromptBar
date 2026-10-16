@@ -4,7 +4,10 @@ Static, single-file landing page for [promptbar.peterdsp.dev](https://promptbar.
 
 ## Files
 
-- `index.html`, the whole page. Tailwind via CDN, no build step.
+- `index.html`, the landing page.
+- `press.html`, the press kit page.
+- `styles.css`, compiled Tailwind utilities used by both pages.
+- `tailwind.css` and `tailwind.config.js`, stylesheet build sources.
 - `404.html`, glassy 404 fallback.
 - `CNAME`, apex hostname for GitHub Pages / Cloudflare Pages custom domain.
 - `robots.txt`, `sitemap.xml`, search hygiene.
@@ -18,7 +21,15 @@ python3 -m http.server 4000
 open http://localhost:4000
 ```
 
-Any static server will do. There is no build step.
+Any static server will do. The compiled stylesheet is committed, so previewing does not require a build.
+
+## Rebuild styles
+
+After changing Tailwind classes or the theme, rebuild the committed stylesheet:
+
+```bash
+npx tailwindcss@3.4.17 -c site/tailwind.config.js -i site/tailwind.css -o site/styles.css --minify
+```
 
 ## Deploy: GitHub Pages
 
