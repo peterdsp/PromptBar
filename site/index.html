@@ -44,18 +44,9 @@
       <p class="keys rise"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>O</kbd> <span>to summon · macOS 26 Tahoe and later · signed and notarised</span></p>
     </div>
     <div class="stage">
-      <div class="stage-fragment shutter">
-        <div class="pop" data-ui>
-          <div class="pop-bar"><span class="dots"><i></i><i></i><i></i></span><span>PromptBar</span><span>⌘P prompts</span></div>
-          <div class="pop-list">
-            <button class="pop-row" aria-current="true" type="button"><span class="sw" style="background:#4db3ff">N</span><span class="nm">Native chat</span><span class="kind">your model · streaming</span></button>
-            <button class="pop-row" type="button"><span class="sw" style="background:#c5f53d">W</span><span class="nm">A web chat you wrapped</span><span class="kind">WKWebView</span></button>
-            <button class="pop-row" type="button"><span class="sw" style="background:#ff8126">L</span><span class="nm">Local runtime</span><span class="kind">on this Mac</span></button>
-            <button class="pop-row" type="button"><span class="sw" style="background:#de194b">M</span><span class="nm">MCP server</span><span class="kind">tools</span></button>
-          </div>
-          <div class="pop-foot"><span>4 in your bar</span><span>no accounts · no telemetry</span></div>
-        </div>
-      </div>
+      <figure class="stage-fragment shutter">
+        <img src="assets/shots/native-chat.png" alt="The PromptBar popover open under the menu bar, streaming a reply from a configured endpoint, with the service tabs along the top" width="1100" height="1250" decoding="async">
+      </figure>
     </div>
   </section>
 
@@ -141,11 +132,11 @@
     <h2>One popover. Every conversation.</h2>
     <p class="lede">Native streaming chat, web chats you wrapped yourself, your own API endpoints, MCP servers, and a keyboard-driven prompt library. All of it in the same panel under the menubar.</p>
     <div class="shot-grid">
-      <figure class="rise"><img src="assets/native-chat.png" alt="PromptBar's native streaming chat in the menubar popover" width="900" height="600" loading="lazy" decoding="async"><figcaption><b>Native chat</b>Server-sent events straight from your endpoint, cancellable mid-stream.</figcaption></figure>
-      <figure class="rise"><img src="assets/web-chats.png" alt="A web chat wrapped inside the PromptBar popover" width="900" height="600" loading="lazy" decoding="async"><figcaption><b>Wrapped web chats</b>Any URL, in WKWebView, with its cookies on this Mac.</figcaption></figure>
-      <figure class="rise"><img src="assets/api-endpoints.png" alt="PromptBar's API endpoint configuration" width="900" height="600" loading="lazy" decoding="async"><figcaption><b>Your endpoints</b>Base URL, model, key and system prompt, saved per endpoint.</figcaption></figure>
-      <figure class="rise"><img src="assets/mcp-servers.png" alt="MCP servers configured in PromptBar" width="900" height="600" loading="lazy" decoding="async"><figcaption><b>MCP servers</b>Tools alongside the chats, in the same panel.</figcaption></figure>
-      <figure class="rise"><img src="assets/prompt-library.png" alt="PromptBar's searchable prompt library" width="900" height="600" loading="lazy" decoding="async"><figcaption><b>Prompt library</b>Save once, call it into any chat with ⌘P.</figcaption></figure>
+      <figure class="rise"><img src="assets/shots/native-chat.png" alt="PromptBar's native streaming chat in the menubar popover" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Native chat</b>A reply streaming in from an endpoint you configured, token by token, with the whole conversation inside the popover. Cancel it mid-stream and the connection closes; nothing is buffered anywhere else.</figcaption></figure>
+      <figure class="rise"><img src="assets/shots/web-chats.png" alt="A web chat wrapped inside the PromptBar popover" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Wrapped web chats</b>The settings pane where you add a chat: paste a URL, give it a name, an icon and a colour. It runs in WKWebView, so you stay signed in and the cookies never leave this Mac.</figcaption></figure>
+      <figure class="rise"><img src="assets/shots/api-endpoints.png" alt="PromptBar's API endpoint configuration" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Your endpoints</b>Every OpenAI-compatible service you point at, hosted or on your own machine. Base URL, model, key and system prompt are saved per endpoint, and the key goes to the Keychain, not a config file.</figcaption></figure>
+      <figure class="rise"><img src="assets/shots/mcp-servers.png" alt="MCP servers configured in PromptBar" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>MCP servers</b>Tool servers listed beside the chats and reachable from the same panel, so a model you brought can call the tools you trust without leaving the popover.</figcaption></figure>
+      <figure class="rise"><img src="assets/shots/prompt-library.png" alt="PromptBar's searchable prompt library" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Prompt library</b>The prompts you keep reaching for, searchable and tagged. ⌘P drops one into whichever chat is open, which is the difference between keeping prompts and actually reusing them.</figcaption></figure>
     </div>
   </section>
 

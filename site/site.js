@@ -86,34 +86,40 @@
     var code = document.getElementById('stCode');
     var names = document.getElementById('stNames');
 
+    // Every key is on screen at every step, so the panel is never a mostly
+    // empty field; the ones you have not set yet are simply dimmed.
+    var KEYS = [
+      { k: 'name', v: '"My endpoint"', step: 0 },
+      { k: 'baseURL', v: '"https://api.example.com/v1"', step: 0 },
+      { k: 'model', v: '"your-model"', step: 1 },
+      { k: 'apiKey', v: '"* stored in macOS Keychain *"', step: 2 },
+      { k: 'stream', v: 'true', step: 3 },
+      { k: 'systemPrompt', v: '"You are..."', step: 3 }
+    ];
     var STEPS = [
       { n: 'Endpoint', c: 'Name the endpoint.',
-        t: 'Anything that speaks the OpenAI chat API: a hosted service, a company gateway, or a runtime on your own machine.',
-        j: { name: 'My endpoint', baseURL: 'https://api.example.com/v1' } },
+        t: 'Anything that speaks the OpenAI chat API: a hosted service, a company gateway, or a runtime on your own machine.' },
       { n: 'Model', c: 'Choose the model.',
-        t: 'Whatever that endpoint serves. PromptBar does not keep a list of its own, because it does not bundle providers.',
-        j: { name: 'My endpoint', baseURL: 'https://api.example.com/v1', model: 'your-model' } },
+        t: 'Whatever that endpoint serves. PromptBar keeps no list of its own, because it bundles no providers.' },
       { n: 'Key', c: 'Paste the key once.',
-        t: 'It goes straight to the macOS Keychain. Not UserDefaults, not iCloud, not a log file.',
-        j: { name: 'My endpoint', baseURL: 'https://api.example.com/v1', model: 'your-model', apiKey: '* stored in macOS Keychain *' } },
+        t: 'It goes straight to the macOS Keychain. Not UserDefaults, not iCloud, not a log file, and never off this Mac except to the endpoint you named.' },
       { n: 'Chat', c: 'Press the keys and talk.',
-        t: 'Native streaming with server-sent events, cancellable mid-stream, straight from this Mac to that endpoint with nothing in between.',
-        j: { name: 'My endpoint', baseURL: 'https://api.example.com/v1', model: 'your-model', apiKey: '* stored in macOS Keychain *', stream: true, systemPrompt: 'You are...' } }
+        t: 'Native streaming with server-sent events, cancellable mid-stream, straight from this Mac to that endpoint with nothing in between.' }
     ];
 
     function paint(i) {
       var s = STEPS[i];
       clause.textContent = s.c;
       note.textContent = s.t;
-      var lines = ['{'];
-      var keys = Object.keys(s.j);
-      keys.forEach(function (k, n) {
-        var v = s.j[k];
-        var out = typeof v === 'boolean' ? String(v) : '"' + v + '"';
-        lines.push('  "' + k + '": ' + out + (n < keys.length - 1 ? ',' : ''));
+      var html = '<span class="c-brace">{</span>\n';
+      KEYS.forEach(function (row, n) {
+        var state = row.step < i ? 'set' : row.step === i ? 'now' : 'wait';
+        var val = row.step <= i ? row.v : '<span class="c-wait">not set yet</span>';
+        html += '<span class="c-line c-' + state + '">  "' + row.k + '": ' + val +
+                (n < KEYS.length - 1 ? ',' : '') + '</span>\n';
       });
-      lines.push('}');
-      code.textContent = lines.join('\n');
+      html += '<span class="c-brace">}</span>';
+      code.innerHTML = html;
       [].forEach.call(names.children, function (el, n) {
         if (n === i) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
       });
@@ -126,6 +132,29 @@
     });
     scrub.addEventListener('input', function () { paint(+scrub.value); });
     paint(0);
+
+    /* The setup walks itself every 3 seconds, and stops for good once the
+       reader takes the slider. */
+    var timer = null;
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() {
+      if (timer || reduce) return;
+      timer = setInterval(function () {
+        if (document.hidden) return;
+        var next = (+scrub.value + 1) % STEPS.length;
+        scrub.value = next;
+        paint(next);
+      }, 3000);
+    }
+    ['pointerdown', 'keydown', 'input'].forEach(function (ev) { scrub.addEventListener(ev, stop); });
+    var sec = document.getElementById('endpoint');
+    if (sec && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) start(); else stop(); });
+      }, { threshold: 0.25 }).observe(sec);
+    } else {
+      start();
+    }
   })();
 
   /* ---------------- the claims light one at a time ---------------- */

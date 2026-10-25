@@ -77,10 +77,10 @@ button, input, textarea { font: inherit; color: inherit; }
 /* ---------- hero: fragment on a shaped stage ---------- */
 .hero { position: relative; min-height: 86svh; overflow: hidden; }
 .hero-text { padding: clamp(2.5rem, 7vh, 6rem) var(--margin) 0; max-width: 58rem; position: relative; z-index: 2; }
-.hero h1 { font-size: var(--step-display); line-height: 1.02; max-width: none; }
-.hero .sub { margin-top: 1.4rem; max-width: 34rem; font-size: var(--step-body); }
-.hero .act { margin-top: 1.75rem; max-width: 34rem; display: flex; flex-wrap: wrap; gap: 1rem 1.25rem; align-items: center; }
-.hero .keys { margin-top: 1.5rem; max-width: 34rem; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: var(--step-small); }
+.hero h1 { font-size: var(--step-display); line-height: 1.02; max-width: min(46rem, calc(100vw - 2 * var(--margin))); }
+.hero .sub { margin-top: 1.4rem; max-width: min(34rem, calc(40vw - 4rem)); font-size: var(--step-body); }
+.hero .act { margin-top: 1.75rem; max-width: min(34rem, calc(40vw - 4rem)); display: flex; flex-wrap: wrap; gap: 1rem 1.25rem; align-items: center; }
+.hero .keys { margin-top: 1.5rem; max-width: min(34rem, calc(40vw - 4rem)); display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: var(--step-small); }
 kbd {
   display: inline-grid; place-items: center; min-width: 30px; height: 30px; padding: 0 8px;
   background: var(--ink); color: var(--paper); font-family: inherit; font-size: var(--step-small); font-weight: 500;
@@ -91,7 +91,8 @@ kbd {
   clip-path: polygon(120px 0, 100% 0, 100% 100%, 0 100%, 0 120px);
   padding: 56px 0 0 56px; overflow: hidden;
 }
-.stage-fragment { width: min(620px, 100%); }
+.stage-fragment { width: min(660px, 100%); margin: 0; }
+.stage-fragment img { width: 100%; height: auto; display: block; }
 
 /* ---------- the popover: the product's one object ---------- */
 [data-ui] { font-family: var(--font-text); font-size: 14px; line-height: 1.4; color: var(--ink); max-width: 100%; min-width: 0; }
@@ -141,7 +142,7 @@ kbd {
 
 /* ---------- how it works: the endpoint stages ---------- */
 .stages { background: var(--field-3); color: var(--field-3-ink); }
-.stages-in { display: grid; grid-template-columns: 1fr 1fr; min-height: 76svh; }
+.stages-in { display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
 .stages-l { padding: clamp(2rem, 6vh, 5rem) clamp(1.5rem, 3vw, 3rem); display: flex; flex-direction: column; justify-content: center; }
 .stages-r { padding: clamp(2rem, 5vh, 3.5rem) clamp(1.5rem, 3vw, 3rem); display: grid; place-items: center; background: var(--field-4); color: var(--field-4-ink); }
 .stages h2 { font-size: var(--step-head); max-width: 13ch; }
@@ -153,7 +154,12 @@ kbd {
 .scrub-names { display: flex; justify-content: space-between; gap: 10px; margin-top: 14px; font-size: var(--step-small); font-weight: 500; color: var(--muted); }
 .scrub-names span[aria-current] { color: var(--ink); }
 pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.code { background: var(--paper); color: var(--ink); padding: 22px 24px; font-size: 15px; line-height: 1.7; overflow-x: auto; width: min(560px, 100%); min-height: 300px; margin: 0; }
+.code { background: var(--paper); color: var(--ink); padding: 24px 26px; font-size: 15px; line-height: 1.75; overflow-x: auto; width: min(600px, 100%); margin: 0; }
+.code .c-line { display: block; transition: opacity 260ms var(--ease-out); }
+.code .c-wait { opacity: .42; font-style: italic; }
+.code .c-set { opacity: .55; }
+.code .c-now { background: color-mix(in srgb, var(--accent) 16%, transparent); font-weight: 600; }
+.code .c-brace { opacity: .55; }
 .code b { font-weight: 600; }
 
 /* ---------- proof: short claims running off the edges ---------- */
@@ -230,9 +236,9 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .shots p.lede { margin-top: 1.25rem; max-width: 52ch; }
 .shot-grid { margin-top: clamp(2.5rem, 5vw, 4rem); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: clamp(1.5rem, 2.5vw, 2.25rem); }
 .shot-grid figure { margin: 0; }
-.shot-grid img { width: 100%; height: auto; background: var(--paper); }
-.shot-grid figcaption { margin-top: 12px; font-size: var(--step-small); color: color-mix(in srgb, var(--field-4-ink) 72%, transparent); }
-.shot-grid figcaption b { display: block; color: var(--field-4-ink); font-weight: 500; font-size: var(--step-body); margin-bottom: 4px; }
+.shot-grid img { width: 100%; height: auto; }
+.shot-grid figcaption { margin-top: 14px; font-size: var(--step-body); color: color-mix(in srgb, var(--field-4-ink) 78%, transparent); line-height: 1.5; max-width: 52ch; }
+.shot-grid figcaption b { display: block; color: var(--field-4-ink); font-weight: 500; font-size: var(--step-lead); letter-spacing: -0.02em; margin-bottom: 6px; }
 
 /* ---------- utility pages (press, 404) ---------- */
 .doc { background: var(--paper); }
@@ -268,7 +274,7 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .facts dd { margin: 0; }
 .kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 1.5rem; }
 .kit figure { margin: 0; background: var(--field-4); color: var(--field-4-ink); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.kit img { width: 100%; height: auto; background: var(--paper); }
+.kit img { width: 100%; height: auto; }
 .kit figcaption { font-size: var(--step-small); display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 .kit figcaption b { font-weight: 500; }
 .kit .links { display: flex; gap: 1rem; font-size: var(--step-small); margin-top: auto; }
