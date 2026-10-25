@@ -127,6 +127,7 @@ marketing/
 release/appstore/
 release/*.xcarchive
 
-# tasteskill working files: keep the direction sheet, not the screenshots
-.taste-skill/*
-!.taste-skill/direction.json
+# tasteskill working files. The direction name and seed are recorded in the
+# commit message instead; the sheet itself quotes the skill's own prose, which
+# contains em-dashes.
+.taste-skill/
