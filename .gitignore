@@ -126,3 +126,7 @@ marketing/
 ## Xcode archives (not committed)
 release/appstore/
 release/*.xcarchive
+
+# tasteskill working files: keep the direction sheet, not the screenshots
+.taste-skill/*
+!.taste-skill/direction.json

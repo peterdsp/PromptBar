@@ -1,40 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark" />
-    <title>404, PromptBar</title>
-    <link rel="icon" type="image/png" href="/assets/appicon-128.png" />
-    <style>
-      html, body { background: #07070c; color: #e8e8f0; margin: 0; height: 100%; }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, system-ui, sans-serif;
-        display: grid; place-items: center; text-align: center; padding: 2rem;
-      }
-      .card {
-        max-width: 520px;
-        padding: 2.5rem;
-        border-radius: 24px;
-        border: 1px solid rgba(255,255,255,0.08);
-        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-        backdrop-filter: blur(24px);
-      }
-      h1 { font-size: 2.25rem; margin: 0 0 .5rem; letter-spacing: -0.02em; }
-      p { color: #a1a1aa; margin: 0 0 1.5rem; }
-      a {
-        display: inline-block; padding: .7rem 1.2rem; border-radius: 12px;
-        background: linear-gradient(180deg, #38bdf8, #0ea5e9); color: #05161f;
-        text-decoration: none; font-weight: 600;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <img src="/assets/appicon-128.png" alt="" style="width:64px;height:64px;border-radius:14px;margin-bottom:1rem;" />
-      <h1>Not here.</h1>
-      <p>That page slipped out of the menubar. Head back home.</p>
-      <a href="/">Back to PromptBar</a>
-    </div>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Not here, PromptBar</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/appicon-128.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="doc">
+
+<nav class="nav">
+  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="26" height="26"><span>PromptBar</span></a>
+  <div class="links">
+    <a href="/#price">Price</a>
+    <a href="/press.html">Press</a>
+    <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
+  </div>
+</nav>
+
+<main class="oops">
+  <div>
+    <h1>Not here.</h1>
+    <p>That page slipped out of the menubar. The app is still one keystroke away.</p>
+    <div class="act"><a class="btn dark" href="/">Back to PromptBar</a></div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot-meta">
+    <span>macOS menubar chat, v2.2.0</span>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/press.html">Press</a>
+      <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
+    </nav>
+    <span>© 2026 Petros Dhespollari</span>
+  </div>
+</footer>
+
+<script src="doc.js"></script>
+</body>
 </html>
