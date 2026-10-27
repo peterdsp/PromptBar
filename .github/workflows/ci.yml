@@ -120,3 +120,46 @@ jobs:
             echo "::error::App failed to launch or crashed on startup"
             exit 1
           fi
+
+  # PromptBarTests exists in the project and passes, but nothing in CI ran it, so
+  # the suite could rot without anyone noticing. It is a standalone logic bundle
+  # (no TEST_HOST, no BUNDLE_LOADER), so it does not need to launch the app.
+  #
+  # It does need a runner that can load a macOS 26 binary, because both the app
+  # and the test bundle have MACOSX_DEPLOYMENT_TARGET 26.0. That is why this job
+  # is on macos-26 rather than the macos-15 the validate job uses: on an older
+  # runner the test bundle would fail to load, which would look like a test
+  # failure and is not one.
+  unit-tests:
+    name: Unit tests
+    runs-on: macos-26
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          set -euo pipefail
+          newest="$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)"
+          if [ -z "$newest" ]; then
+            echo "::error::No Xcode found on this runner image."
+            exit 1
+          fi
+          sudo xcode-select -s "$newest/Contents/Developer"
+          xcodebuild -version
+
+      - name: Resolve SPM dependencies
+        run: xcodebuild -resolvePackageDependencies -project "$PROJECT" -scheme "$SCHEME"
+
+      - name: Run tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -destination 'platform=macOS' \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
