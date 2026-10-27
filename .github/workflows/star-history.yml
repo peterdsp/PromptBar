@@ -34,15 +34,51 @@ jobs:
           mkdir -p .github/assets
           mv /tmp/star-history.svg .github/assets/star-history.svg
 
+      # Committed through the Contents API rather than `git push`, because main
+      # requires signed commits. A push from github-actions[bot] over git is
+      # unsigned, so it was rejected every single night with
+      # "GH006: Protected branch update failed", which looked like a permissions
+      # problem and was actually a signature one. Commits created through this
+      # API are signed by GitHub server side, so the requirement stays on and the
+      # chart still updates.
+      #
+      # One call per file, because the Contents API commits a single file at a
+      # time. That is two commits on a day both files change, which is an
+      # acceptable trade for not weakening branch protection.
       - name: Commit chart changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
         run: |
+          set -euo pipefail
+
           if git diff --quiet -- .github/assets/star-history.json .github/assets/star-history.svg; then
             echo "Star history is already current"
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/assets/star-history.json .github/assets/star-history.svg
-          git commit -m "Update star history chart"
-          git push
+          commit_file() {
+            path="$1"
+            if git diff --quiet -- "$path"; then
+              echo "unchanged: $path"
+              return 0
+            fi
+            # The blob sha the API needs is the one currently on the branch, not
+            # the one in the working tree.
+            sha="$(gh api "repos/$REPO/contents/$path?ref=$BRANCH" --jq .sha 2>/dev/null || true)"
+            args=(
+              --method PUT "repos/$REPO/contents/$path"
+              -f message="Update star history chart"
+              -f branch="$BRANCH"
+              -f "content=$(base64 -w0 < "$path" 2>/dev/null || base64 < "$path" | tr -d '\n')"
+            )
+            if [ -n "$sha" ]; then
+              args+=(-f sha="$sha")
+            fi
+            gh api "${args[@]}" --jq '.commit.sha' > /dev/null
+            echo "committed: $path"
+          }
+
+          commit_file .github/assets/star-history.json
+          commit_file .github/assets/star-history.svg
