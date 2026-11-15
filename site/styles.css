@@ -193,6 +193,19 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .foot-meta nav { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; }
 .foot-meta :last-child { text-align: right; }
 
+/* ---------- from the same maker: Lidhra ---------- */
+.lidhra-card { background: var(--paper); color: var(--ink); padding: clamp(3rem, 8vh, 5rem) var(--margin); }
+.lidhra-card-in { max-width: 46rem; display: flex; gap: clamp(1rem, 2.5vw, 1.75rem); align-items: flex-start; }
+.lidhra-card-icon { flex: none; width: 64px; height: 64px; border-radius: 15px; }
+.lidhra-card-text { min-width: 0; }
+.lidhra-card-eyebrow { font-size: var(--step-small); color: color-mix(in srgb, var(--ink) 62%, var(--paper)); }
+.lidhra-card-name { font-size: var(--step-lead); margin-top: 0.35rem; }
+.lidhra-card-line { margin-top: 0.75rem; max-width: 46ch; color: color-mix(in srgb, var(--ink) 80%, var(--paper)); }
+.lidhra-card-links { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; }
+.lidhra-card-store { display: inline-flex; }
+.lidhra-card-store img { height: 40px; width: auto; }
+@media (max-width: 520px) { .lidhra-card-in { flex-direction: column; } }
+
 /* ---------- motion ---------- */
 .shutter { clip-path: inset(0 100% 0 0); }
 .in .shutter { clip-path: inset(0 0 0 0); transition: clip-path 1100ms var(--ease-in-out); }
