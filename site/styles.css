@@ -193,18 +193,170 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 .foot-meta nav { display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap; }
 .foot-meta :last-child { text-align: right; }
 
-/* ---------- from the same maker: Lidhra ---------- */
-.lidhra-card { background: var(--paper); color: var(--ink); padding: clamp(3rem, 8vh, 5rem) var(--margin); }
-.lidhra-card-in { max-width: 46rem; display: flex; gap: clamp(1rem, 2.5vw, 1.75rem); align-items: flex-start; }
-.lidhra-card-icon { flex: none; width: 64px; height: 64px; border-radius: 15px; }
-.lidhra-card-text { min-width: 0; }
-.lidhra-card-eyebrow { font-size: var(--step-small); color: color-mix(in srgb, var(--ink) 62%, var(--paper)); }
-.lidhra-card-name { font-size: var(--step-lead); margin-top: 0.35rem; }
-.lidhra-card-line { margin-top: 0.75rem; max-width: 46ch; color: color-mix(in srgb, var(--ink) 80%, var(--paper)); }
-.lidhra-card-links { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; }
-.lidhra-card-store { display: inline-flex; }
-.lidhra-card-store img { height: 40px; width: auto; }
-@media (max-width: 520px) { .lidhra-card-in { flex-direction: column; } }
+/* ---------- the sister app: Lidhra, one more colour chapter ---------- */
+/* Lidhra promo. A content-layer card: solid surface, no glass, no shadow.
+   Each site maps its own tokens onto the --lp-* roles below. */
+
+.lidhra-promo {
+  --lp-surface: #f2f2f4;
+  --lp-ink: #16161a;
+  --lp-muted: #55555c;
+  --lp-link: #1f5fd1;
+  --lp-ring: #1f5fd1;
+  --lp-radius: 22px;
+  --lp-pad: clamp(18px, 4vw, 32px);
+  --lp-font: inherit;
+  --lp-title-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.1rem);
+  container-type: inline-size;
+  margin: 3rem 0;
+  padding: var(--lp-pad);
+  border-radius: var(--lp-radius);
+  background: var(--lp-surface);
+  color: var(--lp-ink);
+  font-family: var(--lp-font);
+  text-align: left;
+}
+
+.lidhra-promo__copy { min-width: 0; }
+
+.lidhra-promo__title {
+  margin: 0;
+  max-width: 18ch;
+  font-size: var(--lp-title-size);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 750;
+  text-wrap: balance;
+  color: var(--lp-ink);
+}
+
+.lidhra-promo__text {
+  margin: 14px 0 0;
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--lp-ink);
+}
+
+.lidhra-promo__facts {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.lidhra-promo__facts p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--lp-muted);
+}
+
+.lidhra-promo__facts strong { color: var(--lp-ink); font-weight: 650; }
+
+/* Concentric with the card: the icon's radius is the platform's squircle approximation. */
+.lidhra-promo__icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.lidhra-promo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+  margin-top: 22px;
+}
+
+.lidhra-promo__badge {
+  display: inline-block;
+  line-height: 0;
+  border-radius: 9px;
+}
+
+.lidhra-promo__badge img {
+  display: block;
+  width: auto;
+  height: 48px;
+}
+
+.lidhra-promo__more {
+  font-weight: 650;
+  color: var(--lp-link);
+  text-underline-offset: 3px;
+}
+
+.lidhra-promo a:focus-visible {
+  outline: 3px solid var(--lp-ring);
+  outline-offset: 3px;
+}
+
+/* Screens: the library on the big screen, the phone overlapping its corner.
+   Inner radii are the card radius minus the card padding, so the corners stay concentric. */
+.lidhra-promo__shots {
+  order: -1;
+  display: grid;
+  margin: 0 0 13%;
+  min-width: 0;
+}
+
+.lidhra-promo__library,
+.lidhra-promo__phone { grid-area: 1 / 1; display: block; height: auto; }
+
+.lidhra-promo__library {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  border-radius: max(8px, calc(var(--lp-radius) - var(--lp-pad) + 4px));
+  background: #0d1424;
+}
+
+.lidhra-promo__phone {
+  justify-self: end;
+  align-self: end;
+  width: 27%;
+  aspect-ratio: 360 / 570;
+  margin: 0 5% -13% 0;
+  border-radius: 14px;
+  outline: 4px solid var(--lp-surface);
+  background: #e9ebf2;
+}
+
+.lidhra-promo__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px 40px;
+}
+
+@container (min-width: 700px) {
+  .lidhra-promo__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: center; }
+  .lidhra-promo__shots { order: 0; margin-bottom: 9%; }
+  .lidhra-promo__phone { width: 25%; margin-bottom: -9%; }
+}
+
+@container (min-width: 480px) and (max-width: 699px) {
+  .lidhra-promo__shots { margin-bottom: 9%; }
+  .lidhra-promo__phone { width: 21%; margin-bottom: -9%; }
+}
+
+.lidhra-promo {
+  --lp-surface: var(--field-2);
+  --lp-ink: var(--field-2-ink);
+  --lp-muted: var(--field-2-ink);
+  --lp-link: var(--field-2-ink);
+  --lp-ring: var(--field-2-ink);
+  --lp-radius: var(--radius);
+  --lp-pad: clamp(5rem, 12vh, 9rem) var(--margin);
+  --lp-title-size: clamp(2rem, 1.2rem + 2.6vw, 3.5rem);
+  margin: 0;
+}
+.lidhra-promo__inner { max-width: 76rem; }
+.lidhra-promo__title { font-weight: 500; letter-spacing: -0.03em; line-height: 1; max-width: 16ch; }
+.lidhra-promo__library { border-radius: 0; }
+.lidhra-promo__phone { border-radius: 12px; }
+.lidhra-promo__more { text-decoration: underline; text-decoration-thickness: 2px; }
 
 /* ---------- motion ---------- */
 .shutter { clip-path: inset(0 100% 0 0); }
