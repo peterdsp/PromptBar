@@ -221,7 +221,7 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
 .lidhra-promo__title {
   margin: 0;
-  max-width: 18ch;
+  max-width: 24ch;
   font-size: var(--lp-title-size);
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -353,7 +353,7 @@ pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   margin: 0;
 }
 .lidhra-promo__inner { max-width: 76rem; }
-.lidhra-promo__title { font-weight: 500; letter-spacing: -0.03em; line-height: 1; max-width: 16ch; }
+.lidhra-promo__title { font-weight: 500; letter-spacing: -0.03em; line-height: 1; max-width: 24ch; }
 .lidhra-promo__library { border-radius: 0; }
 .lidhra-promo__phone { border-radius: 12px; }
 .lidhra-promo__more { text-decoration: underline; text-decoration-thickness: 2px; }
