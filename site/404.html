@@ -5,41 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Not here, PromptBar</title>
 <meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/appicon-128.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body class="doc">
 
-<nav class="nav">
-  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="26" height="26"><span>PromptBar</span></a>
-  <div class="links">
-    <a href="/#price">Price</a>
+<header class="bar">
+  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="22" height="22"><span>PromptBar</span></a>
+  <nav class="links" aria-label="Sections">
+    <a href="/#features">Features</a>
+    <a href="/#price">Pricing</a>
+    <a href="/#faq">FAQ</a>
     <a href="/press.html">Press</a>
-    <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
-  </div>
-</nav>
+  </nav>
+  <a class="btn btn-sm" href="/#price">Get PromptBar</a>
+</header>
 
 <main class="oops">
   <div>
     <h1>Not here.</h1>
     <p>That page slipped out of the menubar. The app is still one keystroke away.</p>
-    <div class="act"><a class="btn dark" href="/">Back to PromptBar</a></div>
+    <div class="act"><a class="btn" href="/">Back to PromptBar</a></div>
   </div>
+  <img src="assets/web/prompts-1100.webp" width="1100" height="880" alt="The PromptBar Prompt Library, open in its window" decoding="async">
 </main>
 
 <footer class="foot">
-  <div class="foot-meta">
-    <span>macOS menubar chat, v2.2.0</span>
-    <nav>
+  <div class="foot-top">
+    <div><h2>Your bar is still empty.</h2><a class="btn" href="https://github.com/peterdsp/PromptBar/releases">Start the free trial</a></div>
+    <nav class="foot-links" aria-label="More">
       <a href="/">Home</a>
       <a href="/press.html">Press</a>
       <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
     </nav>
-    <span>© 2026 Petros Dhespollari</span>
   </div>
+  <div class="foot-legal"><span>macOS menubar chat, v2.2.0</span><span>© 2026 Petros Dhespollari</span></div>
+  <p class="foot-mark" aria-hidden="true">PromptBar</p>
 </footer>
 
 <script src="doc.js"></script>

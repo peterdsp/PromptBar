@@ -5,25 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PromptBar press kit</title>
 <meta name="description" content="Boilerplate, product facts, high-resolution screenshots, the app icon at every native size, and a direct line to the maintainer.">
+<meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/appicon-128.png">
 <link rel="canonical" href="https://promptbar.peterdsp.dev/press.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body class="doc">
 <a class="skip" href="#main">Skip to content</a>
 
-<nav class="nav">
-  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="26" height="26"><span>PromptBar</span></a>
-  <div class="links">
-    <a href="/#build">Build one</a>
-    <a href="/#endpoint">Your key</a>
-    <a href="/#price">Price</a>
-    <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
-  </div>
-</nav>
+<header class="bar">
+  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="22" height="22"><span>PromptBar</span></a>
+  <nav class="links" aria-label="Sections">
+    <a href="/#features">Features</a>
+    <a href="/#price">Pricing</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/press.html">Press</a>
+  </nav>
+  <a class="btn btn-sm" href="/#price">Get PromptBar</a>
+</header>
 
 <header class="doc-head">
   <div class="doc-head-in">
@@ -120,17 +119,17 @@
 </main>
 
 <footer class="foot">
-  <p class="foot-mark">PromptBar</p>
-  <div class="foot-meta">
-    <span>macOS menubar chat, v2.2.0</span>
-    <nav>
+  <div class="foot-top">
+    <div><h2>Your bar is still empty.</h2><a class="btn" href="https://github.com/peterdsp/PromptBar/releases">Start the free trial</a></div>
+    <nav class="foot-links" aria-label="More">
       <a href="/">Home</a>
       <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
       <a href="https://github.com/peterdsp/PromptBar/blob/main/PRIVACY_POLICY.md">Privacy</a>
       <a href="https://peterdsp.dev">peterdsp.dev</a>
     </nav>
-    <span>© 2026 Petros Dhespollari</span>
   </div>
+  <div class="foot-legal"><span>macOS menubar chat, v2.2.0</span><span>© 2026 Petros Dhespollari</span></div>
+  <p class="foot-mark" aria-hidden="true">PromptBar</p>
 </footer>
 
 <script src="doc.js"></script>

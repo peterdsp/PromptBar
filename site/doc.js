@@ -1,14 +1,9 @@
 /* PromptBar utility pages: entrances only. Content renders without this file. */
 (function () {
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var t = document.querySelectorAll('h1, h2, p, .facts, .kit figure, .act, .foot-mark, .foot-meta');
-  for (var i = 0; i < t.length; i++) t[i].classList.add('rise');
-  if (!('IntersectionObserver' in window) || reduce) {
-    for (var k = 0; k < t.length; k++) t[k].classList.add('in');
-    return;
-  }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  var t = document.querySelectorAll('main h1, main h2, main p, .facts, .kit figure, main .act, .foot h2, .foot .btn');
   var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); e.target.classList.remove('pre'); io.unobserve(e.target); } });
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-  for (var j = 0; j < t.length; j++) io.observe(t[j]);
+  for (var i = 0; i < t.length; i++) { t[i].classList.add('rv', 'pre'); t[i].style.setProperty('--d', (i % 4) * 70 + 'ms'); io.observe(t[i]); }
 })();

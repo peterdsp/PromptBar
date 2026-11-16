@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PromptBar, any chat in your menubar</title>
 <meta name="description" content="A macOS menubar app that ships empty. Wrap any web chat in a popover or stream from any OpenAI-compatible endpoint with your own key. One keystroke, no accounts, no telemetry.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f2f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1b24" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="assets/appicon-128.png">
 <link rel="canonical" href="https://promptbar.peterdsp.dev/">
 <meta property="og:title" content="PromptBar, any chat in your menubar">
@@ -12,232 +15,157 @@
 <meta property="og:url" content="https://promptbar.peterdsp.dev/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://promptbar.peterdsp.dev/assets/appicon-1024.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<nav class="nav">
-  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="26" height="26"><span>PromptBar</span></a>
-  <div class="links">
-    <a href="#build">Build one</a>
-    <a href="#endpoint">Your key</a>
-    <a href="#price">Price</a>
+<header class="bar">
+  <a class="mark" href="/"><img src="assets/appicon-128.png" alt="" width="22" height="22"><span>PromptBar</span></a>
+  <nav class="links" aria-label="Sections">
+    <a href="#features">Features</a>
+    <a href="#price">Pricing</a>
+    <a href="#faq">FAQ</a>
     <a href="press.html">Press</a>
-  </div>
-</nav>
+  </nav>
+  <a class="btn btn-sm" href="#price">Get PromptBar</a>
+</header>
 
 <main id="main">
 
-  <!-- ===== hero: the fragment on a shaped stage ===== -->
-  <section class="hero">
-    <div class="hero-text">
-      <h1>Any chat, any model.<br>One keystroke away.</h1>
-      <p class="sub rise">PromptBar is a macOS menubar app that ships empty. Wrap any web chat in a popover, or stream natively from any OpenAI-compatible endpoint. Your key, your model, your data.</p>
-      <div class="act rise">
+  <section class="hero" aria-labelledby="title">
+    <h1 id="title">
+      <span class="h-row">Any chat <span class="strip shutter"><picture><source media="(max-width: 699px)" srcset="assets/web/strip-phone-720.webp" width="720" height="360"><img src="assets/web/strip-580.webp" width="580" height="150" alt="A PromptBar chat: your question, asking to refactor a checkout file, on its way to the model"></picture></span></span>
+      <span class="h-row">in your menu bar.</span>
+    </h1>
+    <div class="hero-foot">
+      <p class="lead rv">A Mac menu bar app that ships empty. Add the web chats you use, or your own API endpoint, and open it with ⌥⌘O.</p>
+      <div class="act rv">
         <a class="btn" href="#price">Get PromptBar</a>
         <a class="tlink" href="https://github.com/peterdsp/PromptBar/releases">Free trial on GitHub</a>
       </div>
-      <p class="keys rise"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>O</kbd> <span>to summon · macOS 26 Tahoe and later · signed and notarised</span></p>
-    </div>
-    <div class="stage">
-      <figure class="stage-fragment shutter">
-        <img src="assets/shots/native-chat.png" alt="The PromptBar popover open under the menu bar, streaming a reply from a configured endpoint, with the service tabs along the top" width="1100" height="1250" decoding="async">
-      </figure>
     </div>
   </section>
 
-  <!-- ===== showcase: what you hand it, what it becomes ===== -->
-  <section class="io" id="build">
-    <div class="io-in">
-      <div class="io-field">
-        <label for="url">Paste a chat URL, give it a name and a colour</label>
-        <input id="url" type="text" value="https://chat.example.com" spellcheck="false" autocomplete="off">
-        <div class="io-pick" id="pick" role="group" aria-label="Colour for this chat">
-          <button type="button" style="background:#4db3ff" data-c="#4db3ff" aria-pressed="true"><span class="sr">Sky</span></button>
-          <button type="button" style="background:#c5f53d" data-c="#c5f53d" aria-pressed="false"><span class="sr">Lime</span></button>
-          <button type="button" style="background:#ff8126" data-c="#ff8126" aria-pressed="false"><span class="sr">Orange</span></button>
-          <button type="button" style="background:#de194b" data-c="#de194b" aria-pressed="false"><span class="sr">Crimson</span></button>
+  <section class="type-it" id="build" aria-labelledby="buildH">
+    <h2 id="buildH" class="rv">Add a chat in one line</h2>
+    <div class="line rv" data-ui>
+      <label class="sr" for="url">Address of a web chat</label>
+      <input id="url" type="text" value="chat.example.com" spellcheck="false" autocomplete="off" autocapitalize="off" inputmode="url">
+    </div>
+    <div class="answer">
+      <div class="win rv" data-ui>
+        <div class="tabs" id="tabs" aria-live="polite">
+          <span class="tab" style="--t:#3DBE8B"><i>N</i>Notes</span>
+          <span class="tab" style="--t:#F5A623"><i>L</i>Local</span>
+          <span class="tab on" id="newTab" style="--t:#5BC0EB"><i id="newI">E</i><b id="newName">Example</b></span>
+          <span class="tab plus" aria-hidden="true">+</span>
         </div>
-        <p style="margin-top:1.5rem;font-size:var(--step-small);opacity:.8">Cookies stay in this Mac's WKWebView. Nothing is uploaded, and there is no account to make.</p>
+        <div class="win-body">
+          <p class="win-h" id="newTitle">Example</p>
+          <p class="win-s" id="newUrl">https://chat.example.com</p>
+          <div class="tints" id="tints" role="group" aria-label="Colour for this chat">
+            <button type="button" style="--t:#5BC0EB" aria-pressed="true"><span class="sr">Sky</span></button>
+            <button type="button" style="--t:#3DBE8B" aria-pressed="false"><span class="sr">Green</span></button>
+            <button type="button" style="--t:#F5A623" aria-pressed="false"><span class="sr">Amber</span></button>
+            <button type="button" style="--t:#FF7A8A" aria-pressed="false"><span class="sr">Rose</span></button>
+          </div>
+        </div>
       </div>
-      <h2 class="half-a">You bring it.</h2>
-    </div>
-    <div class="io-out">
-      <div class="pop" data-ui>
-        <div class="pop-bar"><span class="dots"><i></i><i></i><i></i></span><span>PromptBar</span><span>⌥⌘O</span></div>
-        <div class="pop-list" id="outList"></div>
-        <div class="pop-foot"><span id="outCount">1 in your bar</span><span>ships empty</span></div>
-      </div>
-      <h2>It lives here.</h2>
-    </div>
-  </section>
-
-  <!-- ===== features: sentences with switches ===== -->
-  <section class="bands" id="inside" aria-labelledby="insideH">
-    <h2 class="sr" id="insideH">What is inside</h2>
-    <div class="band-row" data-on="true" style="--f:var(--field-2)">
-      <div>
-        <p class="say">Wrap any web chat in a popover.</p>
-      </div>
-      <div>
-        <p class="cons">Paste a URL, pick a name, an icon and a colour. It runs in WKWebView and its cookies live on this Mac, not in a cloud.</p>
-      </div>
-      <button class="sw-btn" role="switch" aria-checked="true" aria-label="Wrap any web chat"><i></i></button>
-    </div>
-    <div class="band-row" data-on="true" style="--f:var(--field-3)">
-      <div>
-        <p class="say">Stream from your own endpoint.</p>
-      </div>
-      <div>
-        <p class="cons">Any OpenAI-compatible <code>/chat/completions</code> service or local runtime. Server-sent events, cancel mid-stream, straight from your Mac with no relay.</p>
-      </div>
-      <button class="sw-btn" role="switch" aria-checked="true" aria-label="Stream from your own endpoint"><i></i></button>
-    </div>
-    <div class="band-row" data-on="false" style="--f:var(--field-1)">
-      <div>
-        <p class="say">Reuse your best prompts anywhere.</p>
-      </div>
-      <div>
-        <p class="cons">Save a prompt once and call it into any chat with ⌘P. Search it, tag it, ship it.</p>
-      </div>
-      <button class="sw-btn" role="switch" aria-checked="false" aria-label="Prompt library"><i></i></button>
-    </div>
-    <div class="band-row" data-on="false" style="--f:var(--field-2)">
-      <div>
-        <p class="say">Keep every key in the Keychain.</p>
-      </div>
-      <div>
-        <p class="cons">Not in UserDefaults, not in iCloud, not in a log file. Just the macOS Keychain, on this machine.</p>
-      </div>
-      <button class="sw-btn" role="switch" aria-checked="false" aria-label="Keychain-backed keys"><i></i></button>
-    </div>
-    <div class="band-row" data-on="false" style="--f:var(--field-3)">
-      <div>
-        <p class="say">Stay out of the Dock entirely.</p>
-      </div>
-      <div>
-        <p class="cons">Menubar only. Summoned with ⌥⌘O, dismissed the moment you click away, and never an icon you have to close.</p>
-      </div>
-      <button class="sw-btn" role="switch" aria-checked="false" aria-label="Menubar only"><i></i></button>
-    </div>
-  </section>
-
-
-  <!-- ===== the screens, as the product actually looks ===== -->
-  <section class="shots" id="screens">
-    <h2>One popover. Every conversation.</h2>
-    <p class="lede">Native streaming chat, web chats you wrapped yourself, your own API endpoints, MCP servers, and a keyboard-driven prompt library. All of it in the same panel under the menubar.</p>
-    <div class="shot-grid">
-      <figure class="rise"><img src="assets/shots/native-chat.png" alt="PromptBar's native streaming chat in the menubar popover" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Native chat</b>A reply streaming in from an endpoint you configured, token by token, with the whole conversation inside the popover. Cancel it mid-stream and the connection closes; nothing is buffered anywhere else.</figcaption></figure>
-      <figure class="rise"><img src="assets/shots/web-chats.png" alt="A web chat wrapped inside the PromptBar popover" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Wrapped web chats</b>The settings pane where you add a chat: paste a URL, give it a name, an icon and a colour. It runs in WKWebView, so you stay signed in and the cookies never leave this Mac.</figcaption></figure>
-      <figure class="rise"><img src="assets/shots/api-endpoints.png" alt="PromptBar's API endpoint configuration" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Your endpoints</b>Every OpenAI-compatible service you point at, hosted or on your own machine. Base URL, model, key and system prompt are saved per endpoint, and the key goes to the Keychain, not a config file.</figcaption></figure>
-      <figure class="rise"><img src="assets/shots/mcp-servers.png" alt="MCP servers configured in PromptBar" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>MCP servers</b>Tool servers listed beside the chats and reachable from the same panel, so a model you brought can call the tools you trust without leaving the popover.</figcaption></figure>
-      <figure class="rise"><img src="assets/shots/prompt-library.png" alt="PromptBar's searchable prompt library" width="1100" height="910" loading="lazy" decoding="async"><figcaption><b>Prompt library</b>The prompts you keep reaching for, searchable and tagged. ⌘P drops one into whichever chat is open, which is the difference between keeping prompts and actually reusing them.</figcaption></figure>
-    </div>
-  </section>
-
-  <!-- ===== how it works: pointing it at your endpoint ===== -->
-  <section class="stages" id="endpoint">
-    <div class="stages-in">
-      <div class="stages-l">
-        <h2 id="stClause" aria-live="polite">Name the endpoint.</h2>
-        <p class="note" id="stNote">Anything that speaks the OpenAI chat API: a hosted service, a company gateway, or a runtime on your own machine.</p>
-      </div>
-      <div class="stages-r">
-        <pre class="code" id="stCode" data-ui></pre>
-      </div>
-      <div class="scrub" style="grid-column:1/-1">
-        <label class="sr" for="stScrub">Step of the endpoint setup</label>
-        <input type="range" id="stScrub" min="0" max="3" step="1" value="0">
-        <div class="scrub-names" id="stNames"></div>
+      <div class="answer-text">
+        <p class="rv">Type any address and it becomes a pill in your bar. It runs in WKWebView, so you stay signed in and the cookies stay on this Mac.</p>
+        <div class="tries rv" role="group" aria-label="Try an address">
+          <button type="button" data-v="chat.example.com">chat.example.com</button>
+          <button type="button" data-v="localhost:3000">localhost:3000</button>
+          <button type="button" data-v="assistant.mycompany.com">assistant.mycompany.com</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== proof: what it does not do ===== -->
-  <section class="claims" id="privacy">
-    <h2>Private because it is empty.</h2>
-    <p class="lede">PromptBar was rebuilt around one rule: your data leaves this Mac only when you send it, and only to where you send it. There is nothing in the middle because there is no middle.</p>
-    <p class="run" id="run1"><span>No accounts.</span><span>No analytics.</span><span>No telemetry.</span><span>No relay.</span></p>
-    <p class="run" id="run2"><span>No remote config.</span><span>No Firebase.</span><span>No bundled providers.</span><span>No Dock icon.</span></p>
+  <section class="rows" id="features" aria-labelledby="featH">
+    <h2 id="featH" class="rows-h rv">The rest, when you want it</h2>
+    <article class="row" id="endpoint">
+      <div>
+        <h3 class="rv">Your own endpoint</h3>
+        <p class="rv">Point it at any OpenAI-compatible <code>/chat/completions</code> service, hosted or on localhost. Replies stream straight from your Mac, with no relay.</p>
+      </div>
+      <img class="rv w-l" src="assets/web/relay-1100.webp" srcset="assets/web/relay-640.webp 640w, assets/web/relay-1100.webp 1100w" sizes="(min-width: 900px) 520px, 100vw" width="1100" height="640" alt="A streamed reply with a code block, above the note: Your messages are sent directly from this Mac to the endpoint URL you configured. No relay." loading="lazy" decoding="async">
+    </article>
+    <article class="row">
+      <div>
+        <h3 class="rv">Prompts on ⌘P</h3>
+        <p class="rv">Save a prompt once, tag it, and drop it into whichever chat is open. Search finds it by title or tag.</p>
+      </div>
+      <img class="rv w-m" src="assets/web/prompts-1100.webp" srcset="assets/web/prompts-640.webp 640w, assets/web/prompts-1100.webp 1100w" sizes="(min-width: 900px) 400px, 70vw" width="1100" height="880" alt="The Prompt Library: saved prompts such as Explain this code and PR description from diff, each with tags" loading="lazy" decoding="async">
+    </article>
+    <article class="row">
+      <div>
+        <h3 class="rv">Tools over MCP</h3>
+        <p class="rv">Connect HTTP MCP servers and switch each one on or off. Native chats can then call the tools you trust.</p>
+      </div>
+      <img class="rv w-w" src="assets/web/mcp-1100.webp" srcset="assets/web/mcp-640.webp 640w, assets/web/mcp-1100.webp 1100w" sizes="(min-width: 900px) 580px, 100vw" width="1100" height="560" alt="The MCP Servers pane: four servers with their URLs and on and off switches" loading="lazy" decoding="async">
+    </article>
+    <article class="row">
+      <div>
+        <h3 class="rv">Never in the Dock</h3>
+        <p class="rv">It lives in the menu bar only. ⌥⌘O opens it, a click elsewhere hides it, and your keys stay in the macOS Keychain.</p>
+      </div>
+      <img class="rv w-s" src="assets/appicon-256.png" width="256" height="256" alt="The PromptBar app icon" loading="lazy" decoding="async">
+    </article>
   </section>
 
-  <!-- ===== pricing: the ticket ===== -->
-  <section class="price" id="price">
-    <h2>Pay once, or try it first.</h2>
-    <div class="tickets">
-      <div class="ticket rise">
-        <span class="where">Ko-fi</span>
-        <span class="amt">€8.99</span>
-        <ul>
-          <li>One-time, no subscription</li>
-          <li>Activated with your Ko-fi email</li>
-          <li>Direct build, updates from GitHub</li>
-        </ul>
+  <section class="price" id="price" aria-labelledby="priceH">
+    <h2 id="priceH" class="rv">Yours for <span class="tag">€8.99</span>, once.</h2>
+    <div class="price-foot">
+      <p class="rv">One purchase, no subscription, activated with your Ko-fi email. On the App Store it is $9.99, with Family Sharing and store updates.</p>
+      <div class="price-act rv">
         <a class="btn" href="https://ko-fi.com/s/b1ef047a6f">Buy on Ko-fi</a>
-      </div>
-      <div class="ticket rise">
-        <span class="where">App Store</span>
-        <span class="amt">$9.99</span>
-        <ul>
-          <li>One-time, store-managed updates</li>
-          <li>Family Sharing</li>
-          <li>No trial, pay once at checkout</li>
-        </ul>
-        <a class="btn" href="https://apps.apple.com/app/promptbar/id6743766769?mt=12">Get on the App Store</a>
-      </div>
-      <div class="ticket rise">
-        <span class="where">GitHub</span>
-        <span class="amt">Free trial</span>
-        <ul>
-          <li>Source available</li>
-          <li>Signed and notarised builds</li>
-          <li>No account needed to try it</li>
-        </ul>
-        <a class="btn dark" href="https://github.com/peterdsp/PromptBar/releases">Download the trial</a>
+        <a class="tlink" href="https://apps.apple.com/app/promptbar/id6743766769?mt=12">Get it on the App Store</a>
+        <a class="tlink" href="https://github.com/peterdsp/PromptBar/releases">Try it free from GitHub</a>
       </div>
     </div>
   </section>
 
-  <!-- ===== cta: the first step, already taken ===== -->
-  <section class="cta">
-    <div class="cta-in">
-      <div>
-        <h2>Your bar is still empty.</h2>
-        <p class="rise" style="margin-top:1.25rem;max-width:40ch">That is the point. Put the two or three chats you actually use in it, give them a colour, and forget the app is there until you press the keys.</p>
-        <div class="act rise">
-          <a class="btn" href="https://github.com/peterdsp/PromptBar/releases">Start the free trial</a>
-          <a class="tlink" href="https://github.com/peterdsp/PromptBar">Read the source</a>
-        </div>
-      </div>
-      <div class="pop rise" data-ui>
-        <div class="pop-bar"><span class="dots"><i></i><i></i><i></i></span><span>PromptBar</span><span>⌥⌘O</span></div>
-        <div class="pop-empty">Nothing here yet. Add your first chat.</div>
-        <div class="pop-foot"><span>0 in your bar</span><span>ships empty</span></div>
-      </div>
+  <section class="faq" id="faq" aria-labelledby="faqH">
+    <div class="qa"><h2 id="faqH" class="q soft rv">Questions</h2><div></div></div>
+    <div class="qa">
+      <h3 class="q rv">Which chats does it work with?</h3>
+      <p class="rv">Any chat that runs in a browser tab. Paste its address, give it a name and a colour. PromptBar ships with none, so you choose.</p>
+    </div>
+    <div class="qa">
+      <h3 class="q rv">Can I use my own API key?</h3>
+      <p class="rv">Yes. Add any OpenAI-compatible endpoint, hosted or on your own machine, such as <code>localhost:11434</code>. The key goes to the macOS Keychain.</p>
+    </div>
+    <div class="qa">
+      <h3 class="q rv">What leaves my Mac?</h3>
+      <p class="rv">Only your messages, sent straight to the address you set. There is no account, no analytics, no telemetry and no relay.</p>
+    </div>
+    <div class="qa">
+      <h3 class="q rv">Which Mac do I need?</h3>
+      <p class="rv">macOS 26 Tahoe or later, on Apple silicon or Intel. Builds are signed and notarised.</p>
+    </div>
+    <div class="qa">
+      <h3 class="q rv">Ko-fi or App Store?</h3>
+      <p class="rv">The same app. Ko-fi (€8.99) unlocks the direct build and it updates from GitHub. The App Store ($9.99) handles updates and Family Sharing. The GitHub trial is free.</p>
     </div>
   </section>
 
-  <!-- ===== the sister app, one more colour chapter ===== -->
   <section class="lidhra-promo" aria-labelledby="lidhra-promo-title" lang="en">
     <div class="lidhra-promo__inner">
     <div class="lidhra-promo__copy">
-      <h2 class="lidhra-promo__title" id="lidhra-promo-title">The debrid download manager for iPhone, Mac and Apple TV</h2>
-      <p class="lidhra-promo__text">Paste a magnet or a link and Lidhra fetches it through Real-Debrid, AllDebrid, TorBox or six other services, then downloads it natively and resumes where it stopped. Finished files wait in a library, ready to play or cast to a TV.</p>
-      <div class="lidhra-promo__facts">
+      <h2 class="lidhra-promo__title rv" id="lidhra-promo-title">The debrid download manager for iPhone, Mac and Apple TV</h2>
+      <p class="lidhra-promo__text rv">Paste a magnet or a link and Lidhra fetches it through Real-Debrid, AllDebrid, TorBox or six other services, then downloads it natively and resumes where it stopped. Finished files wait in a library, ready to play or cast to a TV.</p>
+      <div class="lidhra-promo__facts rv">
         <img class="lidhra-promo__icon" src="assets/lidhra/lidhra-icon.webp" width="44" height="44" alt="Lidhra app icon" loading="lazy" decoding="async">
         <p><strong>Lidhra for iPhone, iPad, Mac, Apple TV and Vision Pro</strong><br>One purchase, no subscription.</p>
       </div>
-      <div class="lidhra-promo__actions">
-        <a class="lidhra-promo__badge" href="https://apps.apple.com/app/lidhra-debrid-downloader/id6790952504?ct=promptbar&mt=8" rel="noopener"><img src="assets/lidhra/app-store-badge-black.svg" width="120" height="40" alt="Download Lidhra on the App Store" loading="lazy" decoding="async"></a>
-        <a class="lidhra-promo__more" href="https://lidhra.peterdsp.dev/" rel="noopener">See how Lidhra works</a>
+      <div class="lidhra-promo__actions rv">
+        <a class="lidhra-promo__badge" href="https://apps.apple.com/app/lidhra-debrid-downloader/id6790952504?ct=promptbar&amp;mt=8" rel="noopener"><picture><source srcset="assets/lidhra/app-store-badge-white.svg" media="(prefers-color-scheme: dark)"><img src="assets/lidhra/app-store-badge-black.svg" width="120" height="40" alt="Download Lidhra on the App Store" loading="lazy" decoding="async"></picture></a>
+        <a class="lidhra-promo__more tlink" href="https://lidhra.peterdsp.dev/" rel="noopener">See how Lidhra works</a>
       </div>
     </div>
-    <figure class="lidhra-promo__shots">
+    <figure class="lidhra-promo__shots rv">
       <img class="lidhra-promo__library" src="assets/lidhra/lidhra-transfers-1200.webp" srcset="assets/lidhra/lidhra-transfers-640.webp 640w, assets/lidhra/lidhra-transfers-1200.webp 1200w" sizes="(min-width: 900px) 560px, 92vw" width="1200" height="600" alt="Lidhra on Mac: downloads coming to the device and files ready in the debrid cloud, with progress bars" loading="lazy" decoding="async">
       <img class="lidhra-promo__phone" src="assets/lidhra/lidhra-add-360.webp" srcset="assets/lidhra/lidhra-add-240.webp 240w, assets/lidhra/lidhra-add-360.webp 360w" sizes="(min-width: 900px) 150px, 26vw" width="360" height="570" alt="Lidhra on iPhone: the Add a transfer sheet, with a field for a magnet or an https link" loading="lazy" decoding="async">
     </figure>
@@ -247,19 +175,22 @@
 </main>
 
 <footer class="foot">
-  <p class="foot-mark">PromptBar</p>
-  <div class="foot-meta">
-    <span>macOS menubar chat, v2.2.0</span>
-    <nav>
+  <div class="foot-top">
+    <div>
+      <h2 class="rv">Your bar is still empty.</h2>
+      <a class="btn rv" href="https://github.com/peterdsp/PromptBar/releases">Start the free trial</a>
+    </div>
+    <nav class="foot-links" aria-label="More">
       <a href="https://github.com/peterdsp/PromptBar">GitHub</a>
       <a href="press.html">Press</a>
       <a href="https://github.com/peterdsp/PromptBar/blob/main/PRIVACY_POLICY.md">Privacy</a>
       <a href="https://peterdsp.dev">peterdsp.dev</a>
     </nav>
-    <span>© 2026 Petros Dhespollari</span>
   </div>
+  <div class="foot-legal"><span>macOS menubar chat, v2.2.0</span><span>© 2026 Petros Dhespollari</span></div>
+  <p class="foot-mark" aria-hidden="true">PromptBar</p>
 </footer>
 
-<script src="site.js"></script>
+<script src="site.js?v=3"></script>
 </body>
 </html>

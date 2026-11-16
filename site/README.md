@@ -6,12 +6,13 @@ Static, single-file landing page for [promptbar.peterdsp.dev](https://promptbar.
 
 - `index.html`, the landing page.
 - `press.html`, the press kit page.
-- `styles.css`, compiled Tailwind utilities used by both pages.
-- `tailwind.css` and `tailwind.config.js`, stylesheet build sources.
-- `404.html`, glassy 404 fallback.
+- `styles.css`, the hand-written stylesheet for every page (tokens taken from the app: system font, graphite window colours, the macOS accent blue, 8 / 12 / 20px radii).
+- `site.js`, the type-an-address demo and the entrances; `doc.js`, entrances for the press and 404 pages.
+- `tailwind.css` and `tailwind.config.js`, the old Tailwind sources, no longer used.
+- `404.html`, the 404 fallback.
 - `CNAME`, apex hostname for GitHub Pages / Cloudflare Pages custom domain.
 - `robots.txt`, `sitemap.xml`, search hygiene.
-- `assets/`, marketing screenshots and app icons (copied from `../marketing` and `../PromptBar/PromptBar/Assets.xcassets/AppIcon.appiconset`).
+- `assets/`, marketing screenshots, the cropped WebP versions the landing page uses (`assets/web/`), and app icons (copied from `../marketing` and `../PromptBar/PromptBar/Assets.xcassets/AppIcon.appiconset`).
 
 ## Local preview
 
@@ -23,13 +24,9 @@ open http://localhost:4000
 
 Any static server will do. The compiled stylesheet is committed, so previewing does not require a build.
 
-## Rebuild styles
+## Styles
 
-After changing Tailwind classes or the theme, rebuild the committed stylesheet:
-
-```bash
-npx tailwindcss@3.4.17 -c site/tailwind.config.js -i site/tailwind.css -o site/styles.css --minify
-```
+`styles.css` is written by hand and needs no build. Do not run the old Tailwind command: it would overwrite it.
 
 ## Deploy: GitHub Pages
 
